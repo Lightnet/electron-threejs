@@ -1,5 +1,6 @@
 {
 	"autostart:":false,
 	"autostartdatabase":false,
-	"executedatabase":"rethinkdb"
+	"executedatabase":"rethinkdb",
+	"blanucher":false
 }

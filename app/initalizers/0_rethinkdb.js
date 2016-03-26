@@ -10,12 +10,15 @@
 
 
 r = require('rethinkdb');
+/*
 connection = null;
 r.connect( {host: 'localhost', port: 28015}, function(err, conn) {
     if (err) throw err;
     connection = conn;
 	console.log('connect?');
 });
+*/
+
 
 /*
 setTimeout(function(){
