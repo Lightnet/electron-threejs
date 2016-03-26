@@ -1,0 +1,25 @@
+{
+    "compilerOptions": {
+        "target": "es5",
+        "module": "commonjs",
+        "declaration": false,
+        "noImplicitAny": false,
+        "removeComments": false,
+        "noLib": false
+    },
+    "filesGlob": [
+        "./**/*.ts",
+        "!./node_modules/**/*.ts",
+        "!./DefinitelyTyped/**/*.ts"
+    ],
+    "files": [
+        "./app/config.ts",
+        "./app/libs/engineio_handle.ts",
+        "./app/libs/plugin.ts",
+        "./app/libs/socketio_handle.ts",
+        "./server.ts"
+    ],
+    "atom": {
+        "rewriteTsconfig": true
+    }
+}

@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<title>playcanvas physics test</title>
+		<script type="text/javascript">
+		//Module = null;
+		</script>
+		<script type="text/javascript" src="/socket.io/socket.io.js"></script>
+		<script type="text/javascript" src="/engine.io.js"></script>
+		<script type="text/javascript" src="/smoothie.js"></script>
+		<script type="text/javascript" src="/long.min.js"></script>
+		<script type="text/javascript" src="/bytebuffer.min.js"></script>
+		<script type="text/javascript" src="/protobuf.min.js"></script>
+		<script type="text/javascript" src="/ammo.443a8cf.js"></script>
+		<script type="text/javascript" src="/playcanvas-stable.js"></script>
+		<script type="text/javascript" src="/playcanvas-io.js"></script>
+		<script type="text/javascript" src="/simplescene.js"></script>
+
+		<style>
+			body {
+				#position: absolute;
+				#top: 0px;
+				#left: 0px;
+				#width: 100%;
+				#height: 100%;
+				padding-top: 0px;
+			}
+			application-canvas {
+				position: absolute;
+				top: 0px;
+				left: 0px;
+				width: 100%;
+				height: 100%;
+				padding-top: 0px;
+			}
+
+			#game-canvas {
+				position: absolute;
+				top: 0px;
+				left: 0px;
+				width: 100%;
+				height: 100%;
+				padding-top: 0px;
+			}
+
+			#displaydebug {
+				position: absolute;
+				top: 0px;
+				right: 0px;
+				width: 100%;
+				height: 100%;
+				padding-top: 0px;
+			}
+			</style>
+			<script>
+			</script>
+	</head>
+	<body>
+		<div id="game-canvas">
+			<canvas id="application-canvas"></canvas>
+		</div>
+		<div id="displaydebug">
+			<canvas id="chartcanvas" width="400" height="100"></canvas>
+			<p>
+			[</span> <label style="color:gray">socket.io :<label style="color:gray" id="stransport"></label>: latency <label style="color:green" id="slatency">0</label></label>]
+			[</span> <label style="color:gray">engine.io :<label style="color:gray" id="etransport"></label>: latency <label style="color:blue" id="elatency">0</label></label>]
+			</p>
+		</div>
+	</body>
+</html>

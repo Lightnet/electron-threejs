@@ -1,0 +1,8 @@
+node_modules
+rethinkdb_data/
+DefinitelyTyped/
+run_debug_current.bat
+run server.bat
+run.bat
+run_debug.bat
+electron params.lnk

@@ -1,0 +1,10 @@
+var r = require('rethinkdb');
+
+var connection = null;
+r.connect( {host: 'localhost', port: 28015}, function(err, conn) {
+    if (err) throw err;
+    connection = conn;
+	console.log('connect?');
+});
+
+r.table('socketio').filter(r.row('id').eq('/#EkNvM151atnXB40aAAAA'));

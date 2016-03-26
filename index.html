@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+	<head>
+
+		<meta charset="UTF-8">
+		<title>Electron PlayCanvas</title>
+		<link rel="stylesheet" href="http://localhost/css/bootstrap.min.css">
+		<!--
+		<script src="http://localhost/js/jquery-2.2.1.min.js"></script>
+		-->
+		<script src="http://localhost/js/jquery-2.2.1.min.js" onload="window.$ = window.jQuery = module.exports;"></script>
+		<script src="http://localhost/js/bootstrap.min.js"></script>
+		<script>
+			if(typeof require != 'undefined'){
+				const ipcRenderer = require('electron').ipcRenderer;
+				var windowdisplay = function(actionname) {
+	    			ipcRenderer.send('window-display', actionname);
+	  			};
+			}
+			//console.log(window);
+		</script>
+	</head>
+	<body>
+		<nav class="navbar navbar-default">
+  			<div class="container-fluid">
+				<div class="navbar-header">
+					<a class="navbar-brand" href="#">Electron Playcanvas!</a>
+				</div>
+				<ul class="nav navbar-nav">
+        			<li><a href="#">Home</a></li>
+					<li><a href="#">News</a></li>
+					<li><a href="#">Updates</a></li>
+				</ul>
+				<ul class="nav navbar-nav navbar-right">
+					<li><button class="btn btn-default navbar-btn" onclick="">Check Status</button></li>
+					<li><a href="#">About</a></li>
+				</ul>
+			</div>
+		</nav>
+		<!--
+		<div style="width:100%;height:100%"></div>
+		-->
+		<iframe src="https://docs.google.com/document/d/1FNysBONiiman0HMKYTxOs6ntAlkkWCXJC0r7HvF5EGo/pub?embedded=true" width="100%" style="position: absolute;top:50px; height: 80%; border: none"></iframe>
+		<nav class="navbar navbar-default navbar-fixed-bottom">
+			<div class="container-fluid">
+				<button class="btn btn-default navbar-btn" onclick="windowdisplay('settings');">Settings</button>
+				<button class="btn btn-default navbar-btn" onclick="windowdisplay('server');">Start Server</button>
+				<button class="btn btn-default navbar-btn" onclick="windowdisplay('client');">Client Game</button>
+				<ul class="nav navbar-nav navbar-right">
+					<li><button class="btn btn-default navbar-btn" onclick="windowdisplay('game');">Start Game</button></li>
+					<li><a href="#">Verify</a></li>
+				</ul>
+			</div>
+		</nav>
+	</body>
+	<footer>
+		<!--
+		Node version: <script>document.write(process.versions.node)</script>,
+		Chromium  version: <script>document.write(process.versions.chrome)</script>,
+		Electron  version: <script>document.write(process.versions.electron)</script>
+		-->
+	</footer>
+</html>

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script type="text/javascript" src="/smoothie.js"></script>
+        <script type="text/javascript" src="/long.min.js"></script><!--Load order -->
+        <script type="text/javascript" src="/bytebuffer.min.js"></script><!--Load order -->
+        <script type="text/javascript" src="/protobuf.min.js"></script><!--Load order -->
+		<script type="text/javascript" src="/socket.io/socket.io.js"></script>
+        <script type="text/javascript" src="/engine.io.js"></script>
+        <script type="text/javascript" src="/latency_io.js"></script>
+    </head>
+    <body>
+		<h1>socket.io latency <span style="color:green" id="slatency"></span></h1>
+		<h2>transport: <label id="stransport">(connecting)</label></h2>
+        <h1>engine.io latency <span style="color:blue" id="elatency"></span></h1>
+        <h2>transport: <label id="etransport">(connecting)</label></h2>
+        <canvas id="mycanvas" width="400" height="100"></canvas>
+
+        <p>engine.io-client script.</p>
+        <label> Protobuf :</label>
+        <input id="textinput" type="text" value="text">
+        <button onclick="send();">Send</button>
+        <button onclick="requestmsg();">Rquest Server Message</button>
+        <br>
+        <label> Bytebuffer :</label>
+        <input id="bufferinput" type="text" value="buffer text">
+        <button onclick="send_buffer();">Send</button>
+
+        <br>
+        <label> Bytebuffer local:</label>
+        <input id="buffertest" type="text" value="buffer text">
+        <button onclick="test_buffer();">Send</button>
+
+        <br>
+        <br>
+        Share libraries : dcodeIO/ProtoBuf.js, dcodeIO/bytebuffer.js
+
+    </body>
+</html>
