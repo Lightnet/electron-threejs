@@ -52,10 +52,10 @@ module.exports.setroute = function(routes,app){
 	//add current dir plugin views folder
 	app.set('views',path.join(__dirname,'/views'));
 
-	routes.get('/rpg', function (req, res) {
+	routes.get('/editor', function (req, res) {
 		res.contentType('text/html');
 		//res.send('Hello World!'); //write string data page
-		res.render('threejs-rpg',{}); //render file .ejs
+		res.render('editor',{}); //render file .ejs
 	});
 };
 
