@@ -26,7 +26,7 @@ var Config = function () {
 		console.log(storage);
 		window.localStorage[ name ] = JSON.stringify( storage );
 		if(socketio !=null){
-			socketio.emit('config',storage);
+			socketio.emit('config',{name:name,storage:storage});
 			console.log(socketio);
 			console.log('config+++++++++++++++++++++++++++');
 		}
@@ -40,7 +40,7 @@ var Config = function () {
 
 		}
 		if(socketio !=null){
-			socketio.emit('config',storage);
+			socketio.emit('config',{name:name,storage:storage});
 			console.log(socketio);
 			console.log('config+++++++++++++++++++++++++++');
 		}
@@ -83,6 +83,7 @@ var Config = function () {
 		clear: function () {
 
 			delete window.localStorage[ name ];
+			socketio.emit('configclear',{name:name,storage:storage});
 
 		}
 

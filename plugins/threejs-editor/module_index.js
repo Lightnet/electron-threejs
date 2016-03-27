@@ -66,14 +66,71 @@ module.exports.setroute = function(routes,app){
 module.exports.socketio_connect = function(io, socket){
 	console.log("threejs config?");
 	console.log("...");
+
+
 	socket.on('config',(data)=>{
+		console.log('config');
 		console.log(data);
+
+		if((rethinkdb !=null)&&(connection !=null)){
+			connection.use('test');
+			//filter documents
+
+			rethinkdb.table('config').filter(rethinkdb.row('name').eq(data.name)).
+			//rethinkdb.table('config').filter(rethinkdb.row('name').eq('test')).
+    			run(connection, function(err, cursor) {
+        			if (err) throw err;
+        			cursor.toArray(function(err, result) {
+            			if (err){
+							console.log("err");
+							console.log(err);
+						};
+						if(result.length == 0){
+							console.log("Not Found");
+							rethinkdb.table('config').insert({name:data.name,storage:data.storage}).run(connection, function(err, result) {
+				    			if (err) throw err;
+				    			console.log(JSON.stringify(result, null, 2));
+							});
+						}else{
+							console.log("Found Data, Update");
+							rethinkdb.table('config').
+								filter(rethinkdb.row("name").eq(data.name)).
+								update({storage:data.storage}).
+								run(connection, function(err, result) {
+									if (err) throw err;
+									console.log(JSON.stringify(result, null, 2));
+								});
+						}
+						//display data
+            			//console.log(JSON.stringify(result, null, 2));
+        			});
+    			});
+
+			//update
+			//rethinkdb.table('config').
+				//filter(rethinkdb.row("name").eq(data.name)).
+				//update({storage:data.storage}).
+				//run(connection, function(err, result) {
+					//if (err) throw err;
+					//console.log(JSON.stringify(result, null, 2));
+				//});
+
+
+			//insert
+			//rethinkdb.table('config').insert({name:data.name,storage:data.storage}).run(connection, function(err, result) {
+    			//if (err) throw err;
+    			//console.log(JSON.stringify(result, null, 2));
+			//});
+
+		}
+
+
 	});
 	socket.on('setkey',(data)=>{
-		console.log(data);
+		//console.log(data);
 	});
 	socket.on('getkey',(data)=>{
-		console.log(data);
+		//console.log(data);
 	});
 
 };
