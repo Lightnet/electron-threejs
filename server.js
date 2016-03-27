@@ -318,7 +318,7 @@ server.listen(process.env.PORT || 80, process.env.IP || "0.0.0.0", function () {
     var addr = server.address();
     //Init start up after the web server is up.
     plugin.InitPost();
-    console.log("PlayCanvas server listening at", addr.address + ":" + addr.port);
+    console.log("Threejs server listening at", addr.address + ":" + addr.port);
     //SetTime();
 });
 function close() {

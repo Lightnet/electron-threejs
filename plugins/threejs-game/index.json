@@ -1,7 +1,7 @@
 {
-    "name": "threejs-rpg",
+    "name": "threejs-game",
     "information": "Very Basic Module Test",
     "version":"0.0.1",
-    "bable": false,
+    "bable": true,
     "script":"module_index.js"
 }
