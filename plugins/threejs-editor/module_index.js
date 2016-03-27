@@ -52,22 +52,34 @@ module.exports.setroute = function(routes,app){
 	//add current dir plugin views folder
 	app.set('views',path.join(__dirname,'/views'));
 
-	routes.get('/editor', function (req, res) {
-		res.contentType('text/html');
+	//routes.get('/editor', function (req, res) {
+		//res.contentType('text/html');
 		//res.send('Hello World!'); //write string data page
-		res.render('editor',{}); //render file .ejs
-	});
+		//res.render('editor',{}); //render file .ejs
+	//});
 };
 
 //===============================================
 // Socket.io
 //===============================================
-/*
+
 module.exports.socketio_connect = function(io, socket){
+	console.log("threejs config?");
+	console.log("...");
+	socket.on('config',(data)=>{
+		console.log(data);
+	});
+	socket.on('setkey',(data)=>{
+		console.log(data);
+	});
+	socket.on('getkey',(data)=>{
+		console.log(data);
+	});
+
 };
 module.exports.socketio_disconnect = function(io, socket){
 };
-*/
+
 //===============================================
 // Engine.io
 //===============================================
