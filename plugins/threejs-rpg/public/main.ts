@@ -61,8 +61,9 @@ module ThreejsAPI{
 
 		//typephysics:string = 'Oimo.js';
 
-		physicsIndex:number = 1;
+		physicsIndex:number = 0;
 		setPhysicsType = ['Oimo.js','Cannon.js','Ammo.js'];
+		infos:any;
 		//
 		//collision detect ['Ammo.js']
 		trans:any;
@@ -249,7 +250,7 @@ module ThreejsAPI{
 		}
 
 		addStaticBox(size, position, rotation, spec){
-			console.log(this.buffgeoBox);
+			//console.log(this.buffgeoBox);
 	        var mesh;
 	        if(spec) mesh = new THREE.Mesh( this.buffgeoBox, this.matGroundTrans );
 	        else mesh = new THREE.Mesh( this.buffgeoBox, this.matGround );
@@ -477,6 +478,7 @@ module ThreejsAPI{
 				//this.world.gravity = new OIMO.Vec3(0, -1, 0);
 				this.world.clear();
 				this.createOimoScene();
+				this.infos = document.getElementById("info");
 			}
 		}
 
@@ -498,15 +500,14 @@ module ThreejsAPI{
 	        ];
 
 			//add ground
-        	var ground = this.world.add({size:[400, 40, 400], pos:[0,-20,0], config:config});
+        	var ground = this.world.add({name:"ground",size:[400, 40, 400], pos:[0,-20,0], config:config});
         	this.addStaticBox( [400, 40, 400], [0,-20,0], [0,0,0], false);
-
-        	var ground2 = this.world.add({size:[200, 30, 390], pos:[130,40,0], rot:[0,0,32], config:config});
+        	var ground2 = this.world.add({name:"ground2",size:[200, 30, 390], pos:[130,40,0], rot:[0,0,32], config:config});
 			this.addStaticBox([200, 30, 390], [130,40,0], [0,0,32], false);
 
 			config[3] = group1;
 	        config[4] = all & ~group2; // all exepte groupe2
-	        var ground3 = this.world.add({size:[5, 100, 390], pos:[0,40,0], rot:[0,0,0], config:config});
+	        var ground3 = this.world.add({name:"ground3",size:[5, 100, 390], pos:[0,40,0], rot:[0,0,0], config:config});
 	        this.addStaticBox([5, 100, 390], [0,40,0], [0,0,0], true);
 
 
@@ -524,20 +525,41 @@ module ThreejsAPI{
 
 			config[4] = all;
 
-			config[3] = group2;
+			config[3] = group2;//
             this.bodies[0] = this.world.add({type:'sphere', size:[w*0.5], pos:[x,y,z], move:true, config:config});
+			this.bodies[0].name = "sphere";
             this.meshs[0] = new THREE.Mesh( buffgeoSphere, matSphere );
-			console.log(this.meshs[0]);
+			console.log(this.world);
+			console.log(this.bodies[0]);
+			//this.bodies[0].addEventListener("collide", function(e){ console.log("sphere collided"); } );//nope
+			//this.bodies[0].on('collision',()=>{});
+
+			//console.log(this.meshs[0]);
             this.meshs[0].scale.set( w*0.5, w*0.5, w*0.5 );
 			this.scene.add( this.meshs[0] );
 
 		}
 
 		updateOimoPhysics(){
+			//https://github.com/lo-th/Oimo.js/blob/gh-pages/test_moving.html
 			if((typeof this.world == 'undefined')||(this.world == null)){
 				return;
 			}
 			this.world.step();
+			this.infos.innerHTML = this.world.performance.show();
+
+			// contact test
+			 if(this.world.checkContact('ground', 'sphere')){
+				 console.log('ground' +' [touch] ' + 'sphere');
+			 }
+
+			 if(this.world.checkContact('ground2', 'sphere')){
+				 console.log('ground2' +' [touch] ' + 'sphere');
+			 }
+
+			 if(this.world.checkContact('ground3', 'sphere')){
+				 console.log('ground3' +' [touch] ' + 'sphere');
+			 }
 
 			for(var i = 0; i < this.bodies.length;i++){
 				var mesh = this.meshs[i];
@@ -546,6 +568,18 @@ module ThreejsAPI{
 					mesh.position.copy(body.getPosition());
 					//console.log(mesh.position);
                 	mesh.quaternion.copy(body.getQuaternion());
+					//console.log(body.numContacts);
+					if(body.numContacts > 0){
+						//console.log(body.next);
+						//console.log(body.next.name);
+						//console.log(body.next);
+						//if(body.next != null){
+							//body.next = null;
+						//}
+
+						//console.log(body.prev);
+						//contactLink
+					}
 					if(mesh.position.y<-100){
                     	var x = 150;
                     	var z = -100 + Math.random()*200;
