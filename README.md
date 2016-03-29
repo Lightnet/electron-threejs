@@ -23,7 +23,8 @@
  * latency_io -test socket.io & engine.io ping time different
  * threejs-editor (current from src threejs)
  * threejs-headless-template -tested simple threejs headless server scene for webgl
- * ...
+ * threejs-rpg (work in progress)
+ * threejs-rts (just empty project)
 
 ## Features:
  * Development for web game builds. (work in progress)
@@ -34,7 +35,9 @@
 
 ## Base stuff:
  * Currently it start a server from background and not the window browser.
- * localhost/editor (url for threejs editor)
+ * localhost/editor.html (url for threejs editor)
+ * localhost/threejs-rpg  (work in progress)
+ * localhost/threejs-custom.html  (work in progress)
 
 ## Application Menus
   * Check Status (no function yet)

@@ -58,22 +58,21 @@ module ThreejsAPI{
 		canvas:any;
 		cube:any;
 		bcanvasRatio:boolean = true;
-
-		//typephysics:string = 'Oimo.js';
-
+		//physics begin
+		infos:any;
 		physicsIndex:number = 0;
 		setPhysicsType = ['Oimo.js','Cannon.js','Ammo.js'];
-		infos:any;
-		//
-		//collision detect ['Ammo.js']
+		collisionConfiguration:any;
+		dispatcher:any;
+		overlappingPairCache:any;
+		solver:any;
 		trans:any;
 		dp:any;
-
-		//physicsstate:string;
 		bablephysics:boolean = true;
-		//typephysics:string = 'Cannon.js';
 
 		world:any = null;
+		//physics end
+
 		meshs:any = [];
 		bodies:any = [];
 		grounds:any = [];
@@ -128,12 +127,12 @@ module ThreejsAPI{
         	this.controls.update();
 			var materialType = 'MeshBasicMaterial';
 
-			this.matSphere = new THREE[ materialType ]( { map: this.basicTexture(0), name:'sph' } );
-	        this.matBox = new THREE[materialType]( {  map: this.basicTexture(2), name:'box' } );
-	        this.matSphereSleep = new THREE[materialType]( { map: this.basicTexture(1), name:'ssph' } );
-	        this.matBoxSleep = new THREE[materialType]( {  map: this.basicTexture(3), name:'sbox' } );
-	        this.matGround = new THREE[materialType]( { color: 0x3D4143, transparent:true, opacity:0.5 } );
-	        this.matGroundTrans = new THREE[materialType]( { color: 0x3D4143, transparent:true, opacity:0.6 } );
+			this.matSphere = new THREE[ this.materialType ]( { map: this.basicTexture(0), name:'sph' } );
+	        this.matBox = new THREE[this.materialType]( {  map: this.basicTexture(2), name:'box' } );
+	        this.matSphereSleep = new THREE[this.materialType]( { map: this.basicTexture(1), name:'ssph' } );
+	        this.matBoxSleep = new THREE[this.materialType]( {  map: this.basicTexture(3), name:'sbox' } );
+	        this.matGround = new THREE[this.materialType]( { color: 0x3D4143, transparent:true, opacity:0.5 } );
+	        this.matGroundTrans = new THREE[this.materialType]( { color: 0x3D4143, transparent:true, opacity:0.6 } );
 
 			this.buffgeoSphere = new THREE.BufferGeometry();
 	        this.buffgeoSphere.fromGeometry( new THREE.SphereGeometry( 1 , 20, 10 ) );
@@ -145,6 +144,13 @@ module ThreejsAPI{
 			this.createTexMat();
 			//this.createHUD();
 			//this.createscene();//simple test
+			this.initPhysics();
+
+			this.createscene_cube();
+			this.update();
+		}
+
+		initPhysics(){
 			if(this.setPhysicsType[this.physicsIndex] == 'Oimo.js'){
 				this.initOimoPhysics();
 			}
@@ -154,8 +160,6 @@ module ThreejsAPI{
 			if(this.setPhysicsType[this.physicsIndex] == 'Ammo.js'){
 				this.initAmmoPhysics();
 			}
-			this.createscene_cube();
-			this.update();
 		}
 
 		basicTexture(n){
@@ -339,16 +343,20 @@ module ThreejsAPI{
 			}
 		}
 
+		destroyCannonPhysics(){
+
+		}
+
 		// Ammo
 		initAmmoPhysics(){
 			//https://github.com/kripken/ammo.js/blob/master/examples/hello_world.js
 			if(typeof Ammo != undefined){
-				var collisionConfiguration = new Ammo.btDefaultCollisionConfiguration();
-				var dispatcher = this.dp = new Ammo.btCollisionDispatcher(collisionConfiguration);
+				this.collisionConfiguration = new Ammo.btDefaultCollisionConfiguration();
+				this.dispatcher = this.dp = new Ammo.btCollisionDispatcher(this.collisionConfiguration);
 				//console.log(dispatcher);
-				var overlappingPairCache = new Ammo.btDbvtBroadphase();
-				var solver = new Ammo.btSequentialImpulseConstraintSolver();
-				this.world = new Ammo.btDiscreteDynamicsWorld(dispatcher, overlappingPairCache, solver, collisionConfiguration);
+				this.overlappingPairCache = new Ammo.btDbvtBroadphase();
+				this.solver = new Ammo.btSequentialImpulseConstraintSolver();
+				this.world = new Ammo.btDiscreteDynamicsWorld(this.dispatcher, this.overlappingPairCache, this.solver, this.collisionConfiguration);
 				this.world.setGravity(new Ammo.btVector3(0, -10, 0));
 
 				 this.trans = new Ammo.btTransform(); // taking this out of the loop below us reduces the leaking
@@ -441,12 +449,6 @@ module ThreejsAPI{
 				    }
 				}
 
-
-
-
-
-
-
 				for(var ii = 0; ii < this.bodies.length;ii++){
 					var mesh = this.meshs[ii];
 					var body = this.bodies[ii];
@@ -468,7 +470,15 @@ module ThreejsAPI{
 					}
 				}
 			}
+		}
 
+		destroyAmmoPhysics(){
+			//https://github.com/kripken/ammo.js/blob/master/examples/hello_world.js
+			// Delete objects we created through |new|. We just do a few of them here, but you should do them all if you are not shutting down ammo.js
+  			Ammo.destroy(this.collisionConfiguration);
+  			Ammo.destroy(this.dispatcher);
+  			Ammo.destroy(this.overlappingPairCache);
+  			Ammo.destroy(this.solver);
 		}
 
 		// Oimo
@@ -509,7 +519,6 @@ module ThreejsAPI{
 	        config[4] = all & ~group2; // all exepte groupe2
 	        var ground3 = this.world.add({name:"ground3",size:[5, 100, 390], pos:[0,40,0], rot:[0,0,0], config:config});
 	        this.addStaticBox([5, 100, 390], [0,40,0], [0,0,0], true);
-
 
 			var x = 150;
             var z = -100 + Math.random()*200;
@@ -576,7 +585,6 @@ module ThreejsAPI{
 						//if(body.next != null){
 							//body.next = null;
 						//}
-
 						//console.log(body.prev);
 						//contactLink
 					}
@@ -588,6 +596,10 @@ module ThreejsAPI{
                 	}
 				}
 			}
+		}
+
+		destroyOimoPhysics(){
+
 		}
 
 		createscene_cube(){
@@ -612,6 +624,18 @@ module ThreejsAPI{
 			var cube = this.cube = new THREE.Mesh( geometry, material );
 			this.scene.add( cube );
 			this.camera.position.z = 5;
+		}
+
+		updatePhysics(){
+			if(this.setPhysicsType[this.physicsIndex] == 'Oimo.js'){
+				this.updateOimoPhysics();
+			}
+			if(this.setPhysicsType[this.physicsIndex] == 'Cannon.js'){
+				this.updateCannonPhysics();
+			}
+			if(this.setPhysicsType[this.physicsIndex] == 'Ammo.js'){
+				this.updateAmmoPhysics();
+			}
 		}
 
 		//update scene and physics
@@ -643,23 +667,11 @@ module ThreejsAPI{
 			}
 			*/
 
-			if(this.setPhysicsType[this.physicsIndex] == 'Oimo.js'){
-				this.updateOimoPhysics();
-			}
-
-			if(this.setPhysicsType[this.physicsIndex] == 'Cannon.js'){
-				this.updateCannonPhysics();
-			}
-
-			if(this.setPhysicsType[this.physicsIndex] == 'Ammo.js'){
-				this.updateAmmoPhysics();
-			}
+			this.updatePhysics();
 
 			width = null;
 			height = null;
-
 		}
-
 	}
 	export class Editor{
 		scene:any;

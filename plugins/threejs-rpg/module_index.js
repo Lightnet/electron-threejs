@@ -53,7 +53,7 @@ module.exports.setroute = function(routes,app){
 	//add current dir plugin views folder
 	app.set('views',path.join(__dirname,'/views'));
 
-	routes.get('/rpg', function (req, res) {
+	routes.get('/threejs-rpg', function (req, res) {
 		res.contentType('text/html');
 		//res.send('Hello World!'); //write string data page
 		res.render('threejs-rpg',{}); //render file .ejs
@@ -74,12 +74,9 @@ module.exports.socketio_disconnect = function(io, socket){
 //===============================================
 /*
 module.exports.engineio_connect = function(engineio,socket){
-
 };
 module.exports.engineio_message = function(data,socket){
-
 };
 module.exports.engineio_close = function(socket){
-
 };
 */
