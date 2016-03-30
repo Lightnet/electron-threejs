@@ -17,6 +17,7 @@
         "./app/libs/engineio_handle.ts",
         "./app/libs/plugin.ts",
         "./app/libs/socketio_handle.ts",
+        "./plugins/threejs-physics/public/main-physics.ts",
         "./plugins/threejs-rpg/public/main.ts",
         "./plugins/threejs-rts/public/main.ts",
         "./server.ts"

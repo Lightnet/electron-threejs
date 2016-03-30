@@ -33,16 +33,12 @@ var thing = new MyObject3D(testGeo, testMat);
 
 */
 
-
-
-
 //declare var THREE:any;
 declare var OIMO:any;
 declare var THREEx:any;
 declare var CANNON:any;
 declare var Ammo:any;
 //declare var window:any;
-//var undefined:string = 'undefined';
 /*
 var DEBUG = false;
 if(!DEBUG){
@@ -56,6 +52,8 @@ if(!DEBUG){
 */
 module ThreejsAPI{
 	export class Game{
+		version:string = "0.0.1";
+
 		antialias:boolean = true;
 		bablenetwork:boolean = false;
 

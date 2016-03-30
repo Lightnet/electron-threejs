@@ -10,9 +10,9 @@
 /// <reference path="./app/libs/socketio_handle.ts" />
 /// <reference path="./app/libs/engineio_handle.ts" />
 /// <reference path="./app/libs/plugin.ts" />
+
 //
 // # SimpleServer
-//
 // A simple chat server using Socket.IO, Express, and Async.
 //
 
@@ -101,7 +101,6 @@ if (config.benablemodules) {
 }
 //
 // ## SimpleServer `SimpleServer(obj)`
-//
 // Creates a new instance of SimpleServer with the following options:
 //  * `port` - The HTTP port to listen on. If `process.env.PORT` is set, _it overrides this value_.
 //

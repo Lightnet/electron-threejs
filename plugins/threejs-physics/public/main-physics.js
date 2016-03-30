@@ -19,7 +19,6 @@ var testMat = new Three.MeshNormalMaterial();
 var thing = new MyObject3D(testGeo, testMat);
 */
 //declare var window:any;
-//var undefined:string = 'undefined';
 /*
 var DEBUG = false;
 if(!DEBUG){
@@ -36,6 +35,7 @@ var ThreejsAPI;
     var Game = (function () {
         function Game() {
             var _this = this;
+            this.version = "0.0.1";
             this.antialias = true;
             this.bablenetwork = false;
             this.materialType = 'MeshBasicMaterial';

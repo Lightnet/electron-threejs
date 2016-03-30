@@ -19,10 +19,8 @@ module.exports._config = require('./index.json');
 // Init Post
 //===============================================
 module.exports.initpost = function(){
-	console.log('init post');
-	//require('./threejs-engine.js');
+	//console.log('init post');
 }
-
 //===============================================
 // Session
 //===============================================

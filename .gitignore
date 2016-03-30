@@ -7,3 +7,4 @@ run.bat
 run_debug.bat
 electron params.lnk
 plugins/threejs-rpg/public/archive/
+supervisor serverjs.bat

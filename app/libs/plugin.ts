@@ -18,7 +18,7 @@ export module Globals
    export var m_Instance : any;
 }
 
-class managePlugin{
+class Plugin{
     //public static MyInstance:any;
     self:any = this;
     name:string;
@@ -223,4 +223,4 @@ class managePlugin{
     }
 }
 
-exports = (module).exports = new managePlugin();
+exports = (module).exports = new Plugin();

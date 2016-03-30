@@ -11,9 +11,6 @@ var path = require('path');
 var express = require('express');
 var plugin = require('../../app/libs/plugin.js');
 /*global getModules */
-//var io;
-//var socket;
-//var db;
 
 //===============================================
 // Config
@@ -23,7 +20,7 @@ module.exports._config = require('./index.json');
 // Init Post
 //===============================================
 module.exports.initpost = function(){
-	console.log('init post');
+	//console.log('init post');
 	//require('./threejs-engine.js');
 }
 
@@ -64,12 +61,11 @@ module.exports.setroute = function(routes,app){
 //===============================================
 
 module.exports.socketio_connect = function(io, socket){
-	console.log("threejs config?");
-	console.log("...");
-
+	console.log("threejs editor?");
+	//console.log("...");
 
 	socket.on('config',(data)=>{
-		console.log('config');
+		console.log('editor config');
 		console.log(data);
 
 		if((rethinkdb !=null)&&(connection !=null)){
@@ -89,7 +85,7 @@ module.exports.socketio_connect = function(io, socket){
 							console.log("Not Found");
 							rethinkdb.table('config').insert({name:data.name,storage:data.storage}).run(connection, function(err, result) {
 				    			if (err) throw err;
-				    			console.log(JSON.stringify(result, null, 2));
+				    			//console.log(JSON.stringify(result, null, 2));
 							});
 						}else{
 							console.log("Found Data, Update");
@@ -98,7 +94,7 @@ module.exports.socketio_connect = function(io, socket){
 								update({storage:data.storage}).
 								run(connection, function(err, result) {
 									if (err) throw err;
-									console.log(JSON.stringify(result, null, 2));
+									//console.log(JSON.stringify(result, null, 2));
 								});
 						}
 						//display data
@@ -123,14 +119,66 @@ module.exports.socketio_connect = function(io, socket){
 			//});
 
 		}
-
-
 	});
-	socket.on('setkey',(data)=>{
-		//console.log(data);
+	socket.on('setconfigkey',(data)=>{
+		console.log(data);
+		rethinkdb.table('config').filter(rethinkdb.row('key').eq(data.key)).
+			run(connection, function(err, cursor) {
+				if (err) throw err;
+				cursor.toArray(function(err, result) {
+					if (err) throw err;
+					//if (err){
+						//console.log("err");
+						//console.log(err);
+					//};
+
+					if(result.length == 0){
+						console.log("Not Found");
+						rethinkdb.table('config').insert({name:data.name,key:data.key,storage:data.storage}).run(connection, function(err, result) {
+							if (err) throw err;
+							//console.log(JSON.stringify(result, null, 2));
+						});
+					}else{
+						console.log("Found Data, Update");
+						rethinkdb.table('config').
+							filter(rethinkdb.row('key').eq(data.key)).
+							update({storage:data.storage}).
+							run(connection, function(err, result) {
+								if (err) throw err;
+								//console.log(JSON.stringify(result, null, 2));
+							});
+					}
+					//display data
+					//console.log(JSON.stringify(result, null, 2));
+				});
+			});
 	});
 	socket.on('getkey',(data)=>{
-		//console.log(data);
+		console.log(data);
+	});
+
+	socket.on('getconfigkey',(data)=>{
+		console.log('getconfigkey');
+		console.log(data);
+		rethinkdb.table('config').filter(rethinkdb.row('key').eq(data.key)).
+			run(connection, function(err, cursor) {
+				if (err) throw err;
+				cursor.toArray(function(err, result) {
+					if (err) throw err;
+					//if (err){
+						//console.log("err");
+						//console.log(err);
+					//};
+					if(result.length > 0){
+						//console.log(result);
+						//console.log('storage');
+						console.log(result[0]['storage']);
+					}
+
+					//display data
+					//console.log(JSON.stringify(result, null, 2));
+				});
+			});
 	});
 
 };

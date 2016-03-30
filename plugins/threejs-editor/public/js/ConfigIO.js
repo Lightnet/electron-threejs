@@ -26,53 +26,58 @@ var Config = function () {
 		console.log(storage);
 		window.localStorage[ name ] = JSON.stringify( storage );
 		if(socketio !=null){
-			socketio.emit('config',{name:name,storage:storage});
+			//socketio.emit('config',{name:name,storage:storage});
 			console.log(socketio);
-			console.log('config+++++++++++++++++++++++++++');
+			console.log('[config ====]');
 		}
 	} else {
 
 		var data = JSON.parse( window.localStorage[ name ] );
 
 		for ( var key in data ) {
-
 			storage[ key ] = data[ key ];
-
+			//console.log("config key: "+key + " : "+ data[ key ]);
+			socketio.emit('setconfigkey', {name:name,key:key,storage:data[ key ]});
 		}
-		if(socketio !=null){
-			socketio.emit('config',{name:name,storage:storage});
-			console.log(socketio);
-			console.log('config+++++++++++++++++++++++++++');
-		}
+		//if(socketio !=null){
+			//socketio.emit('config',{name:name,storage:storage});
+			//console.log(socketio);
+			//console.log('[config ====]');
+		//}
 
 	}
 
 	return {
 
 		getKey: function ( key ) {
-			console.log("key:"+key);
-
+			//console.log(" getKey: function ");
+			//console.log("key:"+key);
+			//console.log("storage:" + storage[ key ]);
 			if(socketio !=null){
-				socketio.emit('getkey', key);
-				console.log('get key+++++++++++++++++++++++++++');
+				socketio.emit('getconfigkey', {name:name,key:key});
+				//console.log('get key');
+				socketio.on('configkey',function(object){
+					console.log("server data:"+object);
+				});
 			}
-
 			return storage[ key ];
 
 		},
 
 		setKey: function () { // key, value, key, value ...
 			for ( var i = 0, l = arguments.length; i < l; i += 2 ) {
+				console.log(arguments[ i + 1 ] + " : " + storage[ arguments[ i ] ]);
 
+				if(socketio !=null){
+					socketio.emit('setconfigkey', {name:name,key:arguments[ i + 1 ],storage:storage[ arguments[ i ] ]});
+				}
 				storage[ arguments[ i ] ] = arguments[ i + 1 ];
 			}
 			//console.log(name);
 			//console.log(storage);
-			if(socketio !=null){
-				socketio.emit('setkey', {name:name,storage:storage});
-				console.log("set key+++++++++++++++++++++++++++");
-			}
 
+			//socketio.emit('setkey',  {key:key,storage:storage[ key ]});
+			//console.log("set key+++++++++++++++++++++++++++");
 
 			window.localStorage[ name ] = JSON.stringify( storage );
 

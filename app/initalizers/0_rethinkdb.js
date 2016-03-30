@@ -6,19 +6,14 @@
   	Please read the readme.txt file for more information.
 */
 
-
-
-
 rethinkdb = require('rethinkdb');
 
 connection = null;
 rethinkdb.connect( {host: 'localhost', port: 28015}, function(err, conn) {
     if (err) throw err;
     connection = conn;
-	console.log('rethinkdb connect?');
+	console.log('connected to rethinkdb!');
 });
-
-
 
 /*
 setTimeout(function(){

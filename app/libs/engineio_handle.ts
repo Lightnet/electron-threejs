@@ -10,6 +10,7 @@ var plugin = require('./plugin.js');
 //var fs = require('fs');
 //var path = require('path');
 module.exports = function(engine_io){
+	console.log("[ = init engine.io = ]");
     engine_io.on('connection', function (socket) {
         console.log("engine.io user connected...");
         plugin.call_engineio_connect(engine_io, socket);
