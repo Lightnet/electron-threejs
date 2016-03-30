@@ -40,7 +40,7 @@ var ThreejsAPI;
             this.bablenetwork = false;
             this.materialType = 'MeshBasicMaterial';
             this.bcanvasRatio = true;
-            this.physicsIndex = 0;
+            this.physicsIndex = 2;
             this.setPhysicsType = ['Oimo.js', 'Cannon.js', 'Ammo.js'];
             this.bablephysics = true;
             this.world = null;
@@ -236,27 +236,58 @@ var ThreejsAPI;
             this.createCannonScene();
         };
         Game.prototype.createCannonScene = function () {
-            var groundShape = new CANNON.Plane();
-            var groundBody = new CANNON.Body({ mass: 0 });
-            groundBody.addShape(groundShape);
-            groundBody.quaternion.setFromAxisAngle(new CANNON.Vec3(1, 0, 0), -Math.PI / 2);
-            this.world.add(groundBody);
-            var mass = 5, radius = 1;
+            //var groundShape = new CANNON.Plane();
+            //var groundBody = new CANNON.Body({ mass: 0 });
+            //groundBody.addShape(groundShape);
+            //groundBody.quaternion.setFromAxisAngle(new CANNON.Vec3(1,0,0),-Math.PI/2);
+            //this.world.add(groundBody);
+            //var ground = this.world.add({name:"ground",size:[400, 40, 400], pos:[0,-20,0], config:config});
+            //this.addStaticBox( [400, 40, 400], [0,-20,0], [0,0,0], false);
+            var boxShape1 = new CANNON.Box(new CANNON.Vec3(200, 20, 200)); //half extend
+            var boxBody1 = new CANNON.Body({ mass: 0, position: new CANNON.Vec3(0, -20, 0) });
+            boxBody1.addShape(boxShape1);
+            this.world.add(boxBody1);
+            this.addStaticBox([400, 40, 400], [0, -20, 0], [0, 0, 0], false);
+            var boxShape2 = new CANNON.Box(new CANNON.Vec3(100, 15, 195)); //half extend
+            console.log(-Math.PI / 2);
+            var boxBody2 = new CANNON.Body({ mass: 0 });
+            boxBody2.addShape(boxShape2);
+            boxBody2.position = new CANNON.Vec3(130, 40, 0);
+            boxBody2.quaternion.setFromAxisAngle(new CANNON.Vec3(0, 0, 1), (30 * Math.PI / 180));
+            //boxBody2.quaternion.setFromAxisAngle(new CANNON.Vec3(0,0,1),(0.5235987756));
+            console.log(boxBody2.quaternion);
+            this.world.add(boxBody2);
+            //var geometry = new THREE.BoxGeometry( 200, 30, 390 );
+            //var material = new THREE.MeshBasicMaterial( { color: 0xcccccc } );
+            //var cube = this.cube = new THREE.Mesh( geometry, material );
+            //cube.quaternion.copy(boxBody2.quaternion);
+            //cube.position.copy(boxBody2.position);
+            //this.scene.add( cube );
+            this.addStaticBox([200, 30, 390], [130, 40, 0], [0, 0, 32], false);
+            var mass = 5, radius = 2;
             var sphereShape = new CANNON.Sphere(radius); // Step 1
             var sphereBody = new CANNON.Body({ mass: mass }); // Step 2
             sphereBody.addShape(sphereShape);
-            sphereBody.position.set(0, 100, 0);
+            //sphereBody.position.set(0,100,0);
             //sphereBody.angularVelocity.set(0,10,0);
             sphereBody.angularDamping = 0.5;
             sphereBody.addEventListener("collide", function (e) { console.log("sphere collided"); });
             this.bodies[0] = sphereBody;
+            var x = 150;
+            var z = -100 + Math.random() * 200;
+            var y = 100 + Math.random() * 1000;
+            sphereBody.position.set(x, y, z);
             this.world.add(sphereBody); // Step 3
             //console.log(sphereBody);
-            var geometry = new THREE.BoxGeometry(1, 1, 1);
-            var material = new THREE.MeshBasicMaterial({ color: 0xcccccc });
-            var cube = this.cube = new THREE.Mesh(geometry, material);
-            this.scene.add(cube);
-            this.meshs[0] = cube;
+            var buffgeoSphere = new THREE.BufferGeometry();
+            buffgeoSphere.fromGeometry(new THREE.SphereGeometry(2, 20, 10));
+            this.meshs[0] = new THREE.Mesh(buffgeoSphere, this.matSphere);
+            this.scene.add(this.meshs[0]);
+            //var geometry = new THREE.BoxGeometry( 1, 1, 1 );
+            //var material = new THREE.MeshBasicMaterial( { color: 0xcccccc } );
+            //var cube = this.cube = new THREE.Mesh( geometry, material );
+            //this.scene.add( cube );
+            //this.meshs[0] = cube;
         };
         Game.prototype.updateCannonPhysics = function () {
             if (typeof CANNON != undefined) {
@@ -287,6 +318,7 @@ var ThreejsAPI;
         Game.prototype.initAmmoPhysics = function () {
             //https://github.com/kripken/ammo.js/blob/master/examples/hello_world.js
             if (typeof Ammo != undefined) {
+                console.log('init Ammo');
                 this.collisionConfiguration = new Ammo.btDefaultCollisionConfiguration();
                 this.dispatcher = this.dp = new Ammo.btCollisionDispatcher(this.collisionConfiguration);
                 //console.log(dispatcher);
@@ -299,14 +331,14 @@ var ThreejsAPI;
             }
         };
         Game.prototype.createAmmoScene = function () {
-            this.camera.position.set(0, 50, 50);
-            this.controls.target.set(0, 0, 0);
-            this.controls.update();
+            //this.camera.position.set( 0, 50, 50 );
+            //this.controls.target.set(0, 0, 0);
+            //this.controls.update();
             //ground
-            var groundShape = new Ammo.btBoxShape(new Ammo.btVector3(50, 50, 50));
+            var groundShape = new Ammo.btBoxShape(new Ammo.btVector3(200, 20, 200)); //half extent
             var groundTransform = new Ammo.btTransform();
             groundTransform.setIdentity();
-            groundTransform.setOrigin(new Ammo.btVector3(0, -56, 0));
+            groundTransform.setOrigin(new Ammo.btVector3(0, -20, 0));
             var mass = 0;
             var isDynamic = mass !== 0;
             var localInertia = new Ammo.btVector3(0, 0, 0);
@@ -317,7 +349,43 @@ var ThreejsAPI;
             var body = new Ammo.btRigidBody(rbInfo);
             //console.log(body);
             this.world.addRigidBody(body);
-            //this.bodies.push(body);
+            this.addStaticBox([400, 40, 400], [0, -20, 0], [0, 0, 0], false);
+            var groundShape2 = new Ammo.btBoxShape(new Ammo.btVector3(200, 20, 200)); //half extent
+            var groundTransform2 = new Ammo.btTransform();
+            groundTransform2.setIdentity();
+            groundTransform2.setOrigin(new Ammo.btVector3(130, 40, 0));
+            var q = new Ammo.btQuaternion(0, 0, 0.25881904510252074, 0.9659258262890683);
+            //Ammo.js rotation doesn't work
+            //q.setEulerZYX(0,0,30);
+            //q.setEulerZYX(0,0,(30 * Math.PI / 180));
+            //console.log(q);
+            groundTransform2.setRotation(q);
+            console.log(groundTransform2);
+            var localInertia2 = new Ammo.btVector3(0, 0, 0);
+            if (isDynamic)
+                groundShape2.calculateLocalInertia(mass, localInertia2);
+            var myMotionState2 = new Ammo.btDefaultMotionState(groundTransform2);
+            var rbInfo2 = new Ammo.btRigidBodyConstructionInfo(mass, myMotionState2, groundShape2, localInertia2);
+            var body2 = new Ammo.btRigidBody(rbInfo2);
+            //console.log(body);
+            this.world.addRigidBody(body2);
+            //var geometry = new THREE.BoxGeometry( 200, 30, 390 );
+            //var material = new THREE.MeshBasicMaterial( { color: 0xcccccc } );
+            //var cube = this.cube = new THREE.Mesh( geometry, material );
+            //cube.quaternion.copy(body2.quaternion);
+            //cube.position.copy(body2.position);
+            //cube.position.set(groundTransform2.getOrigin().x().toFixed(2),
+            //groundTransform2.getOrigin().y().toFixed(2),
+            //groundTransform2.getOrigin().z().toFixed(2));
+            //cube.rotation.set(groundTransform2.getRotation().x().toFixed(2),
+            //groundTransform2.getRotation().y().toFixed(2),
+            //groundTransform2.getRotation().z().toFixed(2),
+            //groundTransform2.getRotation().w().toFixed(2));
+            //this.scene.add( cube );
+            this.addStaticBox([200, 30, 390], [130, 40, 0], [0, 0, 32], false);
+            var x = 150;
+            var z = -100 + Math.random() * 200;
+            var y = 100 + Math.random() * 1000;
             //sphere
             var colShape = new Ammo.btSphereShape(1);
             var startTransform = new Ammo.btTransform();
@@ -327,7 +395,9 @@ var ThreejsAPI;
             var localInertia = new Ammo.btVector3(0, 0, 0);
             if (isDynamic)
                 colShape.calculateLocalInertia(mass, localInertia);
-            startTransform.setOrigin(new Ammo.btVector3(2, 10, 0));
+            //startTransform.setOrigin(new Ammo.btVector3(2, 10, 0));
+            startTransform.setOrigin(new Ammo.btVector3(x, y, z));
+            //console.log(startTransform);
             var myMotionState = new Ammo.btDefaultMotionState(startTransform);
             var rbInfo = new Ammo.btRigidBodyConstructionInfo(mass, myMotionState, colShape, localInertia);
             var body = new Ammo.btRigidBody(rbInfo);
@@ -336,12 +406,16 @@ var ThreejsAPI;
             //console.log(this.trans.getRotation());
             this.world.addRigidBody(body);
             this.bodies.push(body);
-            var geometry = new THREE.BoxGeometry(2, 2, 2);
-            var material = new THREE.MeshBasicMaterial({ color: 0xcccccc });
-            var cube = this.cube = new THREE.Mesh(geometry, material);
-            cube.position.y = 5;
-            this.scene.add(cube);
-            this.meshs[0] = cube;
+            var buffgeoSphere = new THREE.BufferGeometry();
+            buffgeoSphere.fromGeometry(new THREE.SphereGeometry(1, 20, 10));
+            this.meshs[0] = new THREE.Mesh(buffgeoSphere, this.matSphere);
+            this.scene.add(this.meshs[0]);
+            //var geometry = new THREE.BoxGeometry( 2, 2, 2 );
+            //var material = new THREE.MeshBasicMaterial( { color: 0xcccccc } );
+            //var cube = this.cube = new THREE.Mesh( geometry, material );
+            //cube.position.y = 5;
+            //this.scene.add( cube );
+            //this.meshs[0] = cube;
         };
         Game.prototype.updateAmmoPhysics = function () {
             if (typeof Ammo != undefined) {
@@ -420,15 +494,13 @@ var ThreejsAPI;
             var d = 10 + Math.random() * 10;
             var buffgeoSphere = new THREE.BufferGeometry();
             buffgeoSphere.fromGeometry(new THREE.SphereGeometry(1, 20, 10));
-            var materialType = 'MeshBasicMaterial';
-            var matSphere = new THREE[materialType]({ name: 'sph' });
             config[4] = all;
             config[3] = group2; //
             this.bodies[0] = this.world.add({ type: 'sphere', size: [w * 0.5], pos: [x, y, z], move: true, config: config });
             this.bodies[0].name = "sphere";
-            this.meshs[0] = new THREE.Mesh(buffgeoSphere, matSphere);
-            console.log(this.world);
-            console.log(this.bodies[0]);
+            this.meshs[0] = new THREE.Mesh(buffgeoSphere, this.matSphere);
+            //console.log(this.world);
+            //console.log(this.bodies[0]);
             //this.bodies[0].addEventListener("collide", function(e){ console.log("sphere collided"); } );//nope
             //this.bodies[0].on('collision',()=>{});
             //console.log(this.meshs[0]);
