@@ -1,0 +1,21 @@
+{
+    "compilerOptions": {
+        "target": "es5",
+        "module": "commonjs",
+        "declaration": false,
+        "noImplicitAny": false,
+        "removeComments": false,
+        "noLib": false
+    },
+    "filesGlob": [
+        "./**/*.ts",
+        "!./node_modules/**/*.ts",
+        "!./DefinitelyTyped/**/*.ts"
+    ],
+    "files": [
+        "./main.ts"
+    ],
+    "atom": {
+        "rewriteTsconfig": true
+    }
+}
