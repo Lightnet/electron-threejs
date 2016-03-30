@@ -6,3 +6,4 @@ run server.bat
 run.bat
 run_debug.bat
 electron params.lnk
+plugins/threejs-rpg/public/archive/

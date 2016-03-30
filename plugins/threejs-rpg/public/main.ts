@@ -19,6 +19,23 @@ var testMat = new Three.MeshNormalMaterial();
 var thing = new MyObject3D(testGeo, testMat);
 */
 
+/*
+//make sure it not null
+	if(scene !=null){
+		scene.traverse( function ( object ) {
+			//update object Physics
+			if ( object.UpdatePhysics){//make sure the function is not null
+				object.UpdatePhysics();
+			}
+			//if ( object instanceof THREE.ObjPrefabShip ) {object.update();}
+		});
+	}
+
+*/
+
+
+
+
 //declare var THREE:any;
 declare var OIMO:any;
 declare var THREEx:any;
@@ -77,12 +94,15 @@ module ThreejsAPI{
 		bodies:any = [];
 		grounds:any = [];
 
+		customscript:any = [];
+
+		// HUD Begin
 		hudCanvas:any;
 		cameraHUD:any;
 		sceneHUD:any;
 		hudTexture:any;
 		hudBitmap:any;
-
+		// HUD End
 		controls:any;
 		ToRad:number = 0.0174532925199432957;
 		timeSteptimeStep:number = 1/60;
@@ -125,8 +145,7 @@ module ThreejsAPI{
 			this.controls = new THREE.OrbitControls( this.camera, this.canvas );
         	this.controls.target.set(0, 20, 0);
         	this.controls.update();
-			var materialType = 'MeshBasicMaterial';
-
+			// materials
 			this.matSphere = new THREE[ this.materialType ]( { map: this.basicTexture(0), name:'sph' } );
 	        this.matBox = new THREE[this.materialType]( {  map: this.basicTexture(2), name:'box' } );
 	        this.matSphereSleep = new THREE[this.materialType]( { map: this.basicTexture(1), name:'ssph' } );
@@ -147,7 +166,32 @@ module ThreejsAPI{
 			this.initPhysics();
 
 			this.createscene_cube();
+
+			this.createplayer();
+
 			this.update();
+		}
+
+		initObjectClasses(){
+
+		}
+
+		createplayer(){
+			var player = new THREE.Object3D();
+			player.init = function(){
+
+			};
+			player.update = function(){
+				//console.log("update?");
+			};
+
+
+			this.scene.add(player);
+			console.log(player);
+		}
+
+		createcharacter(){
+
 		}
 
 		initPhysics(){
@@ -200,7 +244,6 @@ module ThreejsAPI{
 	        var back = new THREE.Mesh( buffgeoBack, new THREE.MeshBasicMaterial( { map:this.gradTexture([[1,0.75,0.5,0.25], ['#1B1D1E','#3D4143','#72797D', '#b0babf']]), side:THREE.BackSide, depthWrite: false }  ));
 	        back.geometry.applyMatrix(new THREE.Matrix4().makeRotationZ(15*this.ToRad));
 	        this.scene.add( back );
-
 		}
 
 		gradTexture(color) {
@@ -320,8 +363,6 @@ module ThreejsAPI{
 				//var result = [];
 				//this.world.narrowphase.getContacts([bodyA], [bodyB], this.world, result, [], [], []);
 				//var overlaps = result.length > 0;
-
-
 
 				for(var i = 0; i < this.bodies.length;i++){
 					var mesh = this.meshs[i];
@@ -559,15 +600,15 @@ module ThreejsAPI{
 
 			// contact test
 			 if(this.world.checkContact('ground', 'sphere')){
-				 console.log('ground' +' [touch] ' + 'sphere');
+				 //console.log('ground' +' [touch] ' + 'sphere');
 			 }
 
 			 if(this.world.checkContact('ground2', 'sphere')){
-				 console.log('ground2' +' [touch] ' + 'sphere');
+				 //console.log('ground2' +' [touch] ' + 'sphere');
 			 }
 
 			 if(this.world.checkContact('ground3', 'sphere')){
-				 console.log('ground3' +' [touch] ' + 'sphere');
+				 //console.log('ground3' +' [touch] ' + 'sphere');
 			 }
 
 			for(var i = 0; i < this.bodies.length;i++){
@@ -648,6 +689,14 @@ module ThreejsAPI{
 				this.cube.rotation.x += 0.1;
 				this.cube.rotation.y += 0.1;
 			}
+			//custom update function check
+			if(this.scene !=null){
+				this.scene.traverse(function(object){
+					if(typeof object.update != 'undefined'){
+						object.update();
+					}
+				});
+			}
 
 			// Render scene.
 		    this.renderer.render(this.scene, this.camera);
@@ -673,6 +722,8 @@ module ThreejsAPI{
 			height = null;
 		}
 	}
+
+
 	export class Editor{
 		scene:any;
 		camera:any;

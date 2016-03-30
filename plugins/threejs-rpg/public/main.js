@@ -48,6 +48,7 @@ var ThreejsAPI;
             this.meshs = [];
             this.bodies = [];
             this.grounds = [];
+            this.customscript = [];
             this.ToRad = 0.0174532925199432957;
             this.timeSteptimeStep = 1 / 60;
             //listen to load event
@@ -82,7 +83,7 @@ var ThreejsAPI;
             this.controls = new THREE.OrbitControls(this.camera, this.canvas);
             this.controls.target.set(0, 20, 0);
             this.controls.update();
-            var materialType = 'MeshBasicMaterial';
+            // materials
             this.matSphere = new THREE[this.materialType]({ map: this.basicTexture(0), name: 'sph' });
             this.matBox = new THREE[this.materialType]({ map: this.basicTexture(2), name: 'box' });
             this.matSphereSleep = new THREE[this.materialType]({ map: this.basicTexture(1), name: 'ssph' });
@@ -99,7 +100,22 @@ var ThreejsAPI;
             //this.createscene();//simple test
             this.initPhysics();
             this.createscene_cube();
+            this.createplayer();
             this.update();
+        };
+        Game.prototype.initObjectClasses = function () {
+        };
+        Game.prototype.createplayer = function () {
+            var player = new THREE.Object3D();
+            player.init = function () {
+            };
+            player.update = function () {
+                //console.log("update?");
+            };
+            this.scene.add(player);
+            console.log(player);
+        };
+        Game.prototype.createcharacter = function () {
         };
         Game.prototype.initPhysics = function () {
             if (this.setPhysicsType[this.physicsIndex] == 'Oimo.js') {
@@ -428,13 +444,10 @@ var ThreejsAPI;
             this.infos.innerHTML = this.world.performance.show();
             // contact test
             if (this.world.checkContact('ground', 'sphere')) {
-                console.log('ground' + ' [touch] ' + 'sphere');
             }
             if (this.world.checkContact('ground2', 'sphere')) {
-                console.log('ground2' + ' [touch] ' + 'sphere');
             }
             if (this.world.checkContact('ground3', 'sphere')) {
-                console.log('ground3' + ' [touch] ' + 'sphere');
             }
             for (var i = 0; i < this.bodies.length; i++) {
                 var mesh = this.meshs[i];
@@ -498,6 +511,14 @@ var ThreejsAPI;
             if (this.cube != null) {
                 this.cube.rotation.x += 0.1;
                 this.cube.rotation.y += 0.1;
+            }
+            //custom update function check
+            if (this.scene != null) {
+                this.scene.traverse(function (object) {
+                    if (typeof object.update != 'undefined') {
+                        object.update();
+                    }
+                });
             }
             // Render scene.
             this.renderer.render(this.scene, this.camera);
