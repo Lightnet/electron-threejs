@@ -25,6 +25,7 @@
  * threejs-headless-template -tested simple threejs headless server scene for webgl
  * threejs-rpg (work in progress)
  * threejs-rts (just empty project)
+ * threejs-physics (simple physics test)
 
 ## Features:
  * Development for web game builds. (work in progress)
@@ -38,6 +39,7 @@
  * localhost/editor.html (url for threejs editor)
  * localhost/threejs-rpg  (work in progress)
  * localhost/threejs-custom.html  (work in progress)
+ * localhost/threejs-physics.html  (working)
 
 ## Application Menus
   * Check Status (no function yet)
@@ -96,3 +98,4 @@ window shortcut:
 '<drive>:\node_modules\electron-prebuilt\dist\electron.exe' "../../../"
 
 ```
+
