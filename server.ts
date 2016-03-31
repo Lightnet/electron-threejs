@@ -41,9 +41,12 @@ var socketio = require('socket.io');
 var express = require('express');
 var engine = require('engine.io');
 var engineio = new engine.Server({'transports': ['websocket', 'polling']});
-
+//busboy = require('busboy');
+//var busboy = require('connect-busboy');
 var routes = require('./app/routes/index');
 var users = require('./app/routes/users');
+var multer  = require('multer');
+
 
 //load initalizers
 //console.log("loading Sync initalizers:");
@@ -122,6 +125,8 @@ router.use(express.static(path.resolve(__dirname, 'public')));
 router.set('view engine', 'ejs'); // set up ejs for templating
 router.set('views',path.join(__dirname,'/app/views'));
 router.use(compression());
+//router.use(multer({ dest: './uploads/'}));
+//router.use(busboy());
 // parse application/json
 router.use(bodyParser.json());
 // parse application/x-www-form-urlencoded

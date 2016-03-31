@@ -1,0 +1,43 @@
+<html>
+	<head>
+		<script src="dropzone.js"></script>
+	</head>
+	<body>
+		<div id="myId" class="dz-clickable">
+			<form action="/file-upload" method="post" class="dropzone" enctype="multipart/form-data">
+				<div class="fallback">
+    				<input name="file" type="file" multiple />
+  				</div>
+			</form>
+	</div>
+	<script>
+		/*
+		var myDropzone = new Dropzone("div#myId", { url: "/file-upload"});
+		Dropzone.options.myAwesomeDropzone = {
+		  paramName: "file", // The name that will be used to transfer the file
+		  maxFilesize: 2, // MB
+		  init: function() {
+    		this.on("addedfile", function(file) {
+				//alert("Added file.");
+				console.log('added');
+			});
+		  },
+		  accept: function(file, done) {
+		    if (file.name == "justinbieber.jpg") {
+				console.log("Naha, you don't.");
+		      	done("Naha, you don't.");
+		    }
+		    else {
+				console.log("done");
+				done();
+			}
+		  }
+		};
+		myDropzone.on("complete", function(file) {
+			console.log("complete");
+  			//myDropzone.removeFile(file);
+		});
+		*/
+	</script>
+</body>
+</html>
