@@ -40,6 +40,7 @@
  * localhost/threejs-rpg  (work in progress)
  * localhost/threejs-custom.html  (work in progress)
  * localhost/threejs-physics.html  (working)
+ * localhost/upload.html  (working, simple upload file)
 
 ## Application Menus
   * Check Status (no function yet)
