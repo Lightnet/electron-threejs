@@ -33,7 +33,6 @@ module.exports.initpost = function(){
 	//require('./threejs-engine.js');
 }
 
-
 //===============================================
 // Session
 //===============================================
@@ -52,21 +51,71 @@ module.exports.setAfterSession = function(app,session,config){
 // route
 //===============================================
 
+var exts = [
+	'.jpg',
+	'.png',
+	'.jpeg',
+	'.fbx',
+	'.dae',
+	'.obj',
+	'.mtl',
+	'.md',
+	'.html',
+	'.txt',
+	'.ts',
+	'.js',
+	'.json'
+];
+
 module.exports.setroute = function(routes,app){
 	//app.use(busboy());
 	//console.log('Base Module ');
 	//add current dir plugin public folder
 	app.use(express.static(__dirname + '/public'));
 	//add current dir plugin views folder
-	app.set('views',path.join(__dirname,'/views'));
-	//routes.get('/rts', function (req, res) {
-		//res.contentType('text/html');
+	//app.set('views',path.join(__dirname,'/views'));
+	routes.get('/upload', function (req, res) {
+		res.contentType('text/html');
 		//res.send('Hello World!'); //write string data page
-		//res.render('threejs-rts',{}); //render file .ejs
-	//});
+		res.render(__dirname+'/views/upload',{}); //render file .ejs
+	});
 	routes.post('/file-upload', upload.single('file'),function(req, res) {
 		//console.log(req.files.file.path);
-		//console.log(req.file);
+		var bmatch = false;
+		console.log(req.file);
+		//console.log(path.extname(req.file.originalname));
+		if(req.file.originalname == 'upload.html'){
+			res.status(204).end();
+			return;
+		}
+
+		if(req.file.originalname == 'dropzone.js'){
+			res.status(204).end();
+			return;
+		}
+
+		if(req.file.originalname == 'dropzonebasic.css'){
+			res.status(204).end();
+			return;
+		}
+
+		for(var i in exts) {
+			//console.log(exts[i]);
+			if( path.extname(req.file.originalname) == exts[i] ){
+				bmatch = true;
+				break;
+			}
+		}
+
+		if(bmatch == false){
+			//fs.unlinkSync(req.file.path);//delete tmp file once finish
+			  response = {
+				  message:'File uploaded denied restricted exts! ',
+				  filename:req.file.originalname
+			 };
+			 res.end( JSON.stringify( response ) );
+		}
+		bmatch = null;
 		//console.log(req.body);
 		var file = __dirname + "/public/" + req.file.originalname;
 		fs.readFile( req.file.path, function (err, data) {
