@@ -33,9 +33,6 @@ var thing = new MyObject3D(testGeo, testMat);
 
 */
 
-
-
-
 //declare var THREE:any;
 declare var OIMO:any;
 declare var THREEx:any;
@@ -158,17 +155,16 @@ module ThreejsAPI{
 
 	        this.buffgeoBox = new THREE.BufferGeometry();
 	        this.buffgeoBox.fromGeometry( new THREE.BoxGeometry( 1, 1, 1 ) );
-
 			//background
 			this.createTexMat();
+
+
+
 			//this.createHUD();
 			//this.createscene();//simple test
-			this.initPhysics();
-
-			this.createscene_cube();
-
-			this.createplayer();
-
+			//this.initPhysics();
+			//this.createscene_cube();
+			//this.createplayer();
 			this.update();
 		}
 
@@ -193,6 +189,21 @@ module ThreejsAPI{
 		createcharacter(){
 
 		}
+
+		LoadFile(filename){
+			console.log('file: '+ filename);
+		}
+
+
+
+		
+
+
+
+
+
+
+
 
 		initPhysics(){
 			if(this.setPhysicsType[this.physicsIndex] == 'Oimo.js'){
@@ -755,6 +766,9 @@ module ThreejsAPI{
 		}
 
 		updatePhysics(){
+			if(this.world == null){
+				return;
+			}
 			if(this.setPhysicsType[this.physicsIndex] == 'Oimo.js'){
 				this.updateOimoPhysics();
 			}
@@ -828,5 +842,5 @@ module ThreejsAPI{
 	}
 }
 
-var app = new ThreejsAPI.Game();
+var threejsapi = new ThreejsAPI.Game();
 //console.log(app);

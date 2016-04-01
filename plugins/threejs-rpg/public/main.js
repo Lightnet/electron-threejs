@@ -98,9 +98,9 @@ var ThreejsAPI;
             this.createTexMat();
             //this.createHUD();
             //this.createscene();//simple test
-            this.initPhysics();
-            this.createscene_cube();
-            this.createplayer();
+            //this.initPhysics();
+            //this.createscene_cube();
+            //this.createplayer();
             this.update();
         };
         Game.prototype.initObjectClasses = function () {
@@ -116,6 +116,9 @@ var ThreejsAPI;
             console.log(player);
         };
         Game.prototype.createcharacter = function () {
+        };
+        Game.prototype.LoadFile = function (filename) {
+            console.log('file: ' + filename);
         };
         Game.prototype.initPhysics = function () {
             if (this.setPhysicsType[this.physicsIndex] == 'Oimo.js') {
@@ -564,6 +567,9 @@ var ThreejsAPI;
             this.camera.position.z = 5;
         };
         Game.prototype.updatePhysics = function () {
+            if (this.world == null) {
+                return;
+            }
             if (this.setPhysicsType[this.physicsIndex] == 'Oimo.js') {
                 this.updateOimoPhysics();
             }
@@ -626,5 +632,5 @@ var ThreejsAPI;
     }());
     ThreejsAPI.Editor = Editor;
 })(ThreejsAPI || (ThreejsAPI = {}));
-var app = new ThreejsAPI.Game();
+var threejsapi = new ThreejsAPI.Game();
 //console.log(app);
