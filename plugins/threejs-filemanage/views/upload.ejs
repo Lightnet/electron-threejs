@@ -57,7 +57,8 @@
 							}
 						}
 						if(bmatch == false){
-							done("Denied file.");
+							done();
+							//done("Denied file.");
 							console.log("Can't uploaded this file is Denied!");
 							myDropzone.removeFile(file);
 						}else{
@@ -65,6 +66,7 @@
 						}
 						bmatch = null;
 					}
+
 				});
 
 				myDropzone.on("addedfile", function (file) {
@@ -73,6 +75,14 @@
 
 				myDropzone.on("success", function (file) {
 					console.log("success");
+					//console.log(file);
+					myDropzone.removeFile(file);
+					//var value = $("#file").val();
+					//$("#file").val(value + ';' + responsetext.Url);
+				});
+
+				myDropzone.on("error", function (file) {
+					console.log("error");
 					//console.log(file);
 					myDropzone.removeFile(file);
 					//var value = $("#file").val();

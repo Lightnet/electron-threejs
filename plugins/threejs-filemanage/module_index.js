@@ -13,7 +13,7 @@ var plugin = require('../../app/libs/plugin.js');
 var fs = require('fs');
 var multer  = require('multer');
 //var upload = multer({ dest: 'uploads/' });
-var upload = multer({ dest: 'tmp/' });
+
 //var upload = multer();
 //var busboy = require('connect-busboy');
 /*global getModules */
@@ -50,7 +50,6 @@ module.exports.setAfterSession = function(app,session,config){
 //===============================================
 // route
 //===============================================
-
 var exts = [
 	'.jpg',
 	'.png',
@@ -67,6 +66,38 @@ var exts = [
 	'.json'
 ];
 
+function fileFilter (req, file, cb) {
+	var bmatch = false;
+	//console.log(file);
+	for(var i in exts) {
+		//console.log(exts[i]);
+		if( path.extname(file.originalname) == exts[i] ){
+			bmatch = true;
+			break;
+		}
+	}
+	if(bmatch == false){
+		// To reject this file pass `false`, like so:
+		console.log('reject file:'+file.originalname);
+		bmatch = null;
+		cb(null, false);
+		return;
+	}else{
+		// To accept the file pass `true`, like so:
+		console.log('pass file');
+		bmatch = null;
+  		cb(null, true);
+		return;
+	}
+    //cb(new Error('TEST'));
+}
+
+//var upload = multer({ dest: 'tmp/' });
+var upload = multer({
+	dest: 'tmp/',
+	fileFilter: fileFilter
+});
+
 module.exports.setroute = function(routes,app){
 	//app.use(busboy());
 	//console.log('Base Module ');
@@ -79,45 +110,34 @@ module.exports.setroute = function(routes,app){
 		//res.send('Hello World!'); //write string data page
 		res.render(__dirname+'/views/upload',{}); //render file .ejs
 	});
-	routes.post('/file-upload', upload.single('file'),function(req, res) {
+	routes.post('/file-upload', upload.single('file'),function(req, res, next) {
 		//console.log(req.files.file.path);
-		var bmatch = false;
-		console.log(req.file);
+		//console.log("req.file");
+		//console.log(req.file);
+		//console.log(req);
+		if(req.file == null){
+			//res.status(500).end('rejected');
+			//res.status(204).end();
+			res.status(401).end();
+			next();
+			return;
+		}
 		//console.log(path.extname(req.file.originalname));
 		if(req.file.originalname == 'upload.html'){
 			res.status(204).end();
 			return;
 		}
-
 		if(req.file.originalname == 'dropzone.js'){
 			res.status(204).end();
 			return;
 		}
-
 		if(req.file.originalname == 'dropzonebasic.css'){
 			res.status(204).end();
 			return;
 		}
 
-		for(var i in exts) {
-			//console.log(exts[i]);
-			if( path.extname(req.file.originalname) == exts[i] ){
-				bmatch = true;
-				break;
-			}
-		}
-
-		if(bmatch == false){
-			//fs.unlinkSync(req.file.path);//delete tmp file once finish
-			  response = {
-				  message:'File uploaded denied restricted exts! ',
-				  filename:req.file.originalname
-			 };
-			 res.end( JSON.stringify( response ) );
-		}
-		bmatch = null;
 		//console.log(req.body);
-		var file = __dirname + "/public/" + req.file.originalname;
+		var file = __dirname + "/public/assets/" + req.file.originalname;
 		fs.readFile( req.file.path, function (err, data) {
 	        fs.writeFile(file, data, function (err) {
 	         if( err ){
