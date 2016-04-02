@@ -4,6 +4,7 @@ $(document).ready(function () {
 		'.jpg',
 		'.png',
 		'.jpeg',
+		'.gif',
 		'.fbx',
 		'.dae',
 		'.obj',
@@ -18,13 +19,16 @@ $(document).ready(function () {
 	function getext(filename){
 		return filename.substr(filename.lastIndexOf('.'));
 	}
-	var myDropzone = new Dropzone('#myCanvas',{
+	$(".dz-hidden-input").prop("disabled",true);
+	var myDropzone = new Dropzone('#layout_layout_panel_main',{
 		url:"/file-upload",
 		//dictDefaultMessage: "Drag your image here",
 		//clickable:'#dropzonePreview',
 		//previewTemplate:"<span></span>",
 		init: function() {
 			var myDropzone = this;
+			$('.dropzone').removeClass('dz-clickable'); // remove cursor
+            $('.dropzone')[0].removeEventListener('click', this.listeners[1].events.click);
 			//console.log("init dropzone");
 		},
 		accept: function(file, done) {

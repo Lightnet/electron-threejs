@@ -54,6 +54,7 @@ var exts = [
 	'.jpg',
 	'.png',
 	'.jpeg',
+	'.gif',
 	'.fbx',
 	'.dae',
 	'.obj',

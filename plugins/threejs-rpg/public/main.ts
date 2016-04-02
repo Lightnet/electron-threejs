@@ -129,15 +129,15 @@ module ThreejsAPI{
 			this.scene = new THREE.Scene();
 			this.canvas = document.getElementById('myCanvas');
 			this.renderer = new THREE.WebGLRenderer({canvas:this.canvas,precision: "mediump",antialias:this.antialias});
-			this.renderer.setSize( window.innerWidth, window.innerHeight );
+			//this.renderer.setSize( window.innerWidth, window.innerHeight );
 			this.renderer.autoClear = false;
 
 			this.renderer.shadowMap.enabled = true;
             this.renderer.shadowMap.type = THREE.PCFShadowMap;//THREE.BasicShadowMap;
 
-			if(this.bcanvasRatio == true){
-				var winResize = new THREEx.WindowResize(this.renderer, this.camera)
-			}
+			//if(this.bcanvasRatio == true){
+				//var winResize = new THREEx.WindowResize(this.renderer, this.camera)
+			//}
 
 			this.controls = new THREE.OrbitControls( this.camera, this.canvas );
         	this.controls.target.set(0, 20, 0);
@@ -193,17 +193,6 @@ module ThreejsAPI{
 		LoadFile(filename){
 			console.log('file: '+ filename);
 		}
-
-
-
-		
-
-
-
-
-
-
-
 
 		initPhysics(){
 			if(this.setPhysicsType[this.physicsIndex] == 'Oimo.js'){
