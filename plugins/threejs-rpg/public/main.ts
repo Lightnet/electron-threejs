@@ -70,8 +70,10 @@ module ThreejsAPI{
 		camera:any;
 		renderer:any;
 		canvas:any;
+		manager:any;
 		cube:any;
-		bcanvasRatio:boolean = true;
+		bcanvasRatio:boolean = false;
+		brenderersize:boolean = false;
 		//physics begin
 		infos:any;
 		physicsIndex:number = 2;
@@ -123,21 +125,26 @@ module ThreejsAPI{
 
 		init(){
 			console.log("init");
+			this.initManger();
+
 			this.camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 10000 );
 			this.camera.position.set( 0, 160, 400 );
 
 			this.scene = new THREE.Scene();
 			this.canvas = document.getElementById('myCanvas');
 			this.renderer = new THREE.WebGLRenderer({canvas:this.canvas,precision: "mediump",antialias:this.antialias});
-			//this.renderer.setSize( window.innerWidth, window.innerHeight );
+			if(this.brenderersize){
+				this.renderer.setSize( window.innerWidth, window.innerHeight );
+			}
+
 			this.renderer.autoClear = false;
 
 			this.renderer.shadowMap.enabled = true;
             this.renderer.shadowMap.type = THREE.PCFShadowMap;//THREE.BasicShadowMap;
 
-			//if(this.bcanvasRatio == true){
-				//var winResize = new THREEx.WindowResize(this.renderer, this.camera)
-			//}
+			if(this.bcanvasRatio == true){
+				var winResize = new THREEx.WindowResize(this.renderer, this.camera)
+			}
 
 			this.controls = new THREE.OrbitControls( this.camera, this.canvas );
         	this.controls.target.set(0, 20, 0);
@@ -168,6 +175,25 @@ module ThreejsAPI{
 			this.update();
 		}
 
+		initManger(){
+			this.manager = new THREE.LoadingManager();
+			this.manager.onProgress = function( item, loaded, total ) {
+					console.log( item, loaded, total );
+				};
+		}
+
+		onProgressModel( xhr ) {
+			if ( xhr.lengthComputable ) {
+				var percentComplete = xhr.loaded / xhr.total * 100;
+				console.log( Math.round( percentComplete, 2 ) + '% downloaded' );
+			}
+		}
+		onErrorModel( xhr ) {
+			console.log(xhr);
+		};
+
+
+
 		initObjectClasses(){
 
 		}
@@ -189,10 +215,46 @@ module ThreejsAPI{
 		createcharacter(){
 
 		}
+		getext(filename){
+			return filename.substr(filename.lastIndexOf('.'));
+		}
 
 		LoadFile(filename){
 			console.log('file: '+ filename);
+			if(this.getext(filename) == '.fbx'){
+				this.LoadFBX(filename);
+			}
 		}
+
+		LoadFBX(filename){
+			var filepath = "/assets/" + filename;
+			console.log(filepath);
+			var loader = new THREE.FBXLoader( this.manager );
+			var self = this;
+			loader.load( filepath, function( object ) {
+				object.traverse( function( child ) {
+						if ( child instanceof THREE.Mesh ) {
+							// pass
+						}
+						if ( child instanceof THREE.SkinnedMesh ) {
+							if ( child.geometry.animations !== undefined || child.geometry.morphAnimations !== undefined ) {
+								child.mixer = new THREE.AnimationMixer( child );
+								//mixers.push( child.mixer );
+								var action = child.mixer.clipAction( child.geometry.animations[ 0 ] );
+								action.play();
+							}
+						}
+					} );
+					self.scene.add( object );
+			}, this.onProgressModel, this.onErrorModel );
+
+		}
+
+
+
+
+
+
 
 		initPhysics(){
 			if(this.setPhysicsType[this.physicsIndex] == 'Oimo.js'){
@@ -354,8 +416,6 @@ module ThreejsAPI{
 			//cube.position.copy(boxBody2.position);
 			//this.scene.add( cube );
 			this.addStaticBox([200, 30, 390], [130,40,0], [0,0,32], false);
-
-
 
 			var mass = 5, radius = 2;
 			var sphereShape = new CANNON.Sphere(radius); // Step 1

@@ -39,7 +39,8 @@ var ThreejsAPI;
             this.antialias = true;
             this.bablenetwork = false;
             this.materialType = 'MeshBasicMaterial';
-            this.bcanvasRatio = true;
+            this.bcanvasRatio = false;
+            this.brenderersize = false;
             this.physicsIndex = 2;
             this.setPhysicsType = ['Oimo.js', 'Cannon.js', 'Ammo.js'];
             this.bablephysics = true;
@@ -68,18 +69,21 @@ var ThreejsAPI;
         };
         Game.prototype.init = function () {
             console.log("init");
+            this.initManger();
             this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 10000);
             this.camera.position.set(0, 160, 400);
             this.scene = new THREE.Scene();
             this.canvas = document.getElementById('myCanvas');
             this.renderer = new THREE.WebGLRenderer({ canvas: this.canvas, precision: "mediump", antialias: this.antialias });
-            //this.renderer.setSize( window.innerWidth, window.innerHeight );
+            if (this.brenderersize) {
+                this.renderer.setSize(window.innerWidth, window.innerHeight);
+            }
             this.renderer.autoClear = false;
             this.renderer.shadowMap.enabled = true;
             this.renderer.shadowMap.type = THREE.PCFShadowMap; //THREE.BasicShadowMap;
-            //if(this.bcanvasRatio == true){
-            //var winResize = new THREEx.WindowResize(this.renderer, this.camera)
-            //}
+            if (this.bcanvasRatio == true) {
+                var winResize = new THREEx.WindowResize(this.renderer, this.camera);
+            }
             this.controls = new THREE.OrbitControls(this.camera, this.canvas);
             this.controls.target.set(0, 20, 0);
             this.controls.update();
@@ -103,6 +107,22 @@ var ThreejsAPI;
             //this.createplayer();
             this.update();
         };
+        Game.prototype.initManger = function () {
+            this.manager = new THREE.LoadingManager();
+            this.manager.onProgress = function (item, loaded, total) {
+                console.log(item, loaded, total);
+            };
+        };
+        Game.prototype.onProgressModel = function (xhr) {
+            if (xhr.lengthComputable) {
+                var percentComplete = xhr.loaded / xhr.total * 100;
+                console.log(Math.round(percentComplete, 2) + '% downloaded');
+            }
+        };
+        Game.prototype.onErrorModel = function (xhr) {
+            console.log(xhr);
+        };
+        ;
         Game.prototype.initObjectClasses = function () {
         };
         Game.prototype.createplayer = function () {
@@ -117,8 +137,35 @@ var ThreejsAPI;
         };
         Game.prototype.createcharacter = function () {
         };
+        Game.prototype.getext = function (filename) {
+            return filename.substr(filename.lastIndexOf('.'));
+        };
         Game.prototype.LoadFile = function (filename) {
             console.log('file: ' + filename);
+            if (this.getext(filename) == '.fbx') {
+                this.LoadFBX(filename);
+            }
+        };
+        Game.prototype.LoadFBX = function (filename) {
+            var filepath = "/assets/" + filename;
+            console.log(filepath);
+            var loader = new THREE.FBXLoader(this.manager);
+            var self = this;
+            loader.load(filepath, function (object) {
+                object.traverse(function (child) {
+                    if (child instanceof THREE.Mesh) {
+                    }
+                    if (child instanceof THREE.SkinnedMesh) {
+                        if (child.geometry.animations !== undefined || child.geometry.morphAnimations !== undefined) {
+                            child.mixer = new THREE.AnimationMixer(child);
+                            //mixers.push( child.mixer );
+                            var action = child.mixer.clipAction(child.geometry.animations[0]);
+                            action.play();
+                        }
+                    }
+                });
+                self.scene.add(object);
+            }, this.onProgressModel, this.onErrorModel);
         };
         Game.prototype.initPhysics = function () {
             if (this.setPhysicsType[this.physicsIndex] == 'Oimo.js') {

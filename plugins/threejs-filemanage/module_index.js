@@ -99,6 +99,17 @@ var upload = multer({
 	fileFilter: fileFilter
 });
 
+var projectid = "threejs editor";
+
+
+var assetfile = {
+	name:"",
+	hrashid:"",
+	path:"",
+	tag:"",
+	folder:"assets"
+}
+
 module.exports.setroute = function(routes,app){
 	//app.use(busboy());
 	//console.log('Base Module ');
@@ -114,7 +125,7 @@ module.exports.setroute = function(routes,app){
 	routes.post('/file-upload', upload.single('file'),function(req, res, next) {
 		//console.log(req.files.file.path);
 		//console.log("req.file");
-		//console.log(req.file);
+		console.log(req.file);
 		//console.log(req);
 		if(req.file == null){
 			//res.status(500).end('rejected');
@@ -139,6 +150,55 @@ module.exports.setroute = function(routes,app){
 
 		//console.log(req.body);
 		var file = __dirname + "/public/assets/" + req.file.originalname;
+		var fileproject = "/assets/" + req.file.originalname;
+
+		if((rethinkdb !=null)&&(connection !=null)){
+			connection.use('test');
+
+			rethinkdb.table('assets').filter(rethinkdb.row('name').eq(req.file.originalname)).
+    			run(connection, function(err, cursor) {
+        			if (err) throw err;
+        			cursor.toArray(function(err, result) {
+            			if (err){
+							console.log("err");
+							console.log(err);
+						};
+						if(result.length == 0){
+							console.log("Not Found");
+							var assetfiletmp = assetfile;
+							assetfiletmp.name = req.file.originalname;
+							assetfiletmp.hrashid = req.file.filename;
+							assetfiletmp.path = fileproject;
+							rethinkdb.table('assets').insert(assetfiletmp).run(connection, function(err, result) {
+				    			if (err) throw err;
+								console.log("insert asset");
+				    			//console.log(JSON.stringify(result, null, 2));
+							});
+						}else{
+							console.log("Found Data, Update");
+							/*
+							var assetfiletmp = assetfile;
+							assetfiletmp.name = req.file.originalname;
+							assetfiletmp.hrashid = req.file.filename;
+							assetfiletmp.path = fileproject;
+							rethinkdb.table('assets').
+								filter(rethinkdb.row("name").eq(req.file.originalname)).
+								update(assetfiletmp).
+								run(connection, function(err, result) {
+									if (err) throw err;
+									//console.log(JSON.stringify(result, null, 2));
+								});
+							*/
+						}
+						//display data
+            			//console.log(JSON.stringify(result, null, 2));
+        			});
+    			});
+
+		}
+
+
+
 		fs.readFile( req.file.path, function (err, data) {
 	        fs.writeFile(file, data, function (err) {
 	         if( err ){
