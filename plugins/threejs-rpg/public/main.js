@@ -71,7 +71,9 @@ var ThreejsAPI;
             console.log("init");
             this.initManger();
             this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 10000);
-            this.camera.position.set(0, 160, 400);
+            //this.camera.position.set( 0, 160, 400 );
+            //this.camera.position.set( 0, 10, 10 );
+            this.camera.position.set(0, 0, 10);
             this.scene = new THREE.Scene();
             this.canvas = document.getElementById('myCanvas');
             this.renderer = new THREE.WebGLRenderer({ canvas: this.canvas, precision: "mediump", antialias: this.antialias });
@@ -85,7 +87,8 @@ var ThreejsAPI;
                 var winResize = new THREEx.WindowResize(this.renderer, this.camera);
             }
             this.controls = new THREE.OrbitControls(this.camera, this.canvas);
-            this.controls.target.set(0, 20, 0);
+            //this.controls.target.set(0, 20, 0);
+            this.controls.target.set(0, 0, 0);
             this.controls.update();
             // materials
             this.matSphere = new THREE[this.materialType]({ map: this.basicTexture(0), name: 'sph' });
@@ -145,6 +148,20 @@ var ThreejsAPI;
             if (this.getext(filename) == '.fbx') {
                 this.LoadFBX(filename);
             }
+            if (this.getext(filename) == '.dae') {
+                this.LoadDAE(filename);
+            }
+            if (this.getext(filename) == '.obj') {
+                this.LoadOBJ(filename);
+            }
+        };
+        Game.prototype.LoadJPEG = function (filename) {
+        };
+        Game.prototype.LoadPNG = function (filename) {
+        };
+        Game.prototype.LoadJPG = function (filename) {
+        };
+        Game.prototype.LoadGIF = function (filename) {
         };
         Game.prototype.LoadFBX = function (filename) {
             var filepath = "/assets/" + filename;
@@ -164,6 +181,40 @@ var ThreejsAPI;
                         }
                     }
                 });
+                self.scene.add(object);
+            }, this.onProgressModel, this.onErrorModel);
+        };
+        Game.prototype.LoadDAE = function (filename) {
+            var loader = new THREE.ColladaLoader(this.manager);
+            var self = this;
+            loader.options.convertUpAxis = true;
+            var filepath = "/assets/" + filename;
+            loader.load(filepath, function (collada) {
+                var dae = collada.scene;
+                dae.traverse(function (child) {
+                    if (child instanceof THREE.SkinnedMesh) {
+                        var animation = new THREE.Animation(child, child.geometry.animation);
+                        animation.play();
+                    }
+                });
+                dae.scale.x = dae.scale.y = dae.scale.z = 0.002;
+                dae.updateMatrix();
+                //init();
+                //animate();
+                self.scene.add(dae);
+            }, this.onProgressModel, this.onErrorModel);
+        };
+        Game.prototype.LoadOBJ = function (filename) {
+            var self = this;
+            var filepath = "/assets/" + filename;
+            var loader = new THREE.OBJLoader(this.manager);
+            //var loader = new THREE.OBJLoader();
+            loader.load(filepath, function (object) {
+                object.traverse(function (child) {
+                    if (child instanceof THREE.Mesh) {
+                    }
+                });
+                //object.position.y = - 95;
                 self.scene.add(object);
             }, this.onProgressModel, this.onErrorModel);
         };

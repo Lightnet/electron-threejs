@@ -128,7 +128,9 @@ module ThreejsAPI{
 			this.initManger();
 
 			this.camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 10000 );
-			this.camera.position.set( 0, 160, 400 );
+			//this.camera.position.set( 0, 160, 400 );
+			//this.camera.position.set( 0, 10, 10 );
+			this.camera.position.set( 0, 0, 10 );
 
 			this.scene = new THREE.Scene();
 			this.canvas = document.getElementById('myCanvas');
@@ -147,7 +149,8 @@ module ThreejsAPI{
 			}
 
 			this.controls = new THREE.OrbitControls( this.camera, this.canvas );
-        	this.controls.target.set(0, 20, 0);
+        	//this.controls.target.set(0, 20, 0);
+			this.controls.target.set(0, 0, 0);
         	this.controls.update();
 			// materials
 			this.matSphere = new THREE[ this.materialType ]( { map: this.basicTexture(0), name:'sph' } );
@@ -224,7 +227,32 @@ module ThreejsAPI{
 			if(this.getext(filename) == '.fbx'){
 				this.LoadFBX(filename);
 			}
+
+			if(this.getext(filename) == '.dae'){
+				this.LoadDAE(filename);
+			}
+
+			if(this.getext(filename) == '.obj'){
+				this.LoadOBJ(filename);
+			}
 		}
+
+		LoadJPEG(filename){
+
+		}
+
+		LoadPNG(filename){
+
+		}
+
+		LoadJPG(filename){
+
+		}
+
+		LoadGIF(filename){
+
+		}
+
 
 		LoadFBX(filename){
 			var filepath = "/assets/" + filename;
@@ -247,13 +275,45 @@ module ThreejsAPI{
 					} );
 					self.scene.add( object );
 			}, this.onProgressModel, this.onErrorModel );
-
 		}
 
+		LoadDAE(filename){
+			var loader = new THREE.ColladaLoader( this.manager );
+			var self = this;
+			loader.options.convertUpAxis = true;
+			var filepath = "/assets/" + filename;
+			loader.load( filepath , function ( collada ) {
+				var dae = collada.scene;
+				dae.traverse( function ( child ) {
+					if ( child instanceof THREE.SkinnedMesh ) {
+						var animation = new THREE.Animation( child, child.geometry.animation );
+						animation.play();
+					}
+				});
+				dae.scale.x = dae.scale.y = dae.scale.z = 0.002;
+				dae.updateMatrix();
+				//init();
+				//animate();
+				self.scene.add( dae );
 
+			}, this.onProgressModel, this.onErrorModel);
+		}
 
-
-
+		LoadOBJ(filename){
+			var self = this;
+			var filepath = "/assets/" + filename;
+			var loader = new THREE.OBJLoader( this.manager );
+			//var loader = new THREE.OBJLoader();
+			loader.load( filepath, function ( object ) {
+				object.traverse( function ( child ) {
+						if ( child instanceof THREE.Mesh ) {
+							//child.material.map = texture;
+						}
+					} );
+					//object.position.y = - 95;
+					self.scene.add( object );
+			}, this.onProgressModel, this.onErrorModel);
+		}
 
 
 		initPhysics(){
