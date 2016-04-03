@@ -154,6 +154,9 @@ var ThreejsAPI;
             if (this.getext(filename) == '.obj') {
                 this.LoadOBJ(filename);
             }
+            if (this.getext(filename) == '.js') {
+                this.LoadJSONObj(filename);
+            }
         };
         Game.prototype.LoadJPEG = function (filename) {
         };
@@ -162,6 +165,19 @@ var ThreejsAPI;
         Game.prototype.LoadJPG = function (filename) {
         };
         Game.prototype.LoadGIF = function (filename) {
+        };
+        Game.prototype.LoadJSONObj = function (filename) {
+            var filepath = "/assets/" + filename;
+            var loader = new THREE.JSONLoader();
+            var self = this;
+            loader.load(filepath, function (geometry, materials) {
+                var material = materials[0];
+                material.morphTargets = true;
+                material.color.setHex(0xffaaaa);
+                var faceMaterial = new THREE.MultiMaterial(materials);
+                var mesh = new THREE.Mesh(geometry, faceMaterial);
+                self.scene.add(mesh);
+            }, this.onProgressModel, this.onErrorModel);
         };
         Game.prototype.LoadFBX = function (filename) {
             var filepath = "/assets/" + filename;
@@ -197,11 +213,12 @@ var ThreejsAPI;
                         animation.play();
                     }
                 });
-                dae.scale.x = dae.scale.y = dae.scale.z = 0.002;
+                //dae.scale.x = dae.scale.y = dae.scale.z = 0.002;
                 dae.updateMatrix();
                 //init();
                 //animate();
                 self.scene.add(dae);
+                console.log("added");
             }, this.onProgressModel, this.onErrorModel);
         };
         Game.prototype.LoadOBJ = function (filename) {

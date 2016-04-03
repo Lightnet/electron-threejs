@@ -209,8 +209,6 @@ module ThreejsAPI{
 			player.update = function(){
 				//console.log("update?");
 			};
-
-
 			this.scene.add(player);
 			console.log(player);
 		}
@@ -235,6 +233,10 @@ module ThreejsAPI{
 			if(this.getext(filename) == '.obj'){
 				this.LoadOBJ(filename);
 			}
+
+			if(this.getext(filename) == '.js'){
+				this.LoadJSONObj(filename);
+			}
 		}
 
 		LoadJPEG(filename){
@@ -251,6 +253,20 @@ module ThreejsAPI{
 
 		LoadGIF(filename){
 
+		}
+
+		LoadJSONObj(filename){
+			var filepath = "/assets/" + filename;
+			var loader = new THREE.JSONLoader();
+			var self = this;
+			loader.load(filepath, function ( geometry, materials ) {
+				var material = materials[ 0 ];
+				material.morphTargets = true;
+				material.color.setHex( 0xffaaaa );
+				var faceMaterial = new THREE.MultiMaterial( materials );
+				var mesh = new THREE.Mesh( geometry, faceMaterial );
+				self.scene.add( mesh );
+			},this.onProgressModel, this.onErrorModel );
 		}
 
 
@@ -290,12 +306,12 @@ module ThreejsAPI{
 						animation.play();
 					}
 				});
-				dae.scale.x = dae.scale.y = dae.scale.z = 0.002;
+				//dae.scale.x = dae.scale.y = dae.scale.z = 0.002;
 				dae.updateMatrix();
 				//init();
 				//animate();
 				self.scene.add( dae );
-
+				console.log("added");
 			}, this.onProgressModel, this.onErrorModel);
 		}
 

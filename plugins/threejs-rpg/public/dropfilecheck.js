@@ -49,7 +49,6 @@ $(document).ready(function () {
 				console.log("Can't uploaded this file is Denied!");
 				myDropzone.removeFile(file);
 			}else{
-				threejsapi.LoadFile(file.name);
 				//console.log();
 				done();
 			}
@@ -65,6 +64,9 @@ $(document).ready(function () {
 	myDropzone.on("success", function (file) {
 		console.log("success");
 		//console.log(file);
+		if(threejsapi !=null){
+			threejsapi.LoadFile(file.name);
+		}
 		myDropzone.removeFile(file);
 		//var value = $("#file").val();
 		//$("#file").val(value + ';' + responsetext.Url);
