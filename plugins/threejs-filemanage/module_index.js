@@ -99,11 +99,11 @@ var upload = multer({
 	fileFilter: fileFilter
 });
 
-var projectid = "threejs editor";
-
+var projectid = "threejseditor";
 
 var assetfile = {
 	name:"",
+	projectid: "threejseditor",
 	hrashid:"",
 	path:"",
 	tag:"",
@@ -126,6 +126,10 @@ module.exports.setroute = function(routes,app){
 		//console.log(req.files.file.path);
 		//console.log("req.file");
 		console.log(req.file);
+		//console.log(req);
+
+		console.log(req.query.projectid);
+		//console.log(req.body);
 		//console.log(req);
 		if(req.file == null){
 			//res.status(500).end('rejected');
@@ -155,7 +159,8 @@ module.exports.setroute = function(routes,app){
 		if((rethinkdb !=null)&&(connection !=null)){
 			connection.use('test');
 
-			rethinkdb.table('assets').filter(rethinkdb.row('name').eq(req.file.originalname)).
+			//rethinkdb.table('assets').filter(rethinkdb.row('name').eq(req.file.originalname) & ).
+			rethinkdb.table('assets').filter(rethinkdb.row('name').eq(req.file.originalname) & rethinkdb.row('projectid').eq(req.query.projectid) ).
     			run(connection, function(err, cursor) {
         			if (err) throw err;
         			cursor.toArray(function(err, result) {
@@ -169,6 +174,7 @@ module.exports.setroute = function(routes,app){
 							assetfiletmp.name = req.file.originalname;
 							assetfiletmp.hrashid = req.file.filename;
 							assetfiletmp.path = fileproject;
+							assetfiletmp.projectid = req.query.projectid;
 							rethinkdb.table('assets').insert(assetfiletmp).run(connection, function(err, result) {
 				    			if (err) throw err;
 								console.log("insert asset");
@@ -197,8 +203,6 @@ module.exports.setroute = function(routes,app){
 
 		}
 
-
-
 		fs.readFile( req.file.path, function (err, data) {
 	        fs.writeFile(file, data, function (err) {
 	         if( err ){
@@ -222,12 +226,46 @@ module.exports.setroute = function(routes,app){
 //===============================================
 // Socket.io
 //===============================================
-/*
+
 module.exports.socketio_connect = function(io, socket){
+
+ 	socket.on('getassets',function(data){
+		console.log('getassets:'+data);
+		if((rethinkdb !=null)&&(connection !=null)){
+			connection.use('test');
+			rethinkdb.table('assets').filter(rethinkdb.row('projectid').eq(data)).
+    			run(connection, function(err, cursor) {
+        			if (err) throw err;
+        			cursor.toArray(function(err, result) {
+            			if (err){
+							console.log("err");
+							console.log(err);
+						};
+
+						socket.emit('assets',{action:'clear'});
+
+						for (var i = 0; i < result.length;i++){
+							console.log(result[i]);
+							socket.emit('assets',{
+								action:'add',
+								id:result[i].id,
+								name:result[i].name,
+								path:result[i].path,
+								tag:result[i].tag
+							});
+
+						}
+						//display data
+            			//console.log(JSON.stringify(result, null, 2));
+        			});
+    			});
+		}
+	});
+
 };
 module.exports.socketio_disconnect = function(io, socket){
 };
-*/
+
 //===============================================
 // Engine.io
 //===============================================

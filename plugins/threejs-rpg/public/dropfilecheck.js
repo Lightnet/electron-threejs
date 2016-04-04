@@ -56,6 +56,10 @@ $(document).ready(function () {
 		}
 
 	});
+	myDropzone.on('processing', function(file){
+    	console.log("Processing the file");
+    	myDropzone.options.url = "/file-upload?projectid="+'threejseditor';
+	});
 
 	myDropzone.on("addedfile", function (file) {
 		console.log("addedfile");
