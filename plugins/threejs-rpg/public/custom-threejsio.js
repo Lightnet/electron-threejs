@@ -5,8 +5,6 @@ socketio.on('connect',()=>{
 	//initEditor();
 });
 
-
-
 socketio.on('assets',(data)=>{
 	if(data['action'] != null){
 		if(data.action == 'clear'){
@@ -36,10 +34,27 @@ function RefreshScene(){
 	console.log('refresh scene');
 	if(socketio !=null){
 		console.log('scene???');
-		socketio.emit('getscene','threejseditor');
+		//socketio.emit('getscene','threejseditor');
 	}
 }
 
+function RefreshScript(){
+	console.log('refresh script');
+	if(socketio !=null){
+		console.log('scene???');
+		//socketio.emit('getscene','threejseditor');
+	}
+}
+
+function RefreshContent(){
+	console.log('refresh Content');
+	//w2ui.sidebar_content
+	removenodelist(w2ui.sidebar_content, w2ui.sidebar_content.nodes[0].nodes);
+	//if(socketio !=null){
+		//console.log('scene???');
+		//socketio.emit('getscene','threejseditor');
+	//}
+}
 
 function removenodelist(obj,nodes){
 	while (true){

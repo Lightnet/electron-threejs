@@ -1,3 +1,28 @@
+//http://w2ui.com/web/demos/#!sidebar/sidebar-2
+
+
+/*
+fa fa-file-audio-o
+fa fa-file-archive-o
+fa fa-file-image-o
+fa fa-file-text
+fa fa-file-archive-o
+fa fa-file-audio-o
+fa fa-file-image-o
+fa fa-file-text-o
+
+fa fa-file-code-o
+fa fa-file-o
+fa fa-file-video-o
+
+fa fa-star-o
+fa fa-star
+
+fa fa-hashtag
+fa fa-usb
+
+*/
+
 $(document).ready(function () {
 	console.log('init editor panel');
 	var canvas_html ='<canvas id="myCanvas">'+
@@ -17,7 +42,7 @@ $(document).ready(function () {
 			{ type: 'left', size: 200, resizable: true, style: pstyle, content: '',
 				toolbar: {
 					items: [
-						{ type: 'button',  id: 'refresh',  caption: 'Refresh', icon: 'w2ui-icon-check', hint: 'assets list' }
+						{ type: 'button',  id: 'refresh',  caption: 'Refresh', icon: 'fa fa-refresh', hint: 'assets list' }
 					],
 					onClick: function (event) {
                         //this.owner.content('left', event);
@@ -26,15 +51,20 @@ $(document).ready(function () {
 				}
 			},
 			{ type: 'main', style: pstyle, resizable: false,overflow: 'hidden', content: canvas_html  },
-			{ type: 'preview', size: '10%', resizable: true, style: pstyle, content: 'debug' },
+			//{ type: 'preview', size: '10%', resizable: true, style: pstyle, content: 'debug' },
 			{ type: 'right', size: 200, resizable: true, style: pstyle, content: '',
 				toolbar: {
 					items: [
-						{ type: 'button',  id: 'refresh',  caption: 'Refresh', icon: 'w2ui-icon-check', hint: 'scene list' }
+						{ type: 'button',  id: 'refresh',  caption: 'Refresh', icon: 'fa fa-refresh', hint: 'Node list' }
 					],
 					onClick: function (event) {
 						//this.owner.content('left', event);
-						RefreshScene();
+						//console.log( 'id: ' + event.target);
+						//RefreshScene();
+						if(event.target == 'refresh'){
+							RefreshContent();
+						}
+
 					}
 				}
 			},
@@ -42,70 +72,52 @@ $(document).ready(function () {
 		]
 	});
 
-	// then define the sidebar
 	w2ui['layout'].content('left', $().w2sidebar({
 		name: 'sidebar_assets',
-		//topHTML:'<button onclick="RefreshAssets();">Refresh</button>',
 		img: null,
 		nodes: [
 			{ id: 'Assets', text: 'Assets', img: 'icon-folder', expanded: true, group: true,
-			  nodes: [ { id: 'level-1-1', text: 'Level 1.1', icon: 'fa-home' },
-					   { id: 'level-1-2', text: 'Level 1.2', icon: 'fa-star' },
-					   { id: 'level-1-3', text: 'Level 1.3', icon: 'fa-check' }
+			  nodes: [ { id: 'level-1-1', text: 'Level 1.1', icon: 'fa fa-file' },
+					   { id: 'level-1-2', text: 'Level 1.2', icon: 'fa fa-file' },
+					   { id: 'level-1-3', text: 'Level 1.3', icon: 'fa fa-file' }
 					 ]
 			}
 		],
 		onClick: function (event) {
 			//w2ui['layout'].content('main', 'id: ' + event.target);
-			console.log( 'id: ' + event.target);
-			console.log(w2ui.sidebar_assets);
-
+			//console.log( 'id: ' + event.target);
+			//console.log(w2ui.sidebar_assets);
 		}
 	}));
 
-	w2ui.sidebar_assets.insert('level-1-2', null, [
-		{ id: 'new-4', text: 'New Item 4', icon: 'w2ui-icon-check' },
-		{ id: 'new-5', text: 'New Item 5', icon: 'w2ui-icon-check' },
-		{ id: 'new-6', text: 'New Item 6', icon: 'w2ui-icon-check' }
-	]);
-
-	w2ui['layout'].content('right', $().w2sidebar({
+	$().w2sidebar({
 		name: 'sidebar_content',
 		img: null,
 		nodes: [
 			{ id: 'scene', text: 'scene', img: 'icon-folder', expanded: true, group: true,
-			  nodes: [ { id: 'level-1-1', text: 'Level 1.1', icon: 'fa-home' },
-					   { id: 'level-1-2', text: 'Level 1.2', icon: 'fa-star' },
-					   { id: 'level-1-3', text: 'Level 1.3', icon: 'fa-check' }
+			  nodes: [ { id: 'level-1-1', text: 'Level 1.1', icon: 'fa fa-file' },
+					   { id: 'level-1-2', text: 'Level 1.2', icon: 'fa fa-file' },
+					   { id: 'level-1-3', text: 'Level 1.3', icon: 'fa fa-file' }
 					 ]
 			}
 		],
 		onClick: function (event) {
 			//w2ui['layout'].content('main', 'id: ' + event.target);
 			console.log( 'id: ' + event.target);
-			/*
-			//http://w2ui.com/web/demos/#!sidebar/sidebar-2
-			console.log( 'id: ');
-			w2ui.sidebar_content.insert('level-1-2', null, [
-		        { id: 'new-4', text: 'New Item 4', icon: 'w2ui-icon-check' },
-		        { id: 'new-5', text: 'New Item 5', icon: 'w2ui-icon-check' },
-		        { id: 'new-6', text: 'New Item 6', icon: 'w2ui-icon-check' }
-		    ]);
-			*/
 		}
-	}));
+	});
 
-	console.log(w2ui['sidebar_content']);
-	/*
-	w2ui['sidebar_content'].add([
-        { id: 'new-1', text: 'New Item 1', icon: 'w2ui-icon-check' },
-        { id: 'new-2', text: 'New Item 2', icon: 'w2ui-icon-check' },
-        { id: 'new-3', text: 'New Item 3', icon: 'w2ui-icon-check' }
-    ]);
-	*/
+	var pstyle = 'background-color: #F0F0C1; border: 1px solid #dfdfdf; padding: 0px;';
 
-	//w2ui.layout.show('right');
-	//w2ui.layout.hide('right');
+	$().w2layout({
+		 name: 'layout_props',
+		 panels: [
+			 { type: 'main', size: 200,resizable: true, style: pstyle, content: w2ui['sidebar_content'] },
+			 { type: 'preview', size: 200, resizable: true, style: pstyle, content: 'preview' }
+		 ]
+    });
+
+	w2ui['layout'].content('right', w2ui['layout_props']);
 
 	$('#toolbar').w2toolbar({
 		name: 'toolbar',
@@ -127,16 +139,18 @@ $(document).ready(function () {
 			]},
 			{ type: 'menu',   id: 'Help', caption: 'Help',items: [
 				{ text: 'Item 1', icon: 'icon-page' }
-			]}
+			]},
+			{ type: 'spacer' },
+			 { type: 'check',  id: 'autosave', caption: 'AutoSave', icon: 'w2ui-icon-check', checked: true }
 		]
 	});
 
 	$('#toolbar_bottom').w2toolbar({
 		name: 'toolbar_bottom',
 		items: [
-			{ type: 'radio',  id: 'translate',  group: '1', caption: 'translate', icon: 'fa-star', checked: true },
-			{ type: 'radio',  id: 'rotate',  group: '1', caption: 'rotate', icon: 'fa-star-empty' },
-			{ type: 'radio',  id: 'scale',  group: '1', caption: 'scale', icon: 'fa-star-empty' },
+			{ type: 'radio',  id: 'translate',  group: '1', caption: 'translate', icon: 'fa fa-arrows', checked: true },
+			{ type: 'radio',  id: 'rotate',  group: '1', caption: 'rotate', icon: 'fa fa-repeat' },
+			{ type: 'radio',  id: 'scale',  group: '1', caption: 'scale', icon: 'fa fa-arrows-alt' },
 			{ type: 'break',  id: 'break0' },
 			{ type: 'html',  id: 'unitsnap',
 				html: '<div style="padding: 3px 10px;">'+
@@ -148,27 +162,34 @@ $(document).ready(function () {
 			{ type: 'check',  id: 'show', caption: 'show', img: 'icon-page', checked: true },
 			{ type: 'break',  id: 'break1' },
 			{ type: 'button',  id: 'status', text: 'status'},
+			{ type: 'break',  id: 'break2' },
+			{ type: 'button',  id: 'toggle_top', text: 'top'},
+			{ type: 'button',  id: 'toggle_right', text: 'right'},
+			{ type: 'button',  id: 'toggle_left', text: 'left'},
+			{ type: 'button',  id: 'toggle_preview', text: 'preview'},
 			{ type: 'spacer' },
 			{ type: 'button',  id: 'test', text: 'test'}
 		],
 		onClick: function(event) {
         	console.log('item '+ event.target + ' is clicked.');
+			if(event.target == 'toggle_top'){
+				w2ui['layout'].toggle('top');
+			}
+			if(event.target == 'toggle_right'){
+				w2ui['layout'].toggle('right');
+			}
+			if(event.target == 'toggle_left'){
+				w2ui['layout'].toggle('left');
+			}
+			if(event.target == 'toggle_preview'){
+				w2ui['layout'].toggle('preview');
+			}
 			if(event.target == 'test'){
-				console.log('remove?');
-				//w2ui.sidebar_assets.nodes[0].nodes = [];
-				removenodelist(w2ui.sidebar_assets,w2ui.sidebar_assets.nodes[0].nodes);
-				/*
-				for(var i = 0; i < w2ui.sidebar_assets.nodes[0].nodes.length;i++){
-					console.log(w2ui.sidebar_assets.nodes[0].nodes[i].id);
-					w2ui.sidebar_assets.remove(w2ui.sidebar_assets.nodes[0].nodes[i].id);
-				}
-				removenodelist(w2ui.sidebar_assets.nodes[0]);
-				*/
+				//console.log('remove?');
+				//removenodelist(w2ui.sidebar_assets,w2ui.sidebar_assets.nodes[0].nodes);
 			}
     	}
 	});
-
-
 
 	w2ui['layout'].on('resize', function(target, data) {
 	    data.onComplete = function () {
