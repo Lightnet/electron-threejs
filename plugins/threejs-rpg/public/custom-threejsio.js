@@ -1,8 +1,13 @@
 var socketio = io();
 
 socketio.on('connect',()=>{
-	console.log('connect.');
-	//initEditor();
+	if(threejsapi == null){
+		console.log('connect.');
+		initEditor();
+		initDropzone();
+		threejsapi = new ThreejsAPI.Game({onload:false});
+		RefreshAssets();
+	}
 });
 
 socketio.on('assets',(data)=>{
@@ -30,6 +35,14 @@ function RefreshAssets(){
 	}
 }
 
+function DeleteAssets(){
+	console.log('DeleteAssets');
+	//if(socketio !=null){
+		//console.log('assets???');
+		//socketio.emit('getassets','threejseditor');
+	//}
+}
+
 function RefreshScene(){
 	console.log('refresh scene');
 	if(socketio !=null){
@@ -55,6 +68,15 @@ function RefreshContent(){
 		//socketio.emit('getscene','threejseditor');
 	//}
 }
+
+function DeleteContent(){
+	console.log('refresh Content');
+}
+
+
+
+
+
 
 function removenodelist(obj,nodes){
 	while (true){

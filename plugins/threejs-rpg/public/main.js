@@ -34,7 +34,7 @@ if(!DEBUG){
 var ThreejsAPI;
 (function (ThreejsAPI) {
     var Game = (function () {
-        function Game() {
+        function Game(args) {
             var _this = this;
             this.antialias = true;
             this.bablenetwork = false;
@@ -53,10 +53,20 @@ var ThreejsAPI;
             this.ToRad = 0.0174532925199432957;
             this.timeSteptimeStep = 1 / 60;
             //listen to load event
-            this.addListener("load", window, function () {
-                console.log('init...');
-                _this.init();
-            });
+            if (args != null) {
+                if (args['onload'] == true) {
+                    this.addListener("load", window, function () {
+                        console.log('init listen...');
+                        _this.init();
+                    });
+                }
+                else {
+                    console.log('init...');
+                    this.init();
+                }
+            }
+            else {
+            }
         }
         //window load start three
         Game.prototype.addListener = function (event, obj, fn) {
@@ -747,5 +757,6 @@ var ThreejsAPI;
     }());
     ThreejsAPI.Editor = Editor;
 })(ThreejsAPI || (ThreejsAPI = {}));
-var threejsapi = new ThreejsAPI.Game();
+var threejsapi;
+//var threejsapi = new ThreejsAPI.Game();
 //console.log(app);

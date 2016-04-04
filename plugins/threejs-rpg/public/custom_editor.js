@@ -21,9 +21,17 @@ fa fa-star
 fa fa-hashtag
 fa fa-usb
 
+fa fa-times
+fa fa-cube
+fa fa-eraser
+fa-trash-o
+
+fa fa-qrcode
+fa fa-wrench
 */
 
-$(document).ready(function () {
+//$(document).ready(function () {
+function initEditor(){
 	console.log('init editor panel');
 	var canvas_html ='<canvas id="myCanvas">'+
 	'<form  action="/file-upload" method="post" class="dropzone" enctype="multipart/form-data">'+
@@ -42,11 +50,20 @@ $(document).ready(function () {
 			{ type: 'left', size: 200, resizable: true, style: pstyle, content: '',
 				toolbar: {
 					items: [
-						{ type: 'button',  id: 'refresh',  caption: 'Refresh', icon: 'fa fa-refresh', hint: 'assets list' }
+						{ type: 'button',  id: 'assetsrefresh',  caption: '', icon: 'fa fa-refresh', hint: 'Refresh Nodes' },
+						{ type: 'button',  id: 'assetsadd',  caption: '', icon: 'fa fa-plus-square-o', hint: 'Add Node' },
+						{ type: 'button',  id: 'assetsrename',  caption: '', icon: 'fa fa-pencil', hint: 'Rename Node' },
+						{ type: 'button',  id: 'assetscopy',  caption: '', icon: 'fa fa-files-o', hint: 'Copy Node' },
+						{ type: 'button',  id: 'assetsdelete',  caption: '', icon: 'fa fa-trash-o', hint: 'Delete Node' }
 					],
 					onClick: function (event) {
-                        //this.owner.content('left', event);
-						RefreshAssets();
+						if(event.target == 'assetsrefresh'){
+                        	//this.owner.content('left', event);
+							RefreshAssets();
+						}
+						if(event.target == 'assetsdelete'){
+							DeleteAssets();
+						}
                     }
 				}
 			},
@@ -55,14 +72,21 @@ $(document).ready(function () {
 			{ type: 'right', size: 200, resizable: true, style: pstyle, content: '',
 				toolbar: {
 					items: [
-						{ type: 'button',  id: 'refresh',  caption: 'Refresh', icon: 'fa fa-refresh', hint: 'Node list' }
+						{ type: 'button',  id: 'contentrefresh',  caption: '', icon: 'fa fa-refresh', hint: 'Refresh Node list' },
+						{ type: 'button',  id: 'contentadd',  caption: '', icon: 'fa fa-plus-square-o', hint: 'Add Node' },
+						{ type: 'button',  id: 'contentrename',  caption: '', icon: 'fa fa-pencil', hint: 'Rename Node' },
+						{ type: 'button',  id: 'contentcopy',  caption: '', icon: 'fa fa-files-o', hint: 'Copy Node' },
+						{ type: 'button',  id: 'contentdelete',  caption: '', icon: 'fa fa-trash-o', hint: 'Delete Node' }
 					],
 					onClick: function (event) {
 						//this.owner.content('left', event);
 						//console.log( 'id: ' + event.target);
 						//RefreshScene();
-						if(event.target == 'refresh'){
+						if(event.target == 'contentrefresh'){
 							RefreshContent();
+						}
+						if(event.target == 'contentdelete'){
+							DeleteContent();
 						}
 
 					}
@@ -84,8 +108,9 @@ $(document).ready(function () {
 			}
 		],
 		onClick: function (event) {
+			console.log( event);
+			console.log( 'id: ' + event.target);
 			//w2ui['layout'].content('main', 'id: ' + event.target);
-			//console.log( 'id: ' + event.target);
 			//console.log(w2ui.sidebar_assets);
 		}
 	}));
@@ -107,43 +132,113 @@ $(document).ready(function () {
 		}
 	});
 
+	$().w2sidebar({
+		name: 'sidebar_props',
+		img: null,
+		nodes: [
+			{ id: 'object', text: 'Object', img: 'icon-folder', expanded: true, group: true,
+			  nodes: [ { id: 'string', text: 'string', icon: 'fa fa-file' },
+					   { id: 'number', text: 'number', icon: 'fa fa-file' },
+					   { id: 'boolean', text: 'boolean', icon: 'fa fa-file' }
+					 ]
+			}
+		],
+		onClick: function (event) {
+			//w2ui['layout'].content('main', 'id: ' + event.target);
+			console.log( 'id: ' + event.target);
+		}
+	});
+
 	var pstyle = 'background-color: #F0F0C1; border: 1px solid #dfdfdf; padding: 0px;';
 
 	$().w2layout({
 		 name: 'layout_props',
 		 panels: [
 			 { type: 'main', size: 200,resizable: true, style: pstyle, content: w2ui['sidebar_content'] },
-			 { type: 'preview', size: 200, resizable: true, style: pstyle, content: 'preview' }
+			 { type: 'preview', size: 200, resizable: true, style: pstyle, content:w2ui['sidebar_props'],
+				 toolbar: {
+					 items: [
+						 { type: 'button',  id: 'contentrefresh',  caption: '', icon: 'fa fa-refresh', hint: 'Refresh Nodes' },
+						 { type: 'menu',  id: 'addcomponent',  caption: 'Add Component', icon: 'fa fa-plus-square', hint: 'Add Component',
+							 items: [
+				                { text: 'model', icon: 'fa fa-cube' },
+								{ text: 'texture', icon: 'fa fa-file-image-o' },
+								{ text: 'material', icon: 'fa fa-file-image-o' },
+				                { text: 'animation', icon: 'fa fa-file-video-o' },
+								{ text: 'collision', icon: 'fa fa-cube' },
+								{ text: 'physics', icon: 'fa fa-street-view' },
+								{ text: 'text', icon: 'fa fa-sticky-note-o' },
+				                { text: 'script', icon: 'fa fa-file-code-o' }
+				            ]
+					 	 },
+						 { type: 'button',  id: 'contentdelete',  caption: '', icon: 'fa fa-trash-o', hint: 'Delete Node' }
+					 ],
+					 onClick: function (event) {
+						 //this.owner.content('left', event);
+						 //console.log( 'id: ' + event.target);
+						 //RefreshScene();
+						 if(event.target == 'contentrefresh'){
+							 RefreshContent();
+						 }
+					 }
+				 }
+		 	}
 		 ]
-    });
 
+    });
+	//add content layout
 	w2ui['layout'].content('right', w2ui['layout_props']);
 
 	$('#toolbar').w2toolbar({
 		name: 'toolbar',
+
 		items: [
-			{ type: 'menu',   id: 'File', caption: 'File', items: [
+			{ type: 'menu',   id: 'EditorFile', caption: 'File', items: [
+				{type:'button', text: 'Open', icon: 'icon-page'},
+				{type:'button', text: 'Close', icon: 'icon-page'},
+				{type:'button', text: 'Import', icon: 'icon-page'},
+				{type:'button', text: 'Export', icon: 'icon-page'},
+				{type:'button', text: 'Publish', icon: 'icon-page'}
+			]},
+			{ type: 'menu',   id: 'EditorEdit', caption: 'Edit', items: [
+				{ text: 'Copy', icon: 'icon-page' },
+				{ text: 'Paste', icon: 'icon-page' },
+				{ text: 'Delete', icon: 'icon-page' },
+				{ text: 'Delete', icon: 'icon-page' },
+				{ text: 'Clear History', icon: 'icon-page' },
+			]},
+			{ type: 'menu',   id: 'EditorComponents', caption: 'Components', items: [
+				{ text: 'model', icon: 'fa fa-cube' },
+				{ text: 'texture', icon: 'fa fa-file-image-o' },
+				{ text: 'material', icon: 'fa fa-file-image-o' },
+				{ text: 'animation', icon: 'fa fa-file-video-o' },
+				{ text: 'collision', icon: 'fa fa-cube' },
+				{ text: 'physics', icon: 'fa fa-street-view' },
+				{ text: 'text', icon: 'fa fa-sticky-note-o' },
+				{ text: 'script', icon: 'fa fa-file-code-o' }
+			]},
+			{ type: 'button',   id: 'EditorPlay', caption: 'Play'},
+			{ type: 'menu',   id: 'EditorPlayOtions', caption: '', items: [
+				{ text: 'Play', icon: 'icon-page' },
+				{ text: 'Debug', icon: 'icon-page' },
+				{ text: 'Local', icon: 'icon-page' },
+				{ text: 'Host & Local', icon: 'icon-page' }
+			]},
+			{ type: 'menu',   id: 'EditorExample', caption: 'Example', items: [
 				{ text: 'Item 1', icon: 'icon-page' }
 			]},
-			{ type: 'menu',   id: 'Edit', caption: 'Edit', items: [
-				{ text: 'Item 1', icon: 'icon-page' }
-			]},
-			{ type: 'menu',   id: 'Components', caption: 'Components', items: [
-				{ text: 'Item 1', icon: 'icon-page' }
-			]},
-			{ type: 'menu',   id: 'Play', caption: 'Play', items: [
-				{ text: 'Item 1', icon: 'icon-page' }
-			]},
-			{ type: 'menu',   id: 'Example', caption: 'Example', items: [
-				{ text: 'Item 1', icon: 'icon-page' }
-			]},
-			{ type: 'menu',   id: 'Help', caption: 'Help',items: [
-				{ text: 'Item 1', icon: 'icon-page' }
+			{ type: 'menu',   id: 'EditorHelp', caption: 'Help',items: [
+				{ text: 'API', icon: 'icon-page' },
+				{ text: 'About', icon: 'icon-page' }
 			]},
 			{ type: 'spacer' },
-			 { type: 'check',  id: 'autosave', caption: 'AutoSave', icon: 'w2ui-icon-check', checked: true }
+			 { type: 'check',  id: 'projectautosave', caption: 'AutoSave', icon: 'w2ui-icon-check', checked: true }
 		]
 	});
+
+	w2ui.toolbar.on('*', function (event) {
+        console.log('EVENT: '+ event.type + ' TARGET: '+ event.target, event);
+    });
 
 	$('#toolbar_bottom').w2toolbar({
 		name: 'toolbar_bottom',
@@ -155,7 +250,7 @@ $(document).ready(function () {
 			{ type: 'html',  id: 'unitsnap',
 				html: '<div style="padding: 3px 10px;">'+
                       ' Snap:'+
-                      '    <input size="10" style="padding: 3px; border-radius: 2px; border: 1px solid silver" value="0" />'+
+                      '    <input size="10" style="padding: 1px; border-radius: 1px; border: 1px solid silver" value="0" />'+
                       '</div>' },
 			{ type: 'check',  id: 'snap', caption: 'snap', img: 'icon-page', checked: false },
 			{ type: 'check',  id: 'local', caption: 'local', img: 'icon-page', checked: false },
@@ -207,4 +302,5 @@ $(document).ready(function () {
 		canvaspanel.style.height = mainpanel.style.height;
 	});
 	//console.log(w2ui['layout'].get('main'));
-});
+//});
+};

@@ -1,4 +1,5 @@
-$(document).ready(function () {
+//$(document).ready(function () {
+function initDropzone(){
 	Dropzone.autoDiscover = false;
 	var exts = [
 		'.jpg',
@@ -83,4 +84,5 @@ $(document).ready(function () {
 		//var value = $("#file").val();
 		//$("#file").val(value + ';' + responsetext.Url);
 	});
-});
+//});
+};

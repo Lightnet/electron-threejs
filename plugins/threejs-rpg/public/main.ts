@@ -106,12 +106,24 @@ module ThreejsAPI{
 		ToRad:number = 0.0174532925199432957;
 		timeSteptimeStep:number = 1/60;
 
-		constructor(){
+		constructor(args){
 			//listen to load event
-			this.addListener("load", window,()=>{
-				console.log('init...');
-				this.init();
-			});
+			if(args != null){
+				if(args['onload'] == true){
+					this.addListener("load", window,()=>{
+						console.log('init listen...');
+						this.init();
+					});
+				}else{
+					console.log('init...');
+					this.init();
+				}
+			}else{
+				//this.addListener("load", window,()=>{
+					//console.log('init...');
+					//this.init();
+				//});
+			}
 		}
 
 		//window load start three
@@ -966,6 +978,6 @@ module ThreejsAPI{
 		}
 	}
 }
-
-var threejsapi = new ThreejsAPI.Game();
+var threejsapi;
+//var threejsapi = new ThreejsAPI.Game();
 //console.log(app);
