@@ -1,5 +1,17 @@
 var socketio = io();
 
+projectid = "threejseditor";
+
+var assets = [];
+var assets_select;
+
+var contents = [];
+var content_select;
+
+var props = [];
+var props_select;
+
+
 socketio.on('connect',()=>{
 	if(threejsapi == null){
 		console.log('connect.');
@@ -10,13 +22,28 @@ socketio.on('connect',()=>{
 	}
 });
 
+socketio.on('refreshassets',(data)=>{
+	//console.log('test refresh');
+
+	//if(threejsapi == null){
+		console.log('test refresh');
+		RefreshAssets();
+	//}
+});
+
 socketio.on('assets',(data)=>{
 	if(data['action'] != null){
 		if(data.action == 'clear'){
+			//if(assets != null){
+				assets = [];
+			//}
 			removenodelist(w2ui.sidebar_assets, w2ui.sidebar_assets.nodes[0].nodes);
 		}
 
 		if(data.action == 'add'){
+			//if(assets !=null){
+				assets.push(data);;
+			//}
 			w2ui.sidebar_assets.insert('Assets', null, [
 	   			{ id: data.id, text: data.name, icon: 'w2ui-icon-check' }
    			]);
@@ -28,19 +55,38 @@ socketio.on('assets',(data)=>{
 });
 
 function RefreshAssets(){
-	console.log('refresh assets');
-	if(socketio !=null){
+	console.log('refresh assets socket.io');
+	//if(socketio !=null){
 		console.log('assets???');
+		console.log(socketio);
 		socketio.emit('getassets','threejseditor');
-	}
+	//}
 }
 
-function DeleteAssets(){
-	console.log('DeleteAssets');
+function RenameAssets(){
+	console.log('RenameAssets');
+	//if(assets != null){
+	console.log(assets);
+		for(var i = 0; i < assets.length;i++){
+			console.log(assets[i]);
+			console.log(assets_select);
+			if(assets[i].id  == assets_select){
+				console.log(assets_select + ":"+assets[i]);
+				console.log(assets[i]);
+			}
+		}
+	//}
+
+
 	//if(socketio !=null){
 		//console.log('assets???');
 		//socketio.emit('getassets','threejseditor');
 	//}
+}
+
+function DeleteAssets(){
+	console.log('DeleteAssets');
+	socketio.emit('assets',{action:"delete",projectid:projectid,id:assets_select});
 }
 
 function RefreshScene(){

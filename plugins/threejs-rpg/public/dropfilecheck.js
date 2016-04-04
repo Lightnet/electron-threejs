@@ -72,6 +72,9 @@ function initDropzone(){
 		if(threejsapi !=null){
 			threejsapi.LoadFile(file.name);
 		}
+		setTimeout(function() {
+			RefreshAssets();
+		}, 50);
 		myDropzone.removeFile(file);
 		//var value = $("#file").val();
 		//$("#file").val(value + ';' + responsetext.Url);

@@ -158,9 +158,9 @@ module.exports.setroute = function(routes,app){
 
 		if((rethinkdb !=null)&&(connection !=null)){
 			connection.use('test');
-
+			//console.log(rethinkdb);
 			//rethinkdb.table('assets').filter(rethinkdb.row('name').eq(req.file.originalname) & ).
-			rethinkdb.table('assets').filter(rethinkdb.row('name').eq(req.file.originalname) & rethinkdb.row('projectid').eq(req.query.projectid) ).
+			rethinkdb.table('assets').filter(rethinkdb.row('name').eq(req.file.originalname).and( rethinkdb.row('projectid').eq(req.query.projectid)) ).
     			run(connection, function(err, cursor) {
         			if (err) throw err;
         			cursor.toArray(function(err, result) {
@@ -178,7 +178,7 @@ module.exports.setroute = function(routes,app){
 							rethinkdb.table('assets').insert(assetfiletmp).run(connection, function(err, result) {
 				    			if (err) throw err;
 								console.log("insert asset");
-				    			//console.log(JSON.stringify(result, null, 2));
+				    			console.log(JSON.stringify(result, null, 2));
 							});
 						}else{
 							console.log("Found Data, Update");
@@ -241,9 +241,9 @@ module.exports.socketio_connect = function(io, socket){
 							console.log("err");
 							console.log(err);
 						};
-
+						//clear data
 						socket.emit('assets',{action:'clear'});
-
+						//send assets list
 						for (var i = 0; i < result.length;i++){
 							console.log(result[i]);
 							socket.emit('assets',{
@@ -253,7 +253,6 @@ module.exports.socketio_connect = function(io, socket){
 								path:result[i].path,
 								tag:result[i].tag
 							});
-
 						}
 						//display data
             			//console.log(JSON.stringify(result, null, 2));
@@ -261,6 +260,43 @@ module.exports.socketio_connect = function(io, socket){
     			});
 		}
 	});
+
+	socket.on('assets', function(data){
+		if(data['action'] !=null){
+			if(data['action'] == 'rename'){
+
+			}
+			if(data['action'] == 'delete'){
+				if((rethinkdb !=null)&&(connection !=null)){
+					console.log('DELETE');
+					connection.use('test');
+					console.log(data);
+					rethinkdb.table('assets').filter(rethinkdb.row('id').eq(data['id'])).
+		    			run(connection, function(err, cursor) {
+		        			if (err) throw err;
+		        			cursor.toArray(function(err, result) {
+		            			if (err){
+									console.log("err");
+									console.log(err);
+								};
+								console.log();
+								rethinkdb.table('assets').get(result[0]['id']).
+									delete().
+									run(connection, function(err, result1) {
+										fs.unlinkSync(__dirname +"/public/"+ result[0]['path']);//delete tmp file once finish
+										socket.emit('refreshassets',{});
+        								if (err) throw err;
+        								console.log(JSON.stringify(result1, null, 2));
+    								});
+		        			});
+		    			});
+				}
+			}
+		}
+	});
+
+
+
 
 };
 module.exports.socketio_disconnect = function(io, socket){

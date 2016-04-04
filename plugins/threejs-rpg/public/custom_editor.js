@@ -58,8 +58,10 @@ function initEditor(){
 					],
 					onClick: function (event) {
 						if(event.target == 'assetsrefresh'){
-                        	//this.owner.content('left', event);
 							RefreshAssets();
+						}
+						if(event.target == 'assetsrename'){
+							RenameAssets();
 						}
 						if(event.target == 'assetsdelete'){
 							DeleteAssets();
@@ -100,18 +102,14 @@ function initEditor(){
 		name: 'sidebar_assets',
 		img: null,
 		nodes: [
-			{ id: 'Assets', text: 'Assets', img: 'icon-folder', expanded: true, group: true,
-			  nodes: [ { id: 'level-1-1', text: 'Level 1.1', icon: 'fa fa-file' },
-					   { id: 'level-1-2', text: 'Level 1.2', icon: 'fa fa-file' },
-					   { id: 'level-1-3', text: 'Level 1.3', icon: 'fa fa-file' }
-					 ]
-			}
+			{ id: 'Assets', text: 'Assets', img: 'icon-folder', expanded: true, group: true }
 		],
 		onClick: function (event) {
 			console.log( event);
 			console.log( 'id: ' + event.target);
-			//w2ui['layout'].content('main', 'id: ' + event.target);
-			//console.log(w2ui.sidebar_assets);
+			//if(assets_select != null){
+				assets_select = event.target;
+			//}
 		}
 	}));
 
@@ -237,7 +235,7 @@ function initEditor(){
 	});
 
 	w2ui.toolbar.on('*', function (event) {
-        console.log('EVENT: '+ event.type + ' TARGET: '+ event.target, event);
+        //console.log('EVENT: '+ event.type + ' TARGET: '+ event.target, event);
     });
 
 	$('#toolbar_bottom').w2toolbar({
