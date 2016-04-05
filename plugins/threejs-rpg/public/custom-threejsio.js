@@ -2,6 +2,7 @@ var socketio = io();
 
 projectid = "threejseditor";
 
+var rename = '';
 var assets = [];
 var assets_select;
 
@@ -42,12 +43,10 @@ socketio.on('assets',(data)=>{
 			//}
 			removenodelist(w2ui.sidebar_assets, w2ui.sidebar_assets.nodes[0].nodes);
 		}
-
 		if(data.action == 'add'){
 			//if(assets !=null){
 				assets.push(data);;
 			//}
-
 			var icon_i = 'fa fa-file';
 
 			if(getext(data.name) == '.jpg'){
@@ -77,7 +76,6 @@ socketio.on('assets',(data)=>{
 			if(getext(data.name) == '.ts'){
 				icon_i = 'fa fa-file-text-o';
 			}
-
 			if(getext(data.name) == '.fbx'){
 				icon_i = 'fa fa-cube';
 			}
@@ -124,8 +122,9 @@ function RenameAssets(){
 			console.log(assets[i]);
 			console.log(assets_select);
 			if(assets[i].id  == assets_select){
-				console.log(assets_select + ":"+assets[i]);
-				console.log(assets[i]);
+				//console.log(assets_select + ":"+assets[i]);
+				//console.log(assets[i]);
+				socketio.emit('assets',{action:"rename",projectid:'threejseditor',id:assets[i].id,name:rename});
 			}
 		}
 	//}

@@ -31,6 +31,7 @@ module.exports._config = require('./index.json');
 module.exports.initpost = function(){
 	//console.log('init post');
 	//require('./threejs-engine.js');
+	//console.log(connection);//get null since the connect didn't finish setup
 }
 
 //===============================================
@@ -110,6 +111,23 @@ var assetfile = {
 	folder:"assets"
 }
 
+	/*
+	rethinkdb.dbList().contains('example_database')
+	  .do(function(databaseExists) {
+
+	    return rethinkdb.branch(
+	      databaseExists,
+	      { created: 0 },
+	      rethinkdb.dbCreate('example_database');
+	    );
+
+	}).run(connection, function(err, result) {
+    	if (err) throw err;
+    	console.log(JSON.stringify(result, null, 2));
+	});
+	*/
+
+
 module.exports.setroute = function(routes,app){
 	//app.use(busboy());
 	//console.log('Base Module ');
@@ -125,10 +143,9 @@ module.exports.setroute = function(routes,app){
 	routes.post('/file-upload', upload.single('file'),function(req, res, next) {
 		//console.log(req.files.file.path);
 		//console.log("req.file");
-		console.log(req.file);
+		//console.log(req.file);
 		//console.log(req);
-
-		console.log(req.query.projectid);
+		//console.log(req.query.projectid);
 		//console.log(req.body);
 		//console.log(req);
 		if(req.file == null){
@@ -264,20 +281,50 @@ module.exports.socketio_connect = function(io, socket){
 	socket.on('assets', function(data){
 		if(data['action'] !=null){
 			if(data['action'] == 'rename'){
-
+				var dirpath = __dirname +"/public/";
+				var assetspath = "/assets/" + data['name'] ;
+				rethinkdb.table('assets').filter(rethinkdb.row('id').eq(data['id']).and( rethinkdb.row('projectid').eq(data['projectid'])) ).
+	    			run(connection, function(err, cursor) {
+	        			if (err) throw err;
+	        			cursor.toArray(function(err, result) {
+	            			if (err){
+								console.log("err");
+								console.log(err);
+							};
+							if(result.length == 0){
+							}else{
+								console.log("Found Data, Update");
+								rethinkdb.table('assets').
+									filter(rethinkdb.row("id").eq(data['id'])).
+									update({name:data['name'],path:assetspath}). //set path assets file
+									run(connection, function(err, result1) {
+										if (err) throw err;
+										fs.rename(dirpath + '/assets/' + result[0]['name'], dirpath + "/assets/" + data['name'], function(err) {
+						    				if ( err ) console.log('ERROR: ' + err);
+											dirpath = null;
+											assetspath = null;
+											socket.emit('refreshassets',{}); // send refresh list
+										});
+										//console.log(JSON.stringify(result, null, 2));
+									});
+							}
+							//display data
+							//console.log(JSON.stringify(result, null, 2));
+						});
+					});
 			}
 			if(data['action'] == 'delete'){
 				if((rethinkdb !=null)&&(connection !=null)){
 					console.log('DELETE');
 					connection.use('test');
-					console.log(data);
+					//console.log(data);
 					rethinkdb.table('assets').filter(rethinkdb.row('id').eq(data['id'])).
 		    			run(connection, function(err, cursor) {
 		        			if (err) throw err;
 		        			cursor.toArray(function(err, result) {
 		            			if (err){
-									console.log("err");
-									console.log(err);
+									//console.log("err");
+									//console.log(err);
 								};
 								console.log();
 								rethinkdb.table('assets').get(result[0]['id']).

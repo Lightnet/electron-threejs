@@ -46,7 +46,7 @@ function initEditor(){
 	$('#layout').w2layout({
 		name: 'layout',
 		panels: [
-			{ type: 'top',  size: 33, resizable: true, style: pstyle, content: '<div id="toolbar"></div>' },
+			{ type: 'top',  size: 33, resizable: true, style: pstyle},
 			{ type: 'left', size: 200, resizable: true, style: pstyle, content: '',
 				toolbar: {
 					items: [
@@ -61,15 +61,36 @@ function initEditor(){
 							RefreshAssets();
 						}
 						if(event.target == 'assetsrename'){
-							RenameAssets();
+							//$('#filename').value = "test";
+							var filename = '';
+							for(var i = 0; i < assets.length;i++ ){
+								if(assets[i].id == assets_select){
+									filename = assets[i].name;
+									break;
+								}
+							}
+							w2confirm('Rename file?<br><input id="filename" type="text" name="filename" value='+ filename +' >', function (btn) {
+								//console.log(btn);
+								//console.log($('#filename')[0].value);
+								if(btn == 'Yes'){
+									rename = $('#filename')[0].value;
+									RenameAssets();
+								}
+							});
 						}
 						if(event.target == 'assetsdelete'){
-							DeleteAssets();
+							//DeleteAssets();
+							w2confirm('Are you sure to delete file?', function (btn) {
+								console.log(btn);
+								if(btn == 'Yes'){
+									DeleteAssets();
+								}
+							});
 						}
                     }
 				}
 			},
-			{ type: 'main', style: pstyle, resizable: false,overflow: 'hidden', content: canvas_html  },
+			{ type: 'main', style: pstyle, resizable: false, overflow: 'hidden', content: canvas_html  },
 			//{ type: 'preview', size: '10%', resizable: true, style: pstyle, content: 'debug' },
 			{ type: 'right', size: 200, resizable: true, style: pstyle, content: '',
 				toolbar: {
@@ -93,10 +114,11 @@ function initEditor(){
 					}
 				}
 			},
-			{ type: 'bottom', size: 33, resizable: true, style: pstyle, content: '<div id="toolbar_bottom"></div>' }
+			{ type: 'bottom', size: 33, resizable: true, style: pstyle }
 		]
 	});
 
+	//Assets sidebar
 	w2ui['layout'].content('left', $().w2sidebar({
 		name: 'sidebar_assets',
 		img: null,
@@ -112,6 +134,8 @@ function initEditor(){
 		}
 	}));
 
+
+	//Node Sidebar
 	$().w2sidebar({
 		name: 'sidebar_content',
 		img: null,
@@ -129,6 +153,7 @@ function initEditor(){
 		}
 	});
 
+	//props sidebar
 	$().w2sidebar({
 		name: 'sidebar_props',
 		img: null,
@@ -148,6 +173,7 @@ function initEditor(){
 
 	var pstyle = 'background-color: #F0F0C1; border: 1px solid #dfdfdf; padding: 0px;';
 
+	//layout props
 	$().w2layout({
 		 name: 'layout_props',
 		 panels: [
@@ -185,7 +211,8 @@ function initEditor(){
 	//add content layout
 	w2ui['layout'].content('right', w2ui['layout_props']);
 
-	$('#toolbar').w2toolbar({
+	//toolbar top
+	$().w2toolbar({
 		name: 'toolbar',
 
 		items: [
@@ -231,12 +258,14 @@ function initEditor(){
 			 { type: 'check',  id: 'projectautosave', caption: 'AutoSave', icon: 'w2ui-icon-check', checked: true }
 		]
 	});
+	w2ui['layout'].content('top', w2ui['toolbar']);
 
 	w2ui.toolbar.on('*', function (event) {
         //console.log('EVENT: '+ event.type + ' TARGET: '+ event.target, event);
     });
 
-	$('#toolbar_bottom').w2toolbar({
+	//toolbar bottom
+	$().w2toolbar({
 		name: 'toolbar_bottom',
 		items: [
 			{ type: 'radio',  id: 'translate',  group: '1', caption: 'translate', icon: 'fa fa-arrows', checked: true },
@@ -281,6 +310,8 @@ function initEditor(){
 			}
     	}
 	});
+
+	w2ui['layout'].content('bottom', w2ui['toolbar_bottom']);
 
 	w2ui['layout'].on('resize', function(target, data) {
 	    data.onComplete = function () {

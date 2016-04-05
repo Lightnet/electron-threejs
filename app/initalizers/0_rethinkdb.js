@@ -13,27 +13,42 @@ rethinkdb.connect( {host: 'localhost', port: 28015}, function(err, conn) {
     if (err) throw err;
     connection = conn;
 	console.log('connected to rethinkdb!');
+	CheckDataBase('test');
+	CheckTable('test','assets');
+	CheckTable('test','config');
+
+	//CheckTable('test','beta');
 });
-
-/*
-setTimeout(function(){
-	try{
-		r.db('test').tableCreate('socketio').run(connection, function(err, result) {
-		    //if (err) throw err;
-		    //console.log(JSON.stringify(result, null, 2));
-		});
-
-		r.db('test').tableCreate('engineio').run(connection, function(err, result) {
-		    //if (err) throw err;
-		    //console.log(JSON.stringify(result, null, 2));
-		});
-
-		r.db('test').tableCreate('account').run(connection, function(err, result) {
-		    //if (err) throw err;
-		    //console.log(JSON.stringify(result, null, 2));
-		});
-	}catch(e){
-		console.log(e)
-	}
-},2000);
-*/
+//create database name
+function CheckDataBase(tablename){
+	if((rethinkdb !=null)&&(connection !=null)){
+		//console.log('database check');
+		rethinkdb.dbList().contains(tablename)
+	  .do(function(databaseExists) {
+		  	//console.log(databaseExists);
+		    return rethinkdb.branch(
+		      databaseExists,
+		      { created: 0 },
+		      rethinkdb.dbCreate(tablename)
+		    );
+	  }).run(connection);
+  	}
+}
+//create database table
+function CheckTable(databasename,tablename){
+	if((rethinkdb !=null)&&(connection !=null)){
+		//console.log('database table check');
+		rethinkdb.db(databasename).tableList().contains(tablename)
+	  		.do(function(databaseExists) {
+		  		//console.log(databaseExists);
+	    		return rethinkdb.branch(
+	      		databaseExists,
+	      		{ created: 0 },
+	      		rethinkdb.db(databasename).tableCreate(tablename)
+	    		);
+	  		}).run(connection, function(err, result) {
+		    	if (err) throw err;
+		    	//console.log(JSON.stringify(result, null, 2));
+			});
+  	}
+}
