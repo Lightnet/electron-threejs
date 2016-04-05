@@ -111,23 +111,6 @@ var assetfile = {
 	folder:"assets"
 }
 
-	/*
-	rethinkdb.dbList().contains('example_database')
-	  .do(function(databaseExists) {
-
-	    return rethinkdb.branch(
-	      databaseExists,
-	      { created: 0 },
-	      rethinkdb.dbCreate('example_database');
-	    );
-
-	}).run(connection, function(err, result) {
-    	if (err) throw err;
-    	console.log(JSON.stringify(result, null, 2));
-	});
-	*/
-
-
 module.exports.setroute = function(routes,app){
 	//app.use(busboy());
 	//console.log('Base Module ');
@@ -141,13 +124,10 @@ module.exports.setroute = function(routes,app){
 		res.render(__dirname+'/views/upload',{}); //render file .ejs
 	});
 	routes.post('/file-upload', upload.single('file'),function(req, res, next) {
-		//console.log(req.files.file.path);
-		//console.log("req.file");
 		//console.log(req.file);
 		//console.log(req);
 		//console.log(req.query.projectid);
 		//console.log(req.body);
-		//console.log(req);
 		if(req.file == null){
 			//res.status(500).end('rejected');
 			//res.status(204).end();
@@ -281,6 +261,27 @@ module.exports.socketio_connect = function(io, socket){
 	socket.on('assets', function(data){
 		if(data['action'] !=null){
 			if(data['action'] == 'rename'){
+				console.log(data['name']);
+				console.log(data['name'].lastIndexOf('../'));
+				if(data['name'].lastIndexOf('../') >= 0){
+					console.log('error path ../ not aollow');
+					return;
+				}
+				var bmatch = false;
+
+				for(var i in exts) {
+					//console.log(exts[i]);
+					if( path.extname(data['name'] ) == exts[i] ){
+						bmatch = true;
+						break;
+					}
+				}
+
+				if(bmatch == false){//exit if ext does not match
+					console.log('error ext does not match!');
+					return;
+				}
+
 				var dirpath = __dirname +"/public/";
 				var assetspath = "/assets/" + data['name'] ;
 				rethinkdb.table('assets').filter(rethinkdb.row('id').eq(data['id']).and( rethinkdb.row('projectid').eq(data['projectid'])) ).
@@ -312,6 +313,7 @@ module.exports.socketio_connect = function(io, socket){
 							//console.log(JSON.stringify(result, null, 2));
 						});
 					});
+					
 			}
 			if(data['action'] == 'delete'){
 				if((rethinkdb !=null)&&(connection !=null)){
