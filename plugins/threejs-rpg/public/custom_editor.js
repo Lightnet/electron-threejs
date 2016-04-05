@@ -90,7 +90,6 @@ function initEditor(){
 						if(event.target == 'contentdelete'){
 							DeleteContent();
 						}
-
 					}
 				}
 			},
@@ -182,7 +181,6 @@ function initEditor(){
 				 }
 		 	}
 		 ]
-
     });
 	//add content layout
 	w2ui['layout'].content('right', w2ui['layout_props']);

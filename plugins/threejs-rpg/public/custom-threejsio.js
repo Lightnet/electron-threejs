@@ -11,6 +11,9 @@ var content_select;
 var props = [];
 var props_select;
 
+function getext(filename){
+	return filename.substr(filename.lastIndexOf('.'));
+}
 
 socketio.on('connect',()=>{
 	if(threejsapi == null){
@@ -44,8 +47,58 @@ socketio.on('assets',(data)=>{
 			//if(assets !=null){
 				assets.push(data);;
 			//}
+
+			var icon_i = 'fa fa-file';
+
+			if(getext(data.name) == '.jpg'){
+				icon_i = 'fa fa-file-image-o';
+			}
+			if(getext(data.name) == '.jpeg'){
+				icon_i = 'fa fa-file-image-o';
+			}
+			if(getext(data.name) == '.png'){
+				icon_i = 'fa fa-file-image-o';
+			}
+			if(getext(data.name) == '.gif'){
+				icon_i = 'fa fa-file-image-o';
+			}
+			if(getext(data.name) == '.txt'){
+				icon_i = 'fa fa-file-text-o';
+			}
+			if(getext(data.name) == '.js'){
+				icon_i = 'fa fa-file-text-o';
+			}
+			if(getext(data.name) == '.json'){
+				icon_i = 'fa fa-file-text-o';
+			}
+			if(getext(data.name) == '.js'){
+				icon_i = 'fa fa-file-text-o';
+			}
+			if(getext(data.name) == '.ts'){
+				icon_i = 'fa fa-file-text-o';
+			}
+
+			if(getext(data.name) == '.fbx'){
+				icon_i = 'fa fa-cube';
+			}
+			if(getext(data.name) == '.dae'){
+				icon_i = 'fa fa-cube';
+			}
+			if(getext(data.name) == '.obj'){
+				icon_i = 'fa fa-cube';
+			}
+			if(getext(data.name) == '.mtl'){
+				icon_i = 'fa fa-cube';
+			}
+			if(getext(data.name) == '.md'){
+				icon_i = 'fa fa-cube';
+			}
+			if(getext(data.name) == '.html'){
+				icon_i = 'fa fa-html5';
+			}
+
 			w2ui.sidebar_assets.insert('Assets', null, [
-	   			{ id: data.id, text: data.name, icon: 'w2ui-icon-check' }
+	   			{ id: data.id, text: data.name, icon: icon_i }
    			]);
 		}
 	}

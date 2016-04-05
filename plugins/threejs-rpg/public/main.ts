@@ -180,8 +180,6 @@ module ThreejsAPI{
 			//background
 			this.createTexMat();
 
-
-
 			//this.createHUD();
 			//this.createscene();//simple test
 			//this.initPhysics();
@@ -206,13 +204,9 @@ module ThreejsAPI{
 		onErrorModel( xhr ) {
 			console.log(xhr);
 		};
-
-
-
 		initObjectClasses(){
 
 		}
-
 		createplayer(){
 			var player = new THREE.Object3D();
 			player.init = function(){
@@ -231,7 +225,6 @@ module ThreejsAPI{
 		getext(filename){
 			return filename.substr(filename.lastIndexOf('.'));
 		}
-
 		LoadFile(filename){
 			console.log('file: '+ filename);
 			if(this.getext(filename) == '.fbx'){
