@@ -13,6 +13,7 @@
 			canvas { width: 100%; height: 100%;margin: 0px;overflow: hidden; }
 		</style>
 		<link rel="stylesheet" href="css/font-awesome.min.css">
+		<script type="text/javascript" src="object-watch.js"></script>
 		<script type="text/javascript" src="/socket.io/socket.io.js"></script>
 		<link rel="stylesheet" href="css/index.css">
 		<link rel="stylesheet" type="text/css" href="css/w2ui.min.css" />
@@ -41,6 +42,30 @@
 		<script src="dropfilecheck.js"></script>
 		<script src="custom-threejsio.js"></script>
 		<script>
+		//http://jsfiddle.net/webarthur/dykobdxk/
+		/*
+		var o = { p: 1 };
+		var hooks = 0;
+
+		o.watch('p', function (id, oldval, newval) {
+		  hooks++;
+		  //document.getElementById('results').innerHTML=o.p
+		  //document.getElementById('hooks').innerHTML+=hooks
+		  console.log(o.p);
+		  return newval;
+		});
+
+		setInterval(function(){
+		   o.p = Math.floor((Math.random() * 10) + 1);
+		},1000);
+
+		setTimeout(function(){
+			o.unwatch('p');
+		    //document.getElementById('end').innerHTML="Script stoped!"
+		},11000);
+		*/
+
+
 		</script>
 	</head>
 	<body style="width:100%;height:100%;">

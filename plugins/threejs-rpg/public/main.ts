@@ -38,6 +38,9 @@ declare var OIMO:any;
 declare var THREEx:any;
 declare var CANNON:any;
 declare var Ammo:any;
+
+declare var RefreshContent;
+declare var NodeSelectObject;
 //declare var window:any;
 //var undefined:string = 'undefined';
 /*
@@ -87,6 +90,8 @@ module ThreejsAPI{
 		bablephysics:boolean = true;
 
 		world:any = null;
+		editornode:any = [];
+		scenenodes:any = [];
 		//physics end
 
 		meshs:any = [];
@@ -140,11 +145,17 @@ module ThreejsAPI{
 			this.initManger();
 
 			this.camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 10000 );
+			this.camera.name = "camera";
 			//this.camera.position.set( 0, 160, 400 );
 			//this.camera.position.set( 0, 10, 10 );
 			this.camera.position.set( 0, 0, 10 );
+			console.log(this.camera);
+			this.scenenodes.push(this.camera);
 
 			this.scene = new THREE.Scene();
+			this.scene.name = "scene";
+			this.scenenodes.push(this.scene);
+			console.log(this.scene);
 			this.canvas = document.getElementById('myCanvas');
 			this.renderer = new THREE.WebGLRenderer({canvas:this.canvas,precision: "mediump",antialias:this.antialias});
 			if(this.brenderersize){
@@ -185,8 +196,51 @@ module ThreejsAPI{
 			//this.initPhysics();
 			//this.createscene_cube();
 			//this.createplayer();
+			this.initselectObject();
 			this.update();
 		}
+
+		initselectObject(){
+			this.canvas.addEventListener( 'mousedown',(event)=>{ this.onDocumentMouseDown(event) }, false );
+			//document.addEventListener( 'mousedown',(event)=>{ this.onDocumentMouseDown(event) }, false );
+		}
+
+		onDocumentMouseDown( event ) {
+				event.preventDefault();
+				//console.log(this);
+				//()=>{
+					//console.log(this);
+				//};
+
+				var mouse = new THREE.Vector2();
+				var raycaster = new THREE.Raycaster();
+				//mouse.x = ( event.clientX / this.renderer.domElement.clientWidth ) * 2 - 1;
+				//mouse.y = - ( event.clientY / this.renderer.domElement.clientHeight ) * 2 + 1;
+				//console.log(event);
+				//console.log(event.clientX);
+
+				//console.log(this.renderer.domElement);
+				//event.clientX
+				//this deal with the canvas offset in editor
+				mouse.x = ( (event.offsetX )/ this.renderer.domElement.clientWidth ) * 2 - 1;
+				mouse.y = - (( event.offsetY ) / this.renderer.domElement.clientHeight ) * 2 + 1;
+
+				//console.log(mouse.x);
+				//console.log(event.offsetX);
+				//console.log(mouse.y);
+				//console.log(event.offsetY);
+				raycaster.setFromCamera( mouse, this.camera );
+				var intersects = raycaster.intersectObjects( this.scenenodes );
+
+				if ( intersects.length > 0 ) {
+					console.log(intersects[0]);
+					//particle.position.copy( intersects[ 0 ].point );
+					NodeSelectObject({object:intersects[0].object});
+				}
+				mouse =null;
+				raycaster =null;
+
+			}
 
 		initManger(){
 			this.manager = new THREE.LoadingManager();
@@ -201,12 +255,40 @@ module ThreejsAPI{
 				console.log( Math.round( percentComplete, 2 ) + '% downloaded' );
 			}
 		}
+
 		onErrorModel( xhr ) {
 			console.log(xhr);
-		};
+		}
+
 		initObjectClasses(){
 
 		}
+
+		toolbar(action){
+			if(action == 'EditorComponents:BoxGeometry'){
+				this.createshape({shape:"cube"});
+			}
+		};
+
+		createshape(args){
+			if(args !=null){
+				if(args['shape'] != null){
+					if(args['shape'] == 'cube'){
+						var geometry = new THREE.BoxGeometry( 1, 1, 1 );
+						var material = new THREE.MeshBasicMaterial( {color: 0x00ff00} );
+						var cube = new THREE.Mesh( geometry, material );
+						cube.name = "cube";
+						this.scene.add(cube);
+						this.scenenodes.push(cube);
+						console.log(cube);
+						NodeSelectObject({object:cube});
+						RefreshContent();
+					}
+				}
+			}
+		}
+
+
 		createplayer(){
 			var player = new THREE.Object3D();
 			player.init = function(){
@@ -222,9 +304,11 @@ module ThreejsAPI{
 		createcharacter(){
 
 		}
+
 		getext(filename){
 			return filename.substr(filename.lastIndexOf('.'));
 		}
+
 		LoadFile(filename){
 			console.log('file: '+ filename);
 			if(this.getext(filename) == '.fbx'){
@@ -273,7 +357,6 @@ module ThreejsAPI{
 				self.scene.add( mesh );
 			},this.onProgressModel, this.onErrorModel );
 		}
-
 
 		LoadFBX(filename){
 			var filepath = "/assets/" + filename;
@@ -336,7 +419,6 @@ module ThreejsAPI{
 			}, this.onProgressModel, this.onErrorModel);
 		}
 
-
 		initPhysics(){
 			if(this.setPhysicsType[this.physicsIndex] == 'Oimo.js'){
 				this.initOimoPhysics();
@@ -386,6 +468,7 @@ module ThreejsAPI{
 	        buffgeoBack.fromGeometry( new THREE.IcosahedronGeometry(8000,1) );
 	        var back = new THREE.Mesh( buffgeoBack, new THREE.MeshBasicMaterial( { map:this.gradTexture([[1,0.75,0.5,0.25], ['#1B1D1E','#3D4143','#72797D', '#b0babf']]), side:THREE.BackSide, depthWrite: false }  ));
 	        back.geometry.applyMatrix(new THREE.Matrix4().makeRotationZ(15*this.ToRad));
+			back.name = "skybox";
 	        this.scene.add( back );
 		}
 
@@ -566,7 +649,7 @@ module ThreejsAPI{
 		}
 
 		destroyCannonPhysics(){
-
+			console.log('destroyCannonPhysics');
 		}
 
 		// Ammo
@@ -868,7 +951,7 @@ module ThreejsAPI{
 		}
 
 		destroyOimoPhysics(){
-
+			console.log('destroyOimoPhysics');
 		}
 
 		createscene_cube(){

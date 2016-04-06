@@ -1,6 +1,5 @@
 //http://w2ui.com/web/demos/#!sidebar/sidebar-2
 
-
 /*
 fa fa-file-audio-o
 fa fa-file-archive-o
@@ -33,7 +32,7 @@ fa fa-wrench
 //$(document).ready(function () {
 function initEditor(){
 	console.log('init editor panel');
-	var canvas_html ='<canvas id="myCanvas">'+
+	var canvas_html ='<canvas width="800px" height="600px" id="myCanvas">'+
 	'<form  action="/file-upload" method="post" class="dropzone" enctype="multipart/form-data">'+
 		'<div class="fallback">'+
 			'<input name="project" type="text" value="threejseditor"/>'+
@@ -92,7 +91,7 @@ function initEditor(){
 			},
 			{ type: 'main', style: pstyle, resizable: false, overflow: 'hidden', content: canvas_html  },
 			//{ type: 'preview', size: '10%', resizable: true, style: pstyle, content: 'debug' },
-			{ type: 'right', size: 200, resizable: true, style: pstyle, content: '',
+			{ type: 'right', size: 300, resizable: true, style: pstyle, content: '',
 				toolbar: {
 					items: [
 						{ type: 'button',  id: 'contentrefresh',  caption: '', icon: 'fa fa-refresh', hint: 'Refresh Node list' },
@@ -134,42 +133,59 @@ function initEditor(){
 		}
 	}));
 
-
 	//Node Sidebar
 	$().w2sidebar({
 		name: 'sidebar_content',
 		img: null,
+		expanded:true,
 		nodes: [
-			{ id: 'scene', text: 'scene', img: 'icon-folder', expanded: true, group: true,
-			  nodes: [ { id: 'level-1-1', text: 'Level 1.1', icon: 'fa fa-file' },
-					   { id: 'level-1-2', text: 'Level 1.2', icon: 'fa fa-file' },
-					   { id: 'level-1-3', text: 'Level 1.3', icon: 'fa fa-file' }
-					 ]
-			}
+			{ id: 'ContentNode', text: 'Node', img: 'icon-folder', expanded: true, group: true }
 		],
 		onClick: function (event) {
 			//w2ui['layout'].content('main', 'id: ' + event.target);
 			console.log( 'id: ' + event.target);
+			//list all objects node scene
+			for (var i = 0; i < threejsapi.scenenodes.length;i++){
+				//console.log(threejsapi.scenenodes[i]);
+				if(event.target == threejsapi.scenenodes[i].uuid){
+					//console.log(threejsapi.scenenodes[i]);
+					NodeSelectObject({object:threejsapi.scenenodes[i]});
+					break;
+				}
+			}
 		}
 	});
+
+
+
+
 
 	//props sidebar
 	$().w2sidebar({
 		name: 'sidebar_props',
 		img: null,
 		nodes: [
-			{ id: 'object', text: 'Object', img: 'icon-folder', expanded: true, group: true,
-			  nodes: [ { id: 'string', text: 'string', icon: 'fa fa-file' },
-					   { id: 'number', text: 'number', icon: 'fa fa-file' },
-					   { id: 'boolean', text: 'boolean', icon: 'fa fa-file' }
-					 ]
+			{ id: 'NObject', text: 'Object', img: 'icon-folder', expanded: true, group: true//,
+			  //nodes: [ { id: 'string', text: 'string', icon: 'fa fa-file' },
+					   //{ id: 'number', text: 'number', icon: 'fa fa-file' },
+					   //{ id: 'boolean', text: 'boolean', icon: 'fa fa-file' }
+					 //]
 			}
 		],
 		onClick: function (event) {
 			//w2ui['layout'].content('main', 'id: ' + event.target);
-			console.log( 'id: ' + event.target);
+			//console.log( 'id: ' + event.target);
 		}
 	});
+
+	w2ui.sidebar_props.on('*', function (id, data) {
+		//console.log(id);
+		//console.log(data);
+		//console.log(' TARGET: '+ event.target);
+		//threejsapi.toolbar(event.target);
+		//console.log(' TARGET: '+ event.target, event);
+        //console.log('EVENT: '+ event.type + ' TARGET: '+ event.target, event);
+    });
 
 	var pstyle = 'background-color: #F0F0C1; border: 1px solid #dfdfdf; padding: 0px;';
 
@@ -178,7 +194,7 @@ function initEditor(){
 		 name: 'layout_props',
 		 panels: [
 			 { type: 'main', size: 200,resizable: true, style: pstyle, content: w2ui['sidebar_content'] },
-			 { type: 'preview', size: 200, resizable: true, style: pstyle, content:w2ui['sidebar_props'],
+			 { type: 'preview', size: 400, resizable: true, style: pstyle, content:w2ui['sidebar_props'],
 				 toolbar: {
 					 items: [
 						 { type: 'button',  id: 'contentrefresh',  caption: '', icon: 'fa fa-refresh', hint: 'Refresh Nodes' },
@@ -201,7 +217,7 @@ function initEditor(){
 						 //console.log( 'id: ' + event.target);
 						 //RefreshScene();
 						 if(event.target == 'contentrefresh'){
-							 RefreshContent();
+							 NodePropsRefresh();
 						 }
 					 }
 				 }
@@ -214,7 +230,6 @@ function initEditor(){
 	//toolbar top
 	$().w2toolbar({
 		name: 'toolbar',
-
 		items: [
 			{ type: 'menu',   id: 'EditorFile', caption: 'File', items: [
 				{type:'button', text: 'Open', icon: 'icon-page'},
@@ -231,6 +246,26 @@ function initEditor(){
 				{ text: 'Clear History', icon: 'icon-page' },
 			]},
 			{ type: 'menu',   id: 'EditorComponents', caption: 'Components', items: [
+				{ text: 'Mesh', icon: 'fa fa-cube' },
+				{ text: 'BoxGeometry', icon: 'fa fa-cube' },
+				{ text: 'CircleGeometry', icon: 'fa fa-cube' },
+				{ text: 'CylinderGeometry', icon: 'fa fa-cube' },
+				{ text: 'SphereGeometry', icon: 'fa fa-cube' },
+				{ text: 'ShapeGeometry', icon: 'fa fa-cube' },
+				{ text: 'PlaneGeometry', icon: 'fa fa-cube' },
+
+				//{ text: 'RingGeometry', icon: 'fa fa-cube' },
+				//{ text: 'TorusGeometry', icon: 'fa fa-cube' },
+				//{ text: 'TorusKnotGeometry', icon: 'fa fa-cube' },
+
+				{ text: 'TextGeometry', icon: 'fa fa-cube' },
+
+				//{ text: 'Tetrahedron', icon: 'fa fa-cube' },
+				//{ text: 'OctahedronGeometry', icon: 'fa fa-cube' },
+				//{ text: 'DodecahedronGeometry', icon: 'fa fa-cube' },
+				//{ text: 'IcosahedronGeometry', icon: 'fa fa-cube' },
+
+				{ text:'',type: 'break', id: 'break' },
 				{ text: 'model', icon: 'fa fa-cube' },
 				{ text: 'texture', icon: 'fa fa-file-image-o' },
 				{ text: 'material', icon: 'fa fa-file-image-o' },
@@ -261,6 +296,9 @@ function initEditor(){
 	w2ui['layout'].content('top', w2ui['toolbar']);
 
 	w2ui.toolbar.on('*', function (event) {
+		//console.log(' TARGET: '+ event.target);
+		threejsapi.toolbar(event.target);
+		//console.log(' TARGET: '+ event.target, event);
         //console.log('EVENT: '+ event.type + ' TARGET: '+ event.target, event);
     });
 

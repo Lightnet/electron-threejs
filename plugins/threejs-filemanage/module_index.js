@@ -68,6 +68,7 @@ var exts = [
 	'.json'
 ];
 
+//check file ext before write to the tmp
 function fileFilter (req, file, cb) {
 	var bmatch = false;
 	//console.log(file);
@@ -149,7 +150,6 @@ module.exports.setroute = function(routes,app){
 			return;
 		}
 
-		//console.log(req.body);
 		var file = __dirname + "/public/assets/" + req.file.originalname;
 		var fileproject = "/assets/" + req.file.originalname;
 
@@ -157,6 +157,7 @@ module.exports.setroute = function(routes,app){
 			connection.use('test');
 			//console.log(rethinkdb);
 			//rethinkdb.table('assets').filter(rethinkdb.row('name').eq(req.file.originalname) & ).
+			//check project id and file name
 			rethinkdb.table('assets').filter(rethinkdb.row('name').eq(req.file.originalname).and( rethinkdb.row('projectid').eq(req.query.projectid)) ).
     			run(connection, function(err, cursor) {
         			if (err) throw err;
@@ -165,7 +166,7 @@ module.exports.setroute = function(routes,app){
 							console.log("err");
 							console.log(err);
 						};
-						if(result.length == 0){
+						if(result.length == 0){//if file not found in the list add to table
 							console.log("Not Found");
 							var assetfiletmp = assetfile;
 							assetfiletmp.name = req.file.originalname;
@@ -177,7 +178,7 @@ module.exports.setroute = function(routes,app){
 								console.log("insert asset");
 				    			console.log(JSON.stringify(result, null, 2));
 							});
-						}else{
+						}else{//else update //need to change this.
 							console.log("Found Data, Update");
 							/*
 							var assetfiletmp = assetfile;
@@ -200,8 +201,8 @@ module.exports.setroute = function(routes,app){
 
 		}
 
-		fs.readFile( req.file.path, function (err, data) {
-	        fs.writeFile(file, data, function (err) {
+		fs.readFile( req.file.path, function (err, data) {//read tmp file
+	        fs.writeFile(file, data, function (err) {//write file and data
 	         if( err ){
 	              console.log( err );
 	         }else{
@@ -230,7 +231,7 @@ module.exports.socketio_connect = function(io, socket){
 		console.log('getassets:'+data);
 		if((rethinkdb !=null)&&(connection !=null)){
 			connection.use('test');
-			rethinkdb.table('assets').filter(rethinkdb.row('projectid').eq(data)).
+			rethinkdb.table('assets').filter(rethinkdb.row('projectid').eq(data)). //get the assets files list
     			run(connection, function(err, cursor) {
         			if (err) throw err;
         			cursor.toArray(function(err, result) {
@@ -239,9 +240,9 @@ module.exports.socketio_connect = function(io, socket){
 							console.log(err);
 						};
 						//clear data
-						socket.emit('assets',{action:'clear'});
+						socket.emit('assets',{action:'clear'}); //clear assets editor list
 						//send assets list
-						for (var i = 0; i < result.length;i++){
+						for (var i = 0; i < result.length;i++){ //write object socket.io client editor
 							console.log(result[i]);
 							socket.emit('assets',{
 								action:'add',
@@ -263,7 +264,7 @@ module.exports.socketio_connect = function(io, socket){
 			if(data['action'] == 'rename'){
 				console.log(data['name']);
 				console.log(data['name'].lastIndexOf('../'));
-				if(data['name'].lastIndexOf('../') >= 0){
+				if(data['name'].lastIndexOf('../') >= 0){ //check if file doesn't change the path
 					console.log('error path ../ not aollow');
 					return;
 				}
@@ -271,7 +272,7 @@ module.exports.socketio_connect = function(io, socket){
 
 				for(var i in exts) {
 					//console.log(exts[i]);
-					if( path.extname(data['name'] ) == exts[i] ){
+					if( path.extname(data['name'] ) == exts[i] ){//check if ext files to block not added to the list of exts.
 						bmatch = true;
 						break;
 					}
@@ -284,7 +285,7 @@ module.exports.socketio_connect = function(io, socket){
 
 				var dirpath = __dirname +"/public/";
 				var assetspath = "/assets/" + data['name'] ;
-				rethinkdb.table('assets').filter(rethinkdb.row('id').eq(data['id']).and( rethinkdb.row('projectid').eq(data['projectid'])) ).
+				rethinkdb.table('assets').filter(rethinkdb.row('id').eq(data['id']).and( rethinkdb.row('projectid').eq(data['projectid'])) ). //update projectid and assets id
 	    			run(connection, function(err, cursor) {
 	        			if (err) throw err;
 	        			cursor.toArray(function(err, result) {
@@ -300,7 +301,7 @@ module.exports.socketio_connect = function(io, socket){
 									update({name:data['name'],path:assetspath}). //set path assets file
 									run(connection, function(err, result1) {
 										if (err) throw err;
-										fs.rename(dirpath + '/assets/' + result[0]['name'], dirpath + "/assets/" + data['name'], function(err) {
+										fs.rename(dirpath + '/assets/' + result[0]['name'], dirpath + "/assets/" + data['name'], function(err) { //update the file name changes
 						    				if ( err ) console.log('ERROR: ' + err);
 											dirpath = null;
 											assetspath = null;
@@ -313,14 +314,14 @@ module.exports.socketio_connect = function(io, socket){
 							//console.log(JSON.stringify(result, null, 2));
 						});
 					});
-					
+
 			}
 			if(data['action'] == 'delete'){
 				if((rethinkdb !=null)&&(connection !=null)){
 					console.log('DELETE');
 					connection.use('test');
 					//console.log(data);
-					rethinkdb.table('assets').filter(rethinkdb.row('id').eq(data['id'])).
+					rethinkdb.table('assets').filter(rethinkdb.row('id').eq(data['id'])). //assets look up id
 		    			run(connection, function(err, cursor) {
 		        			if (err) throw err;
 		        			cursor.toArray(function(err, result) {
@@ -331,7 +332,7 @@ module.exports.socketio_connect = function(io, socket){
 								console.log();
 								rethinkdb.table('assets').get(result[0]['id']).
 									delete().
-									run(connection, function(err, result1) {
+									run(connection, function(err, result1) { //this will delete the table id assets
 										fs.unlinkSync(__dirname +"/public/"+ result[0]['path']);//delete tmp file once finish
 										socket.emit('refreshassets',{});
         								if (err) throw err;

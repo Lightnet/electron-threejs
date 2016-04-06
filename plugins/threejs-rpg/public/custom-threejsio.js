@@ -9,9 +9,11 @@ var assets_select;
 var contents = [];
 var content_select;
 
+var selectnodeprops;
 var props = [];
-var props_select;
+//var props_select;
 
+//get file ext
 function getext(filename){
 	return filename.substr(filename.lastIndexOf('.'));
 }
@@ -23,12 +25,13 @@ socketio.on('connect',()=>{
 		initDropzone();
 		threejsapi = new ThreejsAPI.Game({onload:false});
 		RefreshAssets();
+		RefreshContent();
+		NodePropsRefresh();
 	}
 });
 
 socketio.on('refreshassets',(data)=>{
 	//console.log('test refresh');
-
 	//if(threejsapi == null){
 		console.log('test refresh');
 		RefreshAssets();
@@ -100,7 +103,6 @@ socketio.on('assets',(data)=>{
    			]);
 		}
 	}
-
 	//console.log('connect.');
 	//initEditor();
 });
@@ -108,8 +110,8 @@ socketio.on('assets',(data)=>{
 function RefreshAssets(){
 	console.log('refresh assets socket.io');
 	//if(socketio !=null){
-		console.log('assets???');
-		console.log(socketio);
+		//console.log('assets???');
+		//console.log(socketio);
 		socketio.emit('getassets','threejseditor');
 	//}
 }
@@ -127,12 +129,6 @@ function RenameAssets(){
 				socketio.emit('assets',{action:"rename",projectid:'threejseditor',id:assets[i].id,name:rename});
 			}
 		}
-	//}
-
-
-	//if(socketio !=null){
-		//console.log('assets???');
-		//socketio.emit('getassets','threejseditor');
 	//}
 }
 
@@ -159,23 +155,117 @@ function RefreshScript(){
 
 function RefreshContent(){
 	console.log('refresh Content');
-	//w2ui.sidebar_content
 	removenodelist(w2ui.sidebar_content, w2ui.sidebar_content.nodes[0].nodes);
-	//if(socketio !=null){
-		//console.log('scene???');
-		//socketio.emit('getscene','threejseditor');
-	//}
+	//display top layer is scene & camera
+	for(var i = 0; i < threejsapi.scenenodes.length; i++){
+		if(threejsapi.scenenodes[i].type == "PerspectiveCamera"){
+			w2ui.sidebar_content.insert('ContentNode', null, [
+				{ id: threejsapi.scenenodes[i].uuid, text: threejsapi.scenenodes[i].name, icon: 'fa fa-cube' },
+			]);
+			listThreejsObjectScene(threejsapi.scenenodes[i].children);
+		}
+
+		if(threejsapi.scenenodes[i].type == "Scene"){
+			w2ui.sidebar_content.insert('ContentNode', null, [
+				{ id: threejsapi.scenenodes[i].uuid, text: threejsapi.scenenodes[i].name, icon: 'fa fa-cube' },
+			]);
+			listThreejsObjectScene(threejsapi.scenenodes[i].children);
+		}
+	}
+}
+
+function listThreejsObjectScene(nodes){
+	if(nodes.length > 0){
+		for(var i = 0; i < nodes.length; i++){
+			//console.log(nodes[i].name);
+			var bfound = false;
+			for(var n = 0; n < threejsapi.scenenodes.length;n++){
+				if(nodes[i].uuid == threejsapi.scenenodes[n].uuid){
+					//console.log(nodes[i].uuid);
+					//console.log(threejsapi.scenenodes[n].uuid);
+					bfound = true;
+					break;
+				}
+			}
+
+			if(bfound == false){
+				bfound = null;
+			}
+
+			if(bfound == true){
+				bfound = null;
+				w2ui.sidebar_content.insert(nodes[i].parent.uuid, null, [
+					{ id: nodes[i].uuid, text: nodes[i].name, icon: 'fa fa-cube' },
+				]);
+				w2ui.sidebar_content.expand(nodes[i].parent.uuid);
+
+				if(nodes[i].children.length > 0){
+					listThreejsObjectScene(nodes[i].children);
+				}
+			}
+		}
+	}
+}
+
+function NodePropsRefresh(){
+	//http://stackoverflow.com/questions/28819815/updating-a-variable-when-input-changes-in-jquery
+	removenodelist(w2ui.sidebar_props, w2ui.sidebar_props.nodes[0].nodes);
+	if(selectnodeprops !=null){
+		if(selectnodeprops.name !=null){
+			w2ui.sidebar_props.insert('NObject', null, [
+				{ id:'position0', text: 'Name:<input id="obj_name" type="text" value="' + selectnodeprops.name + '" />'
+										, icon: 'fa fa-cube' }
+			]);
+			setTimeout(()=>{
+				$('#obj_name').change(function(e) {
+					console.log("change?");
+					selectnodeprops.name = e.target.value;
+				});
+			},50);
+		}
+
+		if(selectnodeprops.position !=null){
+			w2ui.sidebar_props.insert('NObject', null, [
+				{ id:'obj_position', text: 'x:<input id="obj_position_x" type="text" value="' + selectnodeprops.position.x + '" /><br>'+
+										'y:<input id="obj_position_y" type="text" value="' + selectnodeprops.position.y + '"/><br>'+
+										'z:<input id="obj_position_z" type="text" value="' + selectnodeprops.position.z + '"/>'
+										, icon: 'fa fa-cube' }
+			]);
+			setTimeout(()=>{
+				$('#obj_position_x').change(function(e) {
+					console.log("change?");
+					selectnodeprops.position.x = e.target.value;
+				});
+				$('#obj_position_y').change(function(e) {
+					console.log("change?");
+					selectnodeprops.position.y = e.target.value;
+				});
+				$('#obj_position_z').change(function(e) {
+					console.log("change?");
+					selectnodeprops.position.z = e.target.value;
+				});
+			},50);
+		}
+	}
+	//listThreejsObjectScene(threejsapi.scenenodes[i].children);
+}
+
+
+function NodeSelectObject(args){
+	console.log('selected object');
+	if(args !=null){
+		if(args['object'] !=null){
+			selectnodeprops = args['object'];
+			NodePropsRefresh();
+		}
+	}
 }
 
 function DeleteContent(){
 	console.log('refresh Content');
 }
 
-
-
-
-
-
+//sidebar node remove list from nodes and childs
 function removenodelist(obj,nodes){
 	while (true){
 		if(0 == nodes.length){
