@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html  ng-app="changeExample">
+	<head>
+		<meta charset=utf-8>
+		<title>My first Three.js app</title>
+		<link rel="stylesheet" href="css/index.css">
+		<style>
+			* {
+				color: blue;
+			}
+			body { margin: 0px; width: 100%; height: 100%;border: 0;overflow: hidden;}
+			canvas { top:0px;left:0px; width: 100%; height: 100%;margin: 0px; }
+			#objectprops {position: absolute; color:white;top:0px;left:0px; margin: 0px; }
+		</style>
+		<script src="lodash.min.js"></script>
+		<script src="jquery.min.js"></script>
+		<script src="react.js"></script>
+		<script src="react-dom.js"></script>
+		<script src="angular.min.js"></script>
+		<script src="js/three.min.js"></script>
+		<script src="angular_threejs.js"></script>
+		<script>
+		</script>
+	</head>
+	<body>
+
+		<script src="threejsscene.js"></script>
+
+		<div id="objectprops">
+			<div id="uuid"></div>
+			<div id="visible"></div>
+			<div id="name"></div>
+			<div id="posx"></div>
+			<div id="posy"></div>
+			<div id="posz"></div>
+
+			<div id="props"></div>
+			<div ng-controller="ControllerText" ng-init="init('uuid')">
+				<span ng-bind="name"></span>
+			</div>
+
+
+			<div ng-controller="ControllerBoolean">
+				<input type="checkbox" ng-model="confirmed" ng-change="change()" ng-init="init('visible')" />
+			</div>
+			<div ng-controller="ControllerInput">
+				<input type="input" ng-change="inputchange()" ng-model="value" ng-value="value" ng-init="init('name')" />
+			</div>
+
+			<div ng-controller="ControllerInput">
+				<input type="input" ng-change="inputchange()" ng-model="value" ng-value="value" ng-init="init('position.x')"  />
+			</div>
+			<div ng-controller="ControllerInput">
+				<input type="input" ng-change="inputchange()" ng-model="value" ng-value="value" ng-init="init('position.y')" />
+			</div>
+			<div ng-controller="ControllerInput">
+				<input type="input" ng-change="inputchange()" ng-model="value" ng-value="value" ng-init="init('position.z')" />
+			</div>
+
+			<div ng-controller="ExampleControllerAdd">
+				<button ng-click="additem()" > Add </button>
+				<ul>
+			    <li ng-repeat="object in items">
+			      <span>{{object.item}}</span>
+			    </li>
+			  </ul>
+			</div>
+		</div>
+<!--
+		<div >
+			Search: <input ng-model="query">
+			<ul>
+			    <li ng-repeat="phone in phones">
+			      <span>{{phone.name}}</span>
+			      <p>{{phone.snippet}}</p>
+			    </li>
+			  </ul>
+		</div>
+	-->
+
+
+
+
+		<script>
+		</script>
+
+	</body>
+</html>

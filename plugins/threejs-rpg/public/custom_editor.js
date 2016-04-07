@@ -189,7 +189,8 @@ function initEditor(){
 					 }
 				 }
 		 	 },
-			 { type: 'preview', size: 300, resizable: true, style: pstyle, content:w2ui['sidebar_props'],
+			 //{ type: 'preview', size: 300, resizable: true, style: pstyle, content:w2ui['sidebar_props'],
+			 { type: 'preview', size: 300, resizable: true, style: pstyle, content:'<div id="objectprops"></div>',
 				 toolbar: {
 					 items: [
 						 { type: 'button',  id: 'contentrefresh',  caption: '', icon: 'fa fa-refresh', hint: 'Refresh Nodes' },

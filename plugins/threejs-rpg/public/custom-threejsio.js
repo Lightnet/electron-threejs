@@ -214,6 +214,14 @@ function NodePropsRefresh(){
 		//http://stackoverflow.com/questions/4602141/variable-name-as-a-string-in-javascript
 		//http://jsfiddle.net/karim79/v8FhM/1/
 
+
+
+
+		//ReactDOM.render(
+  			//React.createElement('h1', null, 'Hello, world!'),
+  			//document.getElementById('objectprops')
+		//);
+
 		console.log(selectnodeprops);
 		//for(key in selectnodeprops){
 			//console.log(key + ': ' + selectnodeprops[key]);
@@ -246,118 +254,145 @@ function NodePropsRefresh(){
 		*/
 
 
-		if(selectnodeprops.id !=null){
-			w2ui.sidebar_props.insert('NObject', null, [
-				{ id:selectnodeprops.uuid, text:'ID:'+ selectnodeprops.uuid
-										, icon: 'fa fa-cube' }
-			]);
-		}
+		//w2ui.sidebar_props.add([
+			 //{ id: 'scripts', text: 'scripts', icon: 'w2ui-icon-check' ,expanded: true, group: true}
+		 //]);
+		 //SidebarPropsVar({parent:'scripts',type:'input',obj:selectnodeprops,param:'position.z'});
+		/*
+		SidebarPropsVar({parent:'NObject',type:'label',obj:selectnodeprops,param:'uuid'});
 
-		if(selectnodeprops.visible !=null){
-			w2ui.sidebar_props.insert('NObject', null, [
-				{ id:'obj_visible', text:'boolean: <input id="obj_visible" type="checkbox">'
-										, icon: 'fa fa-cube' }
-			]);
-			setTimeout(()=>{
-				document.getElementById("obj_visible").checked = selectnodeprops.visible;
-				$('#obj_visible').change(function(e) {
-					//console.log( e.target.value);
-					//console.log( e.target);
-					console.log( document.getElementById("obj_visible").checked);
-					selectnodeprops.visible = document.getElementById("obj_visible").checked;
-				});
-			},50);
-		}
+		SidebarBooleanProps('NObject',selectnodeprops,'visible');
 
-		if(selectnodeprops.name !=null){
-			w2ui.sidebar_props.insert('NObject', null, [
-				{ id:'position0', text: 'Name:<input id="obj_name" type="text" value="' + selectnodeprops.name + '" />'
-										, icon: 'fa fa-cube' }
-			]);
-			setTimeout(()=>{
-				$('#obj_name').change(function(e) {
-					console.log("change?");
-					selectnodeprops.name = e.target.value;
-				});
-			},50);
-		}
-
-		if(selectnodeprops.position !=null){
-			w2ui.sidebar_props.insert('NObject', null, [
-				{ id:'obj_position', text: 'x:<input id="obj_position_x" type="text" value="' + selectnodeprops.position.x + '" /><br>'+
-										'y:<input id="obj_position_y" type="text" value="' + selectnodeprops.position.y + '"/><br>'+
-										'z:<input id="obj_position_z" type="text" value="' + selectnodeprops.position.z + '"/>'
-										, icon: 'fa fa-cube' }
-			]);
-			setTimeout(()=>{
-				$('#obj_position_x').change(function(e) {
-					console.log("change?");
-					selectnodeprops.position.x = e.target.value;
-				});
-				$('#obj_position_y').change(function(e) {
-					console.log("change?");
-					selectnodeprops.position.y = e.target.value;
-				});
-				$('#obj_position_z').change(function(e) {
-					console.log("change?");
-					selectnodeprops.position.z = e.target.value;
-				});
-			},50);
-		}
-
-		if(selectnodeprops.rotation !=null){
-			w2ui.sidebar_props.insert('NObject', null, [
-				{ id:'obj_rotation', text: 'x:<input id="obj_rotation_x" type="text" value="' + selectnodeprops.rotation.x + '" /><br>'+
-										'y:<input id="obj_rotation_y" type="text" value="' + selectnodeprops.rotation.y + '"/><br>'+
-										'z:<input id="obj_rotation_z" type="text" value="' + selectnodeprops.rotation.z + '"/>'
-										, icon: 'fa fa-cube' }
-			]);
-			setTimeout(()=>{
-				$('#obj_rotation_x').change(function(e) {
-					console.log("change?");
-					selectnodeprops.rotation.x = e.target.value;
-				});
-				$('#obj_rotation_y').change(function(e) {
-					console.log("change?");
-					selectnodeprops.rotation.y = e.target.value;
-				});
-				$('#obj_rotation_z').change(function(e) {
-					console.log("change?");
-					selectnodeprops.rotation.z = e.target.value;
-				});
-			},50);
-		}
-
-		if(selectnodeprops.scale !=null){
-			w2ui.sidebar_props.insert('NObject', null, [
-				{ id:'obj_scale', text: 'x:<input id="obj_scale_x" type="text" value="' + selectnodeprops.scale.x + '" /><br>'+
-										'y:<input id="obj_scale_y" type="text" value="' + selectnodeprops.scale.y + '"/><br>'+
-										'z:<input id="obj_scale_z" type="text" value="' + selectnodeprops.scale.z + '"/>'
-										, icon: 'fa fa-cube' }
-			]);
-			setTimeout(()=>{
-				$('#obj_scale_x').change(function(e) {
-					console.log("change?");
-					selectnodeprops.scale.x = e.target.value;
-				});
-				$('#obj_scale_y').change(function(e) {
-					console.log("change?");
-					selectnodeprops.scale.y = e.target.value;
-				});
-				$('#obj_scale_z').change(function(e) {
-					console.log("change?");
-					selectnodeprops.scale.z = e.target.value;
-				});
-			},50);
-		}
+		SidebarPropsVar({parent:'NObject',type:'input',obj:selectnodeprops,param:'name'});
 
 
+		SidebarPropsVar({parent:'NObject',type:'input',obj:selectnodeprops,param:'position.x'});
+		SidebarPropsVar({parent:'NObject',type:'input',obj:selectnodeprops,param:'position.y'});
+		SidebarPropsVar({parent:'NObject',type:'input',obj:selectnodeprops,param:'position.z'});
+
+		SidebarPropsVar({parent:'NObject',type:'input',obj:selectnodeprops,param:'rotation.x'});
+		SidebarPropsVar({parent:'NObject',type:'input',obj:selectnodeprops,param:'rotation.y'});
+		SidebarPropsVar({parent:'NObject',type:'input',obj:selectnodeprops,param:'rotation.z'});
 
 
+		SidebarPropsVar({parent:'NObject',type:'input',obj:selectnodeprops,param:'scale.x'});
+		SidebarPropsVar({parent:'NObject',type:'input',obj:selectnodeprops,param:'scale.y'});
+		SidebarPropsVar({parent:'NObject',type:'input',obj:selectnodeprops,param:'scale.z'});
+		*/
 	}
 	//listThreejsObjectScene(threejsapi.scenenodes[i].children);
 }
 
+//work boolean
+function SidebarBooleanProps(id,obj,variable){
+	if(obj[variable] !=null){
+		w2ui.sidebar_props.insert(id, null, [
+			{ id:'obj_'+obj.id+'_'+variable, text: variable + ':<input id="' + ('obj_'+obj.id+'_'+variable)  +  '" type="checkbox" />', icon: 'fa fa-cube' }
+		]);
+		setTimeout(()=>{
+				document.getElementById(('obj_'+obj.id+'_'+variable)).checked = selectnodeprops.visible;
+			$( ('#'+'obj_'+obj.id+'_'+variable) ).change(function(e) {
+				console.log("change?");
+				selectnodeprops.visible = document.getElementById(('obj_'+obj.id+'_'+variable)).checked;
+			});
+		},50);
+	}
+}
+
+var _ReactBoolean = React.createClass({
+	propType:{
+		value: React.PropTypes.object.isRequired
+	},
+	getInitialState: function() {
+		return {
+    		value: _.get(this.props.obj, this.props.params) //set variable
+  		}
+	},
+	handleChange: function(event) {
+  		this.setState({
+    		value: event.target.checked
+  		});
+		//console.log(event.target.value);
+		//console.log(event.target.checked);
+		_.set(this.props.obj, this.props.params, event.target.checked);
+		//RefreshContent();//update real time when keyboard is press
+	},
+	render: function() {
+		return React.createElement("input", {
+												type: "checkbox",
+												onChange:this.handleChange,
+												checked :this.state.value
+											});
+	}
+});
+//class input reactjs
+var _ReactInput = React.createClass({
+	propType:{
+		value: React.PropTypes.object.isRequired
+	},
+	getInitialState: function() {
+		return {
+    		value: _.get(this.props.obj, this.props.params) //set variable
+  		}
+	},
+	onNameInput:function(syntheticEvent) {
+		//console.log(syntheticEvent);
+		//console.log(this.props);
+		//console.log(syntheticEvent.target.value);
+		//console.log(syntheticEvent.type);
+		_.set(this.props.obj, this.props.params, syntheticEvent.target.value);
+		//console.log(this.props.obj);
+	},
+	handleChange: function(event) {
+  		this.setState({
+    		value: event.target.value
+  		});
+		RefreshContent();//update real time when keyboard is press
+	},
+	render: function() {
+		return React.createElement("input", {
+												type: "text",
+												onInput:this.onNameInput,
+												onChange:this.handleChange,
+												value:this.state.value
+											});
+	}
+});
+//set input params from object data string
+function _reactSetInput(args){
+	if(args !=null){
+		ReactDOM.render(React.createElement(_ReactInput,{obj:args['obj'],params:args['param']}),
+		document.getElementById(
+			('obj_'+args['obj']['id']+'_'+args['param'])
+		));
+	}
+}
+
+//http://stackoverflow.com/questions/8051975/access-object-child-properties-using-a-dot-notation-string
+function SidebarPropsVar(args){
+	if(args !=null){
+		if((args['type'] == 'label')&&(args['param'] != null)){//label
+			w2ui.sidebar_props.insert(args['parent'], null, [
+				{ id:'obj_'+args['obj']['id']+'_'+args['param'], text: args['param']+':'+ args['obj'][args['param']] , icon: 'fa fa-cube' }
+			]);
+		}
+		if((args['type'] == 'input')&&(args['param'] != null)){//input text
+			//console.log(  ('obj_'+args['obj']['id']+'_'+args['param'])  );
+			w2ui.sidebar_props.insert(args['parent'], null, [
+				{ id:'obj_'+args['obj']['id']+'_'+args['param'],
+				  icon: 'fa fa-cube',
+				  text: args['param'] + ':<div id="' + ('obj_'+args['obj']['id']+'_'+args['param']) + '" />' }
+				  //text: args['param'] + ':<input id="' + ('obj_'+'_'+args['param']) + '" type="text" value="' + '' + '" />' }
+			]);
+			//if(args['param'] != 'name'){
+				setTimeout(()=>{
+					//console.log('set: ' + args['param']);
+					_reactSetInput(args);
+				},200);
+			//}
+		}
+	}
+}
 
 function NodeSelectObject(args){
 	console.log('selected object');
@@ -371,6 +406,15 @@ function NodeSelectObject(args){
 
 function DeleteContent(){
 	console.log('refresh Content');
+}
+
+function SideBarAddNode(obj,_id,childid,name){
+	obj.insert(_id, null, [
+		{ id: childid, text: name, icon: 'fa fa-cube' },
+	]);
+	//setTimeout(()=>{
+		//obj.expand(_id);
+	//},50);
 }
 
 //sidebar node remove list from nodes and childs

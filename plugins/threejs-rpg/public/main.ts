@@ -116,11 +116,11 @@ module ThreejsAPI{
 			if(args != null){
 				if(args['onload'] == true){
 					this.addListener("load", window,()=>{
-						console.log('init listen...');
+						//console.log('init listen...');
 						this.init();
 					});
 				}else{
-					console.log('init...');
+					//console.log('init...');
 					this.init();
 				}
 			}else{
@@ -141,7 +141,7 @@ module ThreejsAPI{
 		}
 
 		init(){
-			console.log("init");
+			console.log("init threejs engine");
 			this.initManger();
 
 			this.camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 10000 );
@@ -149,13 +149,13 @@ module ThreejsAPI{
 			//this.camera.position.set( 0, 160, 400 );
 			//this.camera.position.set( 0, 10, 10 );
 			this.camera.position.set( 0, 0, 10 );
-			console.log(this.camera);
+			//console.log(this.camera);
 			this.scenenodes.push(this.camera);
 
 			this.scene = new THREE.Scene();
 			this.scene.name = "scene";
 			this.scenenodes.push(this.scene);
-			console.log(this.scene);
+			//console.log(this.scene);
 			this.canvas = document.getElementById('myCanvas');
 			this.renderer = new THREE.WebGLRenderer({canvas:this.canvas,precision: "mediump",antialias:this.antialias});
 			if(this.brenderersize){
