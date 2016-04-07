@@ -211,6 +211,64 @@ function NodePropsRefresh(){
 	//http://stackoverflow.com/questions/28819815/updating-a-variable-when-input-changes-in-jquery
 	removenodelist(w2ui.sidebar_props, w2ui.sidebar_props.nodes[0].nodes);
 	if(selectnodeprops !=null){
+		//http://stackoverflow.com/questions/4602141/variable-name-as-a-string-in-javascript
+		//http://jsfiddle.net/karim79/v8FhM/1/
+
+		console.log(selectnodeprops);
+		//for(key in selectnodeprops){
+			//console.log(key + ': ' + selectnodeprops[key]);
+			//console.log(typeof key);
+			//console.log(key);
+			//console.log(typeof selectnodeprops[key]);
+		//}
+		/*
+			//scene
+			selectnodeprops.layers.mask
+			selectnodeprops.position
+			selectnodeprops.quaternion
+			selectnodeprops.rotation
+			selectnodeprops.scale
+			selectnodeprops.type
+			selectnodeprops.userData
+			selectnodeprops.visible
+			//mesh
+			selectnodeprops.castShadow
+			selectnodeprops.drawMode
+			selectnodeprops.geometry
+			selectnodeprops.frustumCulled
+			selectnodeprops.material
+			selectnodeprops.parent
+			// other low
+			selectnodeprops.traverse
+			selectnodeprops.toJSON
+			selectnodeprops.clone
+			selectnodeprops.add
+		*/
+
+
+		if(selectnodeprops.id !=null){
+			w2ui.sidebar_props.insert('NObject', null, [
+				{ id:selectnodeprops.uuid, text:'ID:'+ selectnodeprops.uuid
+										, icon: 'fa fa-cube' }
+			]);
+		}
+
+		if(selectnodeprops.visible !=null){
+			w2ui.sidebar_props.insert('NObject', null, [
+				{ id:'obj_visible', text:'boolean: <input id="obj_visible" type="checkbox">'
+										, icon: 'fa fa-cube' }
+			]);
+			setTimeout(()=>{
+				document.getElementById("obj_visible").checked = selectnodeprops.visible;
+				$('#obj_visible').change(function(e) {
+					//console.log( e.target.value);
+					//console.log( e.target);
+					console.log( document.getElementById("obj_visible").checked);
+					selectnodeprops.visible = document.getElementById("obj_visible").checked;
+				});
+			},50);
+		}
+
 		if(selectnodeprops.name !=null){
 			w2ui.sidebar_props.insert('NObject', null, [
 				{ id:'position0', text: 'Name:<input id="obj_name" type="text" value="' + selectnodeprops.name + '" />'
@@ -246,6 +304,56 @@ function NodePropsRefresh(){
 				});
 			},50);
 		}
+
+		if(selectnodeprops.rotation !=null){
+			w2ui.sidebar_props.insert('NObject', null, [
+				{ id:'obj_rotation', text: 'x:<input id="obj_rotation_x" type="text" value="' + selectnodeprops.rotation.x + '" /><br>'+
+										'y:<input id="obj_rotation_y" type="text" value="' + selectnodeprops.rotation.y + '"/><br>'+
+										'z:<input id="obj_rotation_z" type="text" value="' + selectnodeprops.rotation.z + '"/>'
+										, icon: 'fa fa-cube' }
+			]);
+			setTimeout(()=>{
+				$('#obj_rotation_x').change(function(e) {
+					console.log("change?");
+					selectnodeprops.rotation.x = e.target.value;
+				});
+				$('#obj_rotation_y').change(function(e) {
+					console.log("change?");
+					selectnodeprops.rotation.y = e.target.value;
+				});
+				$('#obj_rotation_z').change(function(e) {
+					console.log("change?");
+					selectnodeprops.rotation.z = e.target.value;
+				});
+			},50);
+		}
+
+		if(selectnodeprops.scale !=null){
+			w2ui.sidebar_props.insert('NObject', null, [
+				{ id:'obj_scale', text: 'x:<input id="obj_scale_x" type="text" value="' + selectnodeprops.scale.x + '" /><br>'+
+										'y:<input id="obj_scale_y" type="text" value="' + selectnodeprops.scale.y + '"/><br>'+
+										'z:<input id="obj_scale_z" type="text" value="' + selectnodeprops.scale.z + '"/>'
+										, icon: 'fa fa-cube' }
+			]);
+			setTimeout(()=>{
+				$('#obj_scale_x').change(function(e) {
+					console.log("change?");
+					selectnodeprops.scale.x = e.target.value;
+				});
+				$('#obj_scale_y').change(function(e) {
+					console.log("change?");
+					selectnodeprops.scale.y = e.target.value;
+				});
+				$('#obj_scale_z').change(function(e) {
+					console.log("change?");
+					selectnodeprops.scale.z = e.target.value;
+				});
+			},50);
+		}
+
+
+
+
 	}
 	//listThreejsObjectScene(threejsapi.scenenodes[i].children);
 }

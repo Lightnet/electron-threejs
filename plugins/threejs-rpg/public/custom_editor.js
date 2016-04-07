@@ -91,28 +91,7 @@ function initEditor(){
 			},
 			{ type: 'main', style: pstyle, resizable: false, overflow: 'hidden', content: canvas_html  },
 			//{ type: 'preview', size: '10%', resizable: true, style: pstyle, content: 'debug' },
-			{ type: 'right', size: 300, resizable: true, style: pstyle, content: '',
-				toolbar: {
-					items: [
-						{ type: 'button',  id: 'contentrefresh',  caption: '', icon: 'fa fa-refresh', hint: 'Refresh Node list' },
-						{ type: 'button',  id: 'contentadd',  caption: '', icon: 'fa fa-plus-square-o', hint: 'Add Node' },
-						{ type: 'button',  id: 'contentrename',  caption: '', icon: 'fa fa-pencil', hint: 'Rename Node' },
-						{ type: 'button',  id: 'contentcopy',  caption: '', icon: 'fa fa-files-o', hint: 'Copy Node' },
-						{ type: 'button',  id: 'contentdelete',  caption: '', icon: 'fa fa-trash-o', hint: 'Delete Node' }
-					],
-					onClick: function (event) {
-						//this.owner.content('left', event);
-						//console.log( 'id: ' + event.target);
-						//RefreshScene();
-						if(event.target == 'contentrefresh'){
-							RefreshContent();
-						}
-						if(event.target == 'contentdelete'){
-							DeleteContent();
-						}
-					}
-				}
-			},
+			{ type: 'right', size: 300, resizable: true, style: pstyle, content: '' },
 			{ type: 'bottom', size: 33, resizable: true, style: pstyle }
 		]
 	});
@@ -132,6 +111,8 @@ function initEditor(){
 			//}
 		}
 	}));
+
+
 
 	//Node Sidebar
 	$().w2sidebar({
@@ -158,19 +139,12 @@ function initEditor(){
 
 
 
-
-
 	//props sidebar
 	$().w2sidebar({
 		name: 'sidebar_props',
 		img: null,
 		nodes: [
-			{ id: 'NObject', text: 'Object', img: 'icon-folder', expanded: true, group: true//,
-			  //nodes: [ { id: 'string', text: 'string', icon: 'fa fa-file' },
-					   //{ id: 'number', text: 'number', icon: 'fa fa-file' },
-					   //{ id: 'boolean', text: 'boolean', icon: 'fa fa-file' }
-					 //]
-			}
+			{ id: 'NObject', text: 'Object', img: 'icon-folder', expanded: true, group: true }
 		],
 		onClick: function (event) {
 			//w2ui['layout'].content('main', 'id: ' + event.target);
@@ -193,8 +167,29 @@ function initEditor(){
 	$().w2layout({
 		 name: 'layout_props',
 		 panels: [
-			 { type: 'main', size: 200,resizable: true, style: pstyle, content: w2ui['sidebar_content'] },
-			 { type: 'preview', size: 400, resizable: true, style: pstyle, content:w2ui['sidebar_props'],
+			 { type: 'main', size: 200,resizable: true, style: pstyle, content: w2ui['sidebar_content'],
+				 toolbar: {
+					 items: [
+						 { type: 'button',  id: 'contentrefresh',  caption: '', icon: 'fa fa-refresh', hint: 'Refresh Node list' },
+						 { type: 'button',  id: 'contentadd',  caption: '', icon: 'fa fa-plus-square-o', hint: 'Add Node' },
+						 { type: 'button',  id: 'contentrename',  caption: '', icon: 'fa fa-pencil', hint: 'Rename Node' },
+						 { type: 'button',  id: 'contentcopy',  caption: '', icon: 'fa fa-files-o', hint: 'Copy Node' },
+						 { type: 'button',  id: 'contentdelete',  caption: '', icon: 'fa fa-trash-o', hint: 'Delete Node' }
+					 ],
+					 onClick: function (event) {
+						 //this.owner.content('left', event);
+						 //console.log( 'id: ' + event.target);
+						 //RefreshScene();
+						 if(event.target == 'contentrefresh'){
+							 RefreshContent();
+						 }
+						 if(event.target == 'contentdelete'){
+							 DeleteContent();
+						 }
+					 }
+				 }
+		 	 },
+			 { type: 'preview', size: 300, resizable: true, style: pstyle, content:w2ui['sidebar_props'],
 				 toolbar: {
 					 items: [
 						 { type: 'button',  id: 'contentrefresh',  caption: '', icon: 'fa fa-refresh', hint: 'Refresh Nodes' },
