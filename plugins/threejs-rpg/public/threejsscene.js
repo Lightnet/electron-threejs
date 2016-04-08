@@ -9,7 +9,7 @@ var scene = new THREE.Scene();
 			//var material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
 			var material = new THREE.MeshBasicMaterial();
 			var cube = new THREE.Mesh( geometry, material );
-			cube.visible = false;
+			//cube.visible = false;
 			cube.name = 'cube';
 			scene.add( cube );
 

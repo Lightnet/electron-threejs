@@ -27,24 +27,28 @@
 		<script src="threejsscene.js"></script>
 
 		<div id="objectprops">
-			<div id="uuid"></div>
-			<div id="visible"></div>
-			<div id="name"></div>
-			<div id="posx"></div>
-			<div id="posy"></div>
-			<div id="posz"></div>
+			<div ng-controller="MainCtrl as vm">
+				<nodecomponent count="vm.count"></nodecomponent>
+				<br>
+				<br>
+				C:
+				<div id="listcomponent"></div>
+			</div>
 
-			<div id="props"></div>
+<!--
+			<div id="space-for-buttons"></div>
+			<div ng-controller="ControllerSceneObject">
+				<button ng-click="Refresh()" > Refresh </button>
+			</div>
+
+
+
 			<div ng-controller="ControllerText" ng-init="init('uuid')">
 				<span ng-bind="name"></span>
 			</div>
 
-
 			<div ng-controller="ControllerBoolean">
 				<input type="checkbox" ng-model="confirmed" ng-change="change()" ng-init="init('visible')" />
-			</div>
-			<div ng-controller="ControllerInput">
-				<input type="input" ng-change="inputchange()" ng-model="value" ng-value="value" ng-init="init('name')" />
 			</div>
 
 			<div ng-controller="ControllerInput">
@@ -53,12 +57,12 @@
 			<div ng-controller="ControllerInput">
 				<input type="input" ng-change="inputchange()" ng-model="value" ng-value="value" ng-init="init('position.y')" />
 			</div>
-			<div ng-controller="ControllerInput">
+			<div ng-controller="ControllerInput" id="yourControllerElementID">
 				<input type="input" ng-change="inputchange()" ng-model="value" ng-value="value" ng-init="init('position.z')" />
 			</div>
 
 			<div ng-controller="ExampleControllerAdd">
-				<button ng-click="additem()" > Add </button>
+				<button ng-click="additem()" onclick="getscope();" > Add </button>
 				<ul>
 			    <li ng-repeat="object in items">
 			      <span>{{object.item}}</span>
@@ -66,7 +70,7 @@
 			  </ul>
 			</div>
 		</div>
-<!--
+
 		<div >
 			Search: <input ng-model="query">
 			<ul>
