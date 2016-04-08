@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html  ng-app="changeExample">
+<html  ng-app="threejsangular">
 	<head>
 		<meta charset=utf-8>
 		<title>My first Three.js app</title>
 		<link rel="stylesheet" href="css/index.css">
 		<style>
 			* {
-				color: blue;
+				color: gray;
 			}
 			body { margin: 0px; width: 100%; height: 100%;border: 0;overflow: hidden;}
 			canvas { top:0px;left:0px; width: 100%; height: 100%;margin: 0px; }
@@ -23,68 +23,12 @@
 		</script>
 	</head>
 	<body>
-
 		<script src="threejsscene.js"></script>
-
 		<div id="objectprops">
-			<div ng-controller="MainCtrl as vm">
-				<nodecomponent count="vm.count"></nodecomponent>
-				<br>
-				<br>
-				C:
+			<div id="nodecontroller" ng-controller="nodecomponentCtrl as vm">
+				<nodecomponent ></nodecomponent>
 				<div id="listcomponent"></div>
 			</div>
-
-<!--
-			<div id="space-for-buttons"></div>
-			<div ng-controller="ControllerSceneObject">
-				<button ng-click="Refresh()" > Refresh </button>
-			</div>
-
-
-
-			<div ng-controller="ControllerText" ng-init="init('uuid')">
-				<span ng-bind="name"></span>
-			</div>
-
-			<div ng-controller="ControllerBoolean">
-				<input type="checkbox" ng-model="confirmed" ng-change="change()" ng-init="init('visible')" />
-			</div>
-
-			<div ng-controller="ControllerInput">
-				<input type="input" ng-change="inputchange()" ng-model="value" ng-value="value" ng-init="init('position.x')"  />
-			</div>
-			<div ng-controller="ControllerInput">
-				<input type="input" ng-change="inputchange()" ng-model="value" ng-value="value" ng-init="init('position.y')" />
-			</div>
-			<div ng-controller="ControllerInput" id="yourControllerElementID">
-				<input type="input" ng-change="inputchange()" ng-model="value" ng-value="value" ng-init="init('position.z')" />
-			</div>
-
-			<div ng-controller="ExampleControllerAdd">
-				<button ng-click="additem()" onclick="getscope();" > Add </button>
-				<ul>
-			    <li ng-repeat="object in items">
-			      <span>{{object.item}}</span>
-			    </li>
-			  </ul>
-			</div>
-		</div>
-
-		<div >
-			Search: <input ng-model="query">
-			<ul>
-			    <li ng-repeat="phone in phones">
-			      <span>{{phone.name}}</span>
-			      <p>{{phone.snippet}}</p>
-			    </li>
-			  </ul>
-		</div>
-	-->
-
-
-
-
 		<script>
 		</script>
 
