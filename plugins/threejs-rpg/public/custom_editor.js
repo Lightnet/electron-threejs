@@ -112,8 +112,6 @@ function initEditor(){
 		}
 	}));
 
-
-
 	//Node Sidebar
 	$().w2sidebar({
 		name: 'sidebar_content',
@@ -124,7 +122,7 @@ function initEditor(){
 		],
 		onClick: function (event) {
 			//w2ui['layout'].content('main', 'id: ' + event.target);
-			console.log( 'id: ' + event.target);
+			//console.log( 'id: ' + event.target);
 			//list all objects node scene
 			for (var i = 0; i < threejsapi.scenenodes.length;i++){
 				//console.log(threejsapi.scenenodes[i]);
@@ -136,8 +134,6 @@ function initEditor(){
 			}
 		}
 	});
-
-
 
 	//props sidebar
 	$().w2sidebar({
@@ -161,7 +157,7 @@ function initEditor(){
         //console.log('EVENT: '+ event.type + ' TARGET: '+ event.target, event);
     });
 
-	var pstyle = 'background-color: #F0F0C1; border: 1px solid #dfdfdf; padding: 0px;';
+	var pstyle = 'background-color: #F5F6F7; border: 1px solid #dfdfdf; padding: 0px;';
 
 	//layout props
 	$().w2layout({

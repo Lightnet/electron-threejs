@@ -1,8 +1,6 @@
 
 var threejsangular = angular.module('threejsangular', []);
 
-var injector = angular.injector();
-
 //http://jsfiddle.net/ftfish/KyEr3/
 
 //<div ng-controller="MainCtrl as vm">
@@ -82,6 +80,9 @@ threejsangular.component('nodeinputcomponent', {
   	};
 });
 
+//===============================================
+// Node boolean
+//===============================================
 //`<nodebooleancomponent params="params='visible'"></nodebooleancomponent>`
 threejsangular.component('nodebooleancomponent', {
 	bindings: {
@@ -113,6 +114,9 @@ threejsangular.component('nodebooleancomponent', {
   	};
 });
 
+//===============================================
+// node components
+//===============================================
 //`<nodecomponent ></nodecomponent>`
 threejsangular.component('nodecomponent', {
 	bindings: {

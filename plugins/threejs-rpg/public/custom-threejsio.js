@@ -1,3 +1,4 @@
+var threejsangular = angular.module('threejsangular', []);
 var socketio = io();
 
 projectid = "threejseditor";
@@ -25,6 +26,7 @@ socketio.on('connect',()=>{
 		initDropzone();
 		threejsapi = new ThreejsAPI.Game({onload:false});
 		RefreshAssets();
+		initangularnode();
 		RefreshContent();
 		NodePropsRefresh();
 	}
@@ -107,6 +109,309 @@ socketio.on('assets',(data)=>{
 	//initEditor();
 });
 
+//===============================================
+//
+//===============================================
+//<div ng-controller="MainCtrl as vm">
+//<nodeinputcomponent params="vm.params"></nodeinputcomponent> //passing variable
+//<div>
+threejsangular.controller('NodeCtrl', function NodeCtrl($scope) {
+  var self= this;
+  $scope.init = function(params){
+	  self.params = params;
+	  console.log(self.params);
+  }
+});
+//===============================================
+// Node label
+//===============================================
+//<nodeinputcomponent params="params='name'"></nodeinputcomponent>
+threejsangular.component('nodelabelcomponent', {
+	bindings: {
+		params:'=' //bind from element attribute
+	},
+	scope: {
+		value:'=' //local var
+	},
+  	controller:'nodelabelCtrl',
+  	template: function($element, $attrs){
+		return `<div>`+
+					`<label>{{$ctrl.params}}</label>:`+
+					`<label>{{$ctrl.value}}<label>` +
+				`</div>`;
+	}
+}).controller('nodelabelCtrl', function nodelabelCtrl($scope) {
+	this.$onInit = function () {
+		// component initialisation
+		this.value = _.get(selectnodeprops, this.params);
+		//console.log(this);
+  	};
+  	this.$postLink = function () {
+    	// component post-link
+  	};
+  	this.$onDestroy = function () {
+    	// component $destroy function
+  	};
+});
+//===============================================
+// Node Input
+//===============================================
+//<nodeinputcomponent params="params='name'"></nodeinputcomponent>
+threejsangular.component('nodeinputcomponent', {
+	bindings: {
+		params:'=',
+		value:'='
+	},
+  	controller:'nodeinputCtrl',
+  	template: function($element, $attrs){
+		return `<div>`+
+					`<label>{{$ctrl.params}}</label>`+
+					`<input type="input" ng-model="value" ng-value="value" ng-change="$ctrl.change()" />` +
+				`</div>`;
+	}
+}).controller('nodeinputCtrl', function nodeinputCtrl($scope) {
+	function change() {
+	  console.log($scope.$ctrl.params);
+	  _.set(selectnodeprops, $scope.$ctrl.params, $scope.value);
+	  console.log(selectnodeprops);
+	};
+	this.change = change;
+	this.$onInit = function () {
+		// component initialisation
+		//console.log(this);
+		$scope.value = _.get(selectnodeprops, $scope.$ctrl.params);
+  	};
+  	this.$postLink = function () {
+    	// component post-link
+  	};
+  	this.$onDestroy = function () {
+    	// component $destroy function
+  	};
+});
+
+function initangularnode(){
+	if(document.getElementById('objectprops') == null){
+		setTimeout(function () {
+			var $target = document.getElementById('objectprops');
+			var myEl = angular.element(
+				$target
+			);
+			myEl.empty();
+			//console.log(this);
+			angular.element($target).injector().invoke(function($compile) {
+				var scope = angular.element($target).scope();
+				angular.element($target).append($compile(`<div id="nodecontroller" ng-controller="nodecomponentCtrl as vm"><nodecomponent ></nodecomponent><div id="listcomponent"></div></div>`)(scope));
+				// Finally, refresh the watch expressions in the new element
+				scope.$apply();
+				//console.log('add?');
+			});
+		}, 50);
+	}
+}
+
+//===============================================
+// Node boolean
+//===============================================
+//`<nodebooleancomponent params="params='visible'"></nodebooleancomponent>`
+threejsangular.component('nodebooleancomponent', {
+	bindings: {
+		params:'=',
+		confirmed:'='
+	},
+  	controller:'nodebooleanCtrl',
+  	template: function($element, $attrs){
+		return `<div>`+
+					`<label>{{$ctrl.params}}</label>`+
+					`<input type="checkbox" ng-model="confirmed" ng-change="$ctrl.change()" />` +
+				`</div>`;
+	}
+}).controller('nodebooleanCtrl', function nodebooleanCtrl($scope) {
+	function change() {
+	  //console.log($scope.$ctrl.params);
+	  _.set(selectnodeprops, $scope.$ctrl.params, $scope.confirmed);
+	};
+	this.change = change;
+	this.$onInit = function () {
+		// component initialisation
+		$scope.confirmed = _.get(selectnodeprops, $scope.$ctrl.params);
+  	};
+  	this.$postLink = function () {
+    	// component post-link
+  	};
+  	this.$onDestroy = function () {
+    	// component $destroy function
+  	};
+});
+
+//===============================================
+// node components
+//===============================================
+//`<nodecomponent ></nodecomponent>`
+threejsangular.component('nodecomponent', {
+	bindings: {
+		//count: '='
+	},
+  	controller:'nodecomponentCtrl',
+  	template: function($element, $attrs){
+		//
+		return 	``;
+				//`<button ng-click="$ctrl.refresh();">Ctrl Refresh</button>`+
+				//`<button clearobjectnodes>Clear Props</button>`;
+	}
+}).controller('nodecomponentCtrl', function nodecomponentCtrl($scope) {
+	function refresh() {
+		checknodecomponents();
+		/*
+		console.log('refesh props');
+		var $target = document.getElementById('listcomponent');
+		var myEl = angular.element(
+			$target
+		);
+		myEl.empty();
+		//console.log(this);
+		angular.element($target).injector().invoke(function($compile) {
+    		var scope = angular.element($target).scope();
+    		angular.element($target).append($compile(`<nodelabelcomponent params="params='uuid'"></nodelabelcomponent>`)(scope));
+    		// Finally, refresh the watch expressions in the new element
+    		//scope.$apply();
+			console.log('add?');
+  		});
+		*/
+	}
+	this.refresh = refresh;
+	this.$onInit = function () {
+    	// component initialisation
+		//console.log($scope);
+  	};
+  	this.$postLink = function () {
+    	// component post-link
+  	};
+  	this.$onDestroy = function () {
+    	// component $destroy function
+  	};
+});
+
+threejsangular.directive("clearobjectnodes", function($compile){
+	return function(scope, element, attrs){
+		element.bind("click", function(){
+			//scope.count++;
+			//console.log('add?');
+			var myEl = angular.element(
+				document.getElementById('listcomponent')
+			);
+			myEl.empty();
+		});
+	};
+});
+
+//Directive for adding buttons on click that show an alert on click
+/*
+threejsangular.directive("objectnodecomponets", function($compile){
+	return function(scope, element, attrs){
+		element.bind("click", function(){
+			//scope.count++;
+			console.log('add?');
+			var myEl = angular.element(
+				document.getElementById('listcomponent')
+			);
+			//clear children
+			myEl.empty();
+
+			if(selectnodeprops['uuid'] !=null){
+				myEl.append($compile(`<nodelabelcomponent params="params='uuid'"></nodelabelcomponent>`)(scope));
+			}
+			if(selectnodeprops['visible'] !=null){
+				myEl.append($compile(`<nodebooleancomponent params="params='visible'"></nodebooleancomponent>`)(scope));
+			}
+			if(selectnodeprops['position'] !=null){
+				myEl.append($compile(`<nodeinputcomponent params="params='position.x'"></nodeinputcomponent>`)(scope));
+				myEl.append($compile(`<nodeinputcomponent params="params='position.y'"></nodeinputcomponent>`)(scope));
+				myEl.append($compile(`<nodeinputcomponent params="params='position.z'"></nodeinputcomponent>`)(scope));
+			}
+		});
+	};
+});
+*/
+function checknodecomponents(){
+	setTimeout(function () {
+		var $target = document.getElementById('listcomponent');
+		var myEl = angular.element(
+			$target
+		);
+		myEl.empty();
+		//console.log(this);
+		angular.element($target).injector().invoke(function($compile) {
+			var scope = angular.element($target).scope();
+			var propEl = angular.element($target);
+			if(selectnodeprops['uuid'] !=null){
+				propEl.append($compile(`<nodelabelcomponent params="params='uuid'"></nodelabelcomponent>`)(scope));
+			}
+			if(selectnodeprops['visible'] !=null){
+				propEl.append($compile(`<nodebooleancomponent params="params='visible'"></nodebooleancomponent>`)(scope));
+			}
+			if(selectnodeprops['name'] !=null){
+				propEl.append($compile(`<nodeinputcomponent params="params='name'"></nodeinputcomponent>`)(scope));
+			}
+
+			if(selectnodeprops['position'] !=null){
+				propEl.append($compile(`<nodeinputcomponent params="params='position.x'"></nodeinputcomponent>`)(scope));
+				propEl.append($compile(`<nodeinputcomponent params="params='position.y'"></nodeinputcomponent>`)(scope));
+				propEl.append($compile(`<nodeinputcomponent params="params='position.z'"></nodeinputcomponent>`)(scope));
+			}
+			if(selectnodeprops['rotation'] !=null){
+				propEl.append($compile(`<nodeinputcomponent params="params='rotation.x'"></nodeinputcomponent>`)(scope));
+				propEl.append($compile(`<nodeinputcomponent params="params='rotation.y'"></nodeinputcomponent>`)(scope));
+				propEl.append($compile(`<nodeinputcomponent params="params='rotation.z'"></nodeinputcomponent>`)(scope));
+			}
+			if(selectnodeprops['scale'] !=null){
+				propEl.append($compile(`<nodeinputcomponent params="params='scale.x'"></nodeinputcomponent>`)(scope));
+				propEl.append($compile(`<nodeinputcomponent params="params='scale.y'"></nodeinputcomponent>`)(scope));
+				propEl.append($compile(`<nodeinputcomponent params="params='scale.z'"></nodeinputcomponent>`)(scope));
+			}
+
+			if(selectnodeprops['castShadow'] !=null){
+				propEl.append($compile(`<nodebooleancomponent params="params='castShadow'"></nodebooleancomponent>`)(scope));
+			}
+			if(selectnodeprops['receiveShadow'] !=null){
+				propEl.append($compile(`<nodebooleancomponent params="params='receiveShadow'"></nodebooleancomponent>`)(scope));
+			}
+
+			if(selectnodeprops['autoUpdate'] !=null){
+				propEl.append($compile(`<nodebooleancomponent params="params='autoUpdate'"></nodebooleancomponent>`)(scope));
+			}
+
+			if(selectnodeprops['aspect'] !=null){
+				propEl.append($compile(`<nodeinputcomponent params="params='aspect'"></nodeinputcomponent>`)(scope));
+			}
+
+			if(selectnodeprops['far'] !=null){
+				propEl.append($compile(`<nodeinputcomponent params="params='far'"></nodeinputcomponent>`)(scope));
+			}
+
+			if(selectnodeprops['focalLength'] !=null){
+				propEl.append($compile(`<nodeinputcomponent params="params='focalLength'"></nodeinputcomponent>`)(scope));
+			}
+
+			if(selectnodeprops['fov'] !=null){
+				propEl.append($compile(`<nodeinputcomponent params="params='fov'"></nodeinputcomponent>`)(scope));
+			}
+			if(selectnodeprops['near'] !=null){
+				propEl.append($compile(`<nodeinputcomponent params="params='near'"></nodeinputcomponent>`)(scope));
+			}
+			if(selectnodeprops['zoom'] !=null){
+				propEl.append($compile(`<nodeinputcomponent params="params='zoom'"></nodeinputcomponent>`)(scope));
+			}
+			// Finally, refresh the watch expressions in the new element
+			scope.$apply();
+			//console.log('add?');
+		});
+	}, 50);
+}
+
+//===============================================
+//
+//===============================================
+
 function RefreshAssets(){
 	console.log('refresh assets socket.io');
 	//if(socketio !=null){
@@ -140,7 +445,7 @@ function DeleteAssets(){
 function RefreshScene(){
 	console.log('refresh scene');
 	if(socketio !=null){
-		console.log('scene???');
+		//console.log('scene???');
 		//socketio.emit('getscene','threejseditor');
 	}
 }
@@ -148,13 +453,13 @@ function RefreshScene(){
 function RefreshScript(){
 	console.log('refresh script');
 	if(socketio !=null){
-		console.log('scene???');
+		//console.log('scene???');
 		//socketio.emit('getscene','threejseditor');
 	}
 }
 
 function RefreshContent(){
-	console.log('refresh Content');
+	//console.log('refresh Content');
 	removenodelist(w2ui.sidebar_content, w2ui.sidebar_content.nodes[0].nodes);
 	//display top layer is scene & camera
 	for(var i = 0; i < threejsapi.scenenodes.length; i++){
@@ -187,11 +492,9 @@ function listThreejsObjectScene(nodes){
 					break;
 				}
 			}
-
 			if(bfound == false){
 				bfound = null;
 			}
-
 			if(bfound == true){
 				bfound = null;
 				w2ui.sidebar_content.insert(nodes[i].parent.uuid, null, [
@@ -209,193 +512,14 @@ function listThreejsObjectScene(nodes){
 
 function NodePropsRefresh(){
 	//http://stackoverflow.com/questions/28819815/updating-a-variable-when-input-changes-in-jquery
-	removenodelist(w2ui.sidebar_props, w2ui.sidebar_props.nodes[0].nodes);
 	if(selectnodeprops !=null){
-		//http://stackoverflow.com/questions/4602141/variable-name-as-a-string-in-javascript
-		//http://jsfiddle.net/karim79/v8FhM/1/
-
-
-
-
-		//ReactDOM.render(
-  			//React.createElement('h1', null, 'Hello, world!'),
-  			//document.getElementById('objectprops')
-		//);
-
-		console.log(selectnodeprops);
-		//for(key in selectnodeprops){
-			//console.log(key + ': ' + selectnodeprops[key]);
-			//console.log(typeof key);
-			//console.log(key);
-			//console.log(typeof selectnodeprops[key]);
-		//}
-		/*
-			//scene
-			selectnodeprops.layers.mask
-			selectnodeprops.position
-			selectnodeprops.quaternion
-			selectnodeprops.rotation
-			selectnodeprops.scale
-			selectnodeprops.type
-			selectnodeprops.userData
-			selectnodeprops.visible
-			//mesh
-			selectnodeprops.castShadow
-			selectnodeprops.drawMode
-			selectnodeprops.geometry
-			selectnodeprops.frustumCulled
-			selectnodeprops.material
-			selectnodeprops.parent
-			// other low
-			selectnodeprops.traverse
-			selectnodeprops.toJSON
-			selectnodeprops.clone
-			selectnodeprops.add
-		*/
-
-
-		//w2ui.sidebar_props.add([
-			 //{ id: 'scripts', text: 'scripts', icon: 'w2ui-icon-check' ,expanded: true, group: true}
-		 //]);
-		 //SidebarPropsVar({parent:'scripts',type:'input',obj:selectnodeprops,param:'position.z'});
-		/*
-		SidebarPropsVar({parent:'NObject',type:'label',obj:selectnodeprops,param:'uuid'});
-
-		SidebarBooleanProps('NObject',selectnodeprops,'visible');
-
-		SidebarPropsVar({parent:'NObject',type:'input',obj:selectnodeprops,param:'name'});
-
-
-		SidebarPropsVar({parent:'NObject',type:'input',obj:selectnodeprops,param:'position.x'});
-		SidebarPropsVar({parent:'NObject',type:'input',obj:selectnodeprops,param:'position.y'});
-		SidebarPropsVar({parent:'NObject',type:'input',obj:selectnodeprops,param:'position.z'});
-
-		SidebarPropsVar({parent:'NObject',type:'input',obj:selectnodeprops,param:'rotation.x'});
-		SidebarPropsVar({parent:'NObject',type:'input',obj:selectnodeprops,param:'rotation.y'});
-		SidebarPropsVar({parent:'NObject',type:'input',obj:selectnodeprops,param:'rotation.z'});
-
-
-		SidebarPropsVar({parent:'NObject',type:'input',obj:selectnodeprops,param:'scale.x'});
-		SidebarPropsVar({parent:'NObject',type:'input',obj:selectnodeprops,param:'scale.y'});
-		SidebarPropsVar({parent:'NObject',type:'input',obj:selectnodeprops,param:'scale.z'});
-		*/
-	}
-	//listThreejsObjectScene(threejsapi.scenenodes[i].children);
-}
-
-//work boolean
-function SidebarBooleanProps(id,obj,variable){
-	if(obj[variable] !=null){
-		w2ui.sidebar_props.insert(id, null, [
-			{ id:'obj_'+obj.id+'_'+variable, text: variable + ':<input id="' + ('obj_'+obj.id+'_'+variable)  +  '" type="checkbox" />', icon: 'fa fa-cube' }
-		]);
-		setTimeout(()=>{
-				document.getElementById(('obj_'+obj.id+'_'+variable)).checked = selectnodeprops.visible;
-			$( ('#'+'obj_'+obj.id+'_'+variable) ).change(function(e) {
-				console.log("change?");
-				selectnodeprops.visible = document.getElementById(('obj_'+obj.id+'_'+variable)).checked;
-			});
-		},50);
-	}
-}
-
-var _ReactBoolean = React.createClass({
-	propType:{
-		value: React.PropTypes.object.isRequired
-	},
-	getInitialState: function() {
-		return {
-    		value: _.get(this.props.obj, this.props.params) //set variable
-  		}
-	},
-	handleChange: function(event) {
-  		this.setState({
-    		value: event.target.checked
-  		});
-		//console.log(event.target.value);
-		//console.log(event.target.checked);
-		_.set(this.props.obj, this.props.params, event.target.checked);
-		//RefreshContent();//update real time when keyboard is press
-	},
-	render: function() {
-		return React.createElement("input", {
-												type: "checkbox",
-												onChange:this.handleChange,
-												checked :this.state.value
-											});
-	}
-});
-//class input reactjs
-var _ReactInput = React.createClass({
-	propType:{
-		value: React.PropTypes.object.isRequired
-	},
-	getInitialState: function() {
-		return {
-    		value: _.get(this.props.obj, this.props.params) //set variable
-  		}
-	},
-	onNameInput:function(syntheticEvent) {
-		//console.log(syntheticEvent);
-		//console.log(this.props);
-		//console.log(syntheticEvent.target.value);
-		//console.log(syntheticEvent.type);
-		_.set(this.props.obj, this.props.params, syntheticEvent.target.value);
-		//console.log(this.props.obj);
-	},
-	handleChange: function(event) {
-  		this.setState({
-    		value: event.target.value
-  		});
-		RefreshContent();//update real time when keyboard is press
-	},
-	render: function() {
-		return React.createElement("input", {
-												type: "text",
-												onInput:this.onNameInput,
-												onChange:this.handleChange,
-												value:this.state.value
-											});
-	}
-});
-//set input params from object data string
-function _reactSetInput(args){
-	if(args !=null){
-		ReactDOM.render(React.createElement(_ReactInput,{obj:args['obj'],params:args['param']}),
-		document.getElementById(
-			('obj_'+args['obj']['id']+'_'+args['param'])
-		));
-	}
-}
-
-//http://stackoverflow.com/questions/8051975/access-object-child-properties-using-a-dot-notation-string
-function SidebarPropsVar(args){
-	if(args !=null){
-		if((args['type'] == 'label')&&(args['param'] != null)){//label
-			w2ui.sidebar_props.insert(args['parent'], null, [
-				{ id:'obj_'+args['obj']['id']+'_'+args['param'], text: args['param']+':'+ args['obj'][args['param']] , icon: 'fa fa-cube' }
-			]);
-		}
-		if((args['type'] == 'input')&&(args['param'] != null)){//input text
-			//console.log(  ('obj_'+args['obj']['id']+'_'+args['param'])  );
-			w2ui.sidebar_props.insert(args['parent'], null, [
-				{ id:'obj_'+args['obj']['id']+'_'+args['param'],
-				  icon: 'fa fa-cube',
-				  text: args['param'] + ':<div id="' + ('obj_'+args['obj']['id']+'_'+args['param']) + '" />' }
-				  //text: args['param'] + ':<input id="' + ('obj_'+'_'+args['param']) + '" type="text" value="' + '' + '" />' }
-			]);
-			//if(args['param'] != 'name'){
-				setTimeout(()=>{
-					//console.log('set: ' + args['param']);
-					_reactSetInput(args);
-				},200);
-			//}
-		}
+		checknodecomponents();
+		//console.log(selectnodeprops);
 	}
 }
 
 function NodeSelectObject(args){
-	console.log('selected object');
+	//console.log('selected object');
 	if(args !=null){
 		if(args['object'] !=null){
 			selectnodeprops = args['object'];
