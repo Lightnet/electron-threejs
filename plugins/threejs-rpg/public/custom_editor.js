@@ -32,14 +32,14 @@ fa fa-wrench
 //$(document).ready(function () {
 function initEditor(){
 	console.log('init editor panel');
-	var canvas_html ='<canvas width="800px" height="600px" id="myCanvas">'+
-	'<form  action="/file-upload" method="post" class="dropzone" enctype="multipart/form-data">'+
-		'<div class="fallback">'+
-			'<input name="project" type="text" value="threejseditor"/>'+
-			'<input name="file" type="file" multiple />'+
-		'</div>'+
-	'</form>'
-	'</canvas>';
+	var canvas_html =	'<canvas width="800px" height="600px" id="myCanvas">'+
+							'<form  action="/file-upload" method="post" class="dropzone" enctype="multipart/form-data">'+
+								'<div class="fallback">'+
+									'<input name="project" type="text" value="threejseditor"/>'+
+									'<input name="file" type="file" multiple />'+
+								'</div>'+
+							'</form>'
+						'</canvas>';
 
 	var pstyle = 'background-color: #F5F6F7; border: 1px solid #dfdfdf; padding: 0px;';
 	$('#layout').w2layout({
@@ -128,6 +128,7 @@ function initEditor(){
 				//console.log(threejsapi.scenenodes[i]);
 				if(event.target == threejsapi.scenenodes[i].uuid){
 					//console.log(threejsapi.scenenodes[i]);
+					threejsapi.selectobject = threejsapi.scenenodes[i];
 					NodeSelectObject({object:threejsapi.scenenodes[i]});
 					break;
 				}
@@ -153,8 +154,6 @@ function initEditor(){
 		//console.log(data);
 		//console.log(' TARGET: '+ event.target);
 		//threejsapi.toolbar(event.target);
-		//console.log(' TARGET: '+ event.target, event);
-        //console.log('EVENT: '+ event.type + ' TARGET: '+ event.target, event);
     });
 
 	var pstyle = 'background-color: #F5F6F7; border: 1px solid #dfdfdf; padding: 0px;';
@@ -238,12 +237,13 @@ function initEditor(){
 				{ text: 'Clear History', icon: 'icon-page' },
 			]},
 			{ type: 'menu',   id: 'EditorComponents', caption: 'Components', items: [
+				{ text: 'Object3D', icon: 'fa fa-cube' },
 				{ text: 'Mesh', icon: 'fa fa-cube' },
 				{ text: 'BoxGeometry', icon: 'fa fa-cube' },
 				{ text: 'CircleGeometry', icon: 'fa fa-cube' },
 				{ text: 'CylinderGeometry', icon: 'fa fa-cube' },
 				{ text: 'SphereGeometry', icon: 'fa fa-cube' },
-				{ text: 'ShapeGeometry', icon: 'fa fa-cube' },
+				//{ text: 'ShapeGeometry', icon: 'fa fa-cube' },
 				{ text: 'PlaneGeometry', icon: 'fa fa-cube' },
 
 				//{ text: 'RingGeometry', icon: 'fa fa-cube' },
@@ -251,6 +251,21 @@ function initEditor(){
 				//{ text: 'TorusKnotGeometry', icon: 'fa fa-cube' },
 
 				{ text: 'TextGeometry', icon: 'fa fa-cube' },
+				{ text: 'Sprite2D', icon: 'fa fa-cube' },
+
+				{ text: 'ArrowHelper', icon: 'fa fa-cube' },
+				{ text: 'AxisHelper', icon: 'fa fa-cube' },
+				{ text: 'BoundingBoxHelper', icon: 'fa fa-cube' },
+				//{ text: 'CameraHelper', icon: 'fa fa-cube' },
+				//{ text: 'DirectionalLightHelper', icon: 'fa fa-cube' },
+				{ text: 'EdgesHelper', icon: 'fa fa-cube' },
+				{ text: 'FaceNormalsHelper', icon: 'fa fa-cube' },
+				{ text: 'GridHelper', icon: 'fa fa-cube' },
+				//{ text: 'HemisphereLightHelper', icon: 'fa fa-cube' },
+				{ text: 'PointLightHelper', icon: 'fa fa-cube' },
+				{ text: 'SpotLightHelper', icon: 'fa fa-cube' },
+				{ text: 'VertexNormalsHelper', icon: 'fa fa-cube' },
+				{ text: 'WireframeHelper', icon: 'fa fa-cube' },
 
 				//{ text: 'Tetrahedron', icon: 'fa fa-cube' },
 				//{ text: 'OctahedronGeometry', icon: 'fa fa-cube' },

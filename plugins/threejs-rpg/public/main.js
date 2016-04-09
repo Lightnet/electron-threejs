@@ -92,6 +92,7 @@ var ThreejsAPI;
             this.scene = new THREE.Scene();
             this.scene.name = "scene";
             this.scenenodes.push(this.scene);
+            this.scene.add(this.camera);
             //console.log(this.scene);
             this.canvas = document.getElementById('myCanvas');
             this.renderer = new THREE.WebGLRenderer({ canvas: this.canvas, precision: "mediump", antialias: this.antialias });
@@ -160,6 +161,7 @@ var ThreejsAPI;
             if (intersects.length > 0) {
                 console.log(intersects[0]);
                 //particle.position.copy( intersects[ 0 ].point );
+                this.selectobject = intersects[0].object;
                 NodeSelectObject({ object: intersects[0].object });
             }
             mouse = null;
@@ -183,23 +185,219 @@ var ThreejsAPI;
         Game.prototype.initObjectClasses = function () {
         };
         Game.prototype.toolbar = function (action) {
+            console.log(action);
             if (action == 'EditorComponents:BoxGeometry') {
-                this.createshape({ shape: "cube" });
+                this.createshape({ shape: "BoxGeometry" });
+            }
+            if (action == 'EditorComponents:Object3D') {
+                this.createshape({ shape: "Object3D" });
+            }
+            if (action == 'EditorComponents:CylinderGeometry') {
+                this.createshape({ shape: "CylinderGeometry" });
+            }
+            if (action == 'EditorComponents:CircleGeometry') {
+                this.createshape({ shape: "CircleGeometry" });
+            }
+            if (action == 'EditorComponents:PlaneGeometry') {
+                this.createshape({ shape: "PlaneGeometry" });
+            }
+            if (action == 'EditorComponents:SphereGeometry') {
+                this.createshape({ shape: "SphereGeometry" });
+            }
+            if (action == 'EditorComponents:TextGeometry') {
+                this.createshape({ shape: "TextGeometry" });
+            }
+            if (action == 'EditorComponents:ArrowHelper') {
+                this.createshape({ shape: "ArrowHelper" });
+            }
+            if (action == 'EditorComponents:AxisHelper') {
+                this.createshape({ shape: "AxisHelper" });
+            }
+            if (action == 'EditorComponents:BoundingBoxHelper') {
+                this.createshape({ shape: "BoundingBoxHelper" });
+            }
+            if (action == 'EditorComponents:EdgesHelper') {
+                this.createshape({ shape: "EdgesHelper" });
+            }
+            if (action == 'EditorComponents:FaceNormalsHelper') {
+                this.createshape({ shape: "FaceNormalsHelper" });
+            }
+            if (action == 'EditorComponents:GridHelper') {
+                this.createshape({ shape: "GridHelper" });
+            }
+            if (action == 'EditorComponents:PointLightHelper') {
+                this.createshape({ shape: "PointLightHelper" });
+            }
+            if (action == 'EditorComponents:SpotLightHelper') {
+                this.createshape({ shape: "SpotLightHelper" });
+            }
+            if (action == 'EditorComponents:VertexNormalsHelper') {
+                this.createshape({ shape: "VertexNormalsHelper" });
+            }
+            if (action == 'EditorComponents:WireframeHelper') {
+                this.createshape({ shape: "WireframeHelper" });
             }
         };
-        ;
+        Game.prototype.SaveJSON = function () {
+            console.log('saving json...');
+        };
+        Game.prototype.LoadJSON = function (args) {
+            if (args == null) {
+                console.log('null...');
+            }
+            console.log(args);
+            console.log('loading json...');
+        };
         Game.prototype.createshape = function (args) {
             if (args != null) {
                 if (args['shape'] != null) {
-                    if (args['shape'] == 'cube') {
+                    var tmpobj;
+                    if (args['shape'] == 'BoxGeometry') {
                         var geometry = new THREE.BoxGeometry(1, 1, 1);
                         var material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
-                        var cube = new THREE.Mesh(geometry, material);
-                        cube.name = "cube";
-                        this.scene.add(cube);
-                        this.scenenodes.push(cube);
-                        console.log(cube);
-                        NodeSelectObject({ object: cube });
+                        var objmesh = new THREE.Mesh(geometry, material);
+                        objmesh.name = "BoxGeometry";
+                        tmpobj = objmesh;
+                    }
+                    if (args['shape'] == 'Object3D') {
+                        var objmesh = new THREE.Object3D();
+                        objmesh.name = 'Object3D';
+                        tmpobj = objmesh;
+                    }
+                    if (args['shape'] == 'CylinderGeometry') {
+                        var geometry = new THREE.CylinderGeometry(5, 5, 20, 32);
+                        var material = new THREE.MeshBasicMaterial({ color: 0xffff00 });
+                        var objmesh = new THREE.Mesh(geometry, material);
+                        objmesh.name = "CylinderGeometry";
+                        tmpobj = objmesh;
+                    }
+                    if (args['shape'] == 'CylinderGeometry') {
+                        var geometry = new THREE.CircleGeometry(5, 12);
+                        var material = new THREE.MeshBasicMaterial({ color: 0xffff00, side: THREE.DoubleSide });
+                        var objmesh = new THREE.Mesh(geometry, material);
+                        objmesh.name = "CylinderGeometry";
+                        tmpobj = objmesh;
+                    }
+                    if (args['shape'] == 'PlaneGeometry') {
+                        var geometry = new THREE.PlaneGeometry(5, 20, 32);
+                        var material = new THREE.MeshBasicMaterial({ color: 0xffff00, side: THREE.DoubleSide });
+                        var objmesh = new THREE.Mesh(geometry, material);
+                        objmesh.name = "PlaneGeometry";
+                        tmpobj = objmesh;
+                    }
+                    if (args['shape'] == 'SphereGeometry') {
+                        var geometry = new THREE.SphereGeometry(5, 32, 32);
+                        var material = new THREE.MeshBasicMaterial({ color: 0xffff00 });
+                        var objmesh = new THREE.Mesh(geometry, material);
+                        objmesh.name = "SphereGeometry";
+                        tmpobj = objmesh;
+                    }
+                    if (args['shape'] == 'TextGeometry') {
+                        var geometry = new THREE.TextGeometry('Text', {});
+                        var material = new THREE.MeshBasicMaterial({ color: 0xffff00 });
+                        var objmesh = new THREE.Mesh(geometry, material);
+                        objmesh.name = "TextGeometry";
+                        tmpobj = objmesh;
+                    }
+                    if (args['shape'] == 'ArrowHelper') {
+                        var dir = new THREE.Vector3(1, 0, 0);
+                        var origin = new THREE.Vector3(0, 0, 0);
+                        var length = 1;
+                        var hex = 0xffff00;
+                        var arrowHelper = new THREE.ArrowHelper(dir, origin, length, hex);
+                        tmpobj = arrowHelper;
+                    }
+                    if (args['shape'] == 'AxisHelper') {
+                        var axisHelper = new THREE.AxisHelper(5);
+                        tmpobj = axisHelper;
+                    }
+                    if (args['shape'] == 'BoundingBoxHelper') {
+                        var objmesh = new THREE.Object3D();
+                        var hex = 0xff0000;
+                        var sphereMaterial = new THREE.MeshLambertMaterial({ color: 0x00ff00 });
+                        var sphere = new THREE.Mesh(new THREE.SphereGeometry(30, 12, 12), sphereMaterial);
+                        objmesh.add(sphere);
+                        var bbox = new THREE.BoundingBoxHelper(sphere, hex);
+                        bbox.update();
+                        objmesh.add(bbox);
+                        tmpobj = objmesh;
+                    }
+                    if (args['shape'] == 'EdgesHelper') {
+                        var objmesh = new THREE.Object3D();
+                        var geometry = new THREE.BoxGeometry(10, 10, 10, 2, 2, 2);
+                        var material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+                        var object = new THREE.Mesh(geometry, material);
+                        var edges = new THREE.EdgesHelper(object, 0x00ff00);
+                        objmesh.add(object);
+                        objmesh.add(edges);
+                        tmpobj = objmesh;
+                    }
+                    if (args['shape'] == 'FaceNormalsHelper') {
+                        var objmesh = new THREE.Object3D();
+                        var geometry = new THREE.BoxGeometry(10, 10, 10, 2, 2, 2);
+                        var material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+                        var object = new THREE.Mesh(geometry, material);
+                        var edges = new THREE.FaceNormalsHelper(object, 2, 0x00ff00, 1);
+                        objmesh.add(object);
+                        objmesh.add(edges);
+                        tmpobj = objmesh;
+                    }
+                    if (args['shape'] == 'GridHelper') {
+                        var size = 10;
+                        var step = 1;
+                        var gridHelper = new THREE.GridHelper(size, step);
+                        tmpobj = gridHelper;
+                    }
+                    if (args['shape'] == 'PointLightHelper') {
+                        var objmesh = new THREE.Object3D();
+                        var pointLight = new THREE.PointLight(0xff0000, 1, 100);
+                        pointLight.position.set(10, 10, 10);
+                        objmesh.add(pointLight);
+                        var sphereSize = 1;
+                        var pointLightHelper = new THREE.PointLightHelper(pointLight, sphereSize);
+                        objmesh.add(pointLightHelper);
+                        tmpobj = objmesh;
+                    }
+                    if (args['shape'] == 'SpotLightHelper') {
+                        var objmesh = new THREE.Object3D();
+                        var spotLight = new THREE.SpotLight(0xffffff);
+                        spotLight.position.set(10, 10, 10);
+                        objmesh.add(spotLight);
+                        var spotLightHelper = new THREE.SpotLightHelper(spotLight);
+                        objmesh.add(spotLightHelper);
+                        tmpobj = objmesh;
+                    }
+                    if (args['shape'] == 'VertexNormalsHelper') {
+                        var objmesh = new THREE.Object3D();
+                        var geometry = new THREE.BoxGeometry(10, 10, 10, 2, 2, 2);
+                        var material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+                        var object = new THREE.Mesh(geometry, material);
+                        var edges = new THREE.VertexNormalsHelper(object, 2, 0x00ff00, 1);
+                        objmesh.add(object);
+                        objmesh.add(edges);
+                        tmpobj = objmesh;
+                    }
+                    if (args['shape'] == 'WireframeHelper') {
+                        var objmesh = new THREE.Object3D();
+                        var geometry = new THREE.BoxGeometry(10, 10, 10, 2, 2, 2);
+                        var material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+                        var object = new THREE.Mesh(geometry, material);
+                        var wireframe = new THREE.WireframeHelper(object, 0x00ff00);
+                        objmesh.add(object);
+                        objmesh.add(wireframe);
+                        tmpobj = objmesh;
+                    }
+                    if (tmpobj != null) {
+                        if (this.selectobject != null) {
+                            this.selectobject.add(tmpobj); //attach to current selected
+                        }
+                        else {
+                            this.scene.add(tmpobj);
+                        }
+                        this.scenenodes.push(tmpobj);
+                        console.log(tmpobj);
+                        NodeSelectObject({ object: tmpobj });
+                        tmpobj = null;
                         RefreshContent();
                     }
                 }
