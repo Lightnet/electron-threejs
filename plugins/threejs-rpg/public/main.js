@@ -33,12 +33,17 @@ if(!DEBUG){
 */
 var ThreejsAPI;
 (function (ThreejsAPI) {
+    //http://codepen.io/ryonakae/pen/PPKxyw
     var Game = (function () {
         function Game(args) {
             var _this = this;
             this.antialias = true;
             this.bablenetwork = false;
             this.materialType = 'MeshBasicMaterial';
+            this.scenes = [];
+            this.currentscene = "scene";
+            this.currenthudscene = "hud";
+            this.cameras = [];
             this.bcanvasRatio = false;
             this.brenderersize = false;
             this.physicsIndex = 2;
@@ -58,12 +63,12 @@ var ThreejsAPI;
             if (args != null) {
                 if (args['onload'] == true) {
                     this.addListener("load", window, function () {
-                        //console.log('init listen...');
+                        console.log('init threejs editor listen...');
                         _this.init();
                     });
                 }
                 else {
-                    //console.log('init...');
+                    console.log('init  threejs editor...');
                     this.init();
                 }
             }
@@ -122,13 +127,103 @@ var ThreejsAPI;
             this.buffgeoBox.fromGeometry(new THREE.BoxGeometry(1, 1, 1));
             //background
             this.createTexMat();
+            this.createscene_cube();
             //this.createHUD();
             //this.createscene();//simple test
             //this.initPhysics();
             //this.createscene_cube();
             //this.createplayer();
-            this.initselectObject();
+            //this.initselectObject();
+            /*
+            var light1 = new THREE.DirectionalLight('#fff');
+            light1.position.set(-50, 50, 50);
+            this.scene.add(light1);
+
+            var light2 = new THREE.AmbientLight('#fff');
+            light2.color.multiplyScalar(0.2);
+            this.scene.add(light2);
+
+            var geometry = new THREE.SphereGeometry(45, 5, 5);
+            var material = new THREE.MeshPhongMaterial({
+              color: '#fff',
+              shading: THREE.FlatShading
+            });
+            var cube = new THREE.Mesh(geometry, material);
+            cube.rotation.set(Math.random(), Math.random(), Math.random());
+            this.scene.add(cube);
+            */
+            //var clearPass = new THREE.ClearPass();
+            //var clearMaskPass = new THREE.ClearMaskPass();
+            //var outputPass = new THREE.ShaderPass( THREE.CopyShader );
+            //outputPass.renderToScreen = true;
+            var copyPass = new THREE.ShaderPass(THREE.CopyShader);
+            copyPass.renderToScreen = true;
+            //this.createHUD();
+            var renderpass1 = new THREE.RenderPass(this.scene, this.camera);
+            renderpass1.renderToScreen = false;
+            //this.effectComposer.addPass(render);
+            //var maskPass1 = new THREE.MaskPass( this.scene, this.camera );
+            var scene = new THREE.Scene();
+            var geometry = new THREE.BoxGeometry(1, 1, 1);
+            var material = new THREE.MeshBasicMaterial({ color: 0xccccff });
+            var cube = new THREE.Mesh(geometry, material);
+            cube.position.x = 1;
+            scene.add(cube);
+            var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 10000);
+            //var maskPass2 = new THREE.MaskPass( scene, this.camera );
+            //var renderpass2 = new THREE.RenderPass(scene, camera);
+            var renderpass2 = new THREE.RenderPass(scene, this.camera);
+            //renderpass2.renderToScreen = false;
+            console.log(renderpass2);
+            renderpass2.clear = false;
+            var parameters = {
+                minFilter: THREE.LinearFilter,
+                magFilter: THREE.LinearFilter,
+                format: THREE.RGBFormat,
+                stencilBuffer: true
+            };
+            //var renderTarget = new THREE.WebGLRenderTarget( window.innerWidth, window.innerHeight, parameters );
+            //this.effectComposer = new THREE.EffectComposer(this.renderer,renderTarget);
+            this.effectComposer = new THREE.EffectComposer(this.renderer);
+            this.effectComposer.addPass(renderpass1);
+            this.effectComposer.addPass(renderpass2);
+            //this.effectComposer.addPass( outputPass );
+            this.effectComposer.addPass(copyPass);
+            console.log(this.effectComposer);
             this.update();
+        };
+        Game.prototype.createHUD = function () {
+            this.hudCanvas = document.createElement('canvas');
+            var width = window.innerWidth;
+            var height = window.innerHeight;
+            // Again, set dimensions to fit the screen.
+            this.hudCanvas.width = window.innerWidth;
+            this.hudCanvas.height = window.innerHeight;
+            // Get 2D context and draw something supercool.
+            this.hudBitmap = this.hudCanvas.getContext('2d');
+            this.hudBitmap.font = "Normal 40px Arial";
+            this.hudBitmap.textAlign = 'center';
+            this.hudBitmap.fillStyle = "rgba(245,245,245,0.75)";
+            this.hudBitmap.fillText('Initializing...', width / 2, height / 2);
+            // Create the camera and set the viewport to match the screen dimensions.
+            this.cameraHUD = new THREE.OrthographicCamera(-width / 2, width / 2, height / 2, -height / 2, 0, 30);
+            // Create also a custom scene for HUD.
+            this.sceneHUD = new THREE.Scene();
+            // Create texture from rendered graphics.
+            this.hudTexture = new THREE.Texture(this.hudCanvas);
+            this.hudTexture.needsUpdate = true;
+            // Create HUD material.
+            var material = new THREE.MeshBasicMaterial({ map: this.hudTexture });
+            material.transparent = true;
+            // Create plane to render the HUD. This plane fill the whole screen.
+            var planeGeometry = new THREE.PlaneGeometry(width, height);
+            var plane = new THREE.Mesh(planeGeometry, material);
+            this.sceneHUD.add(plane);
+            var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 10000);
+            //this.effectComposer.addPass(new THREE.RenderPass(this.sceneHUD, camera));
+            var render = new THREE.RenderPass(this.sceneHUD, this.camera);
+            render.renderToScreen = true;
+            this.effectComposer.addPass(render);
         };
         Game.prototype.initselectObject = function () {
             var _this = this;
@@ -161,7 +256,7 @@ var ThreejsAPI;
             if (intersects.length > 0) {
                 console.log(intersects[0]);
                 //particle.position.copy( intersects[ 0 ].point );
-                this.selectobject = intersects[0].object;
+                //this.selectobject = intersects[0].object;
                 NodeSelectObject({ object: intersects[0].object });
             }
             mouse = null;
@@ -183,6 +278,7 @@ var ThreejsAPI;
             console.log(xhr);
         };
         Game.prototype.initObjectClasses = function () {
+            console.log('');
         };
         Game.prototype.toolbar = function (action) {
             console.log(action);
@@ -260,8 +356,8 @@ var ThreejsAPI;
                         tmpobj = objmesh;
                     }
                     if (args['shape'] == 'Object3D') {
-                        var objmesh = new THREE.Object3D();
-                        objmesh.name = 'Object3D';
+                        tmpobj = new THREE.Object3D();
+                        tmpobj.name = 'Object3D';
                         tmpobj = objmesh;
                     }
                     if (args['shape'] == 'CylinderGeometry') {
@@ -403,15 +499,25 @@ var ThreejsAPI;
                 }
             }
         };
-        Game.prototype.createplayer = function () {
-            var player = new THREE.Object3D();
-            player.init = function () {
+        Game.prototype.createplayer = function (arg) {
+            var player = function () {
+                THREE.Object3D.apply(this);
+                //this.type = 'custom';
+                //this.hashid = "0";
+                this.name = "none";
+                return this;
             };
-            player.update = function () {
+            player.prototype = Object.create(THREE.Object3D.prototype);
+            //player.prototype.constructor = player;
+            player.prototype.init = function () {
+            };
+            player.prototype.update = function (delta) {
                 //console.log("update?");
             };
-            this.scene.add(player);
-            console.log(player);
+            var tplayer = new player();
+            this.scene.add(tplayer);
+            console.log(tplayer);
+            return tplayer;
         };
         Game.prototype.createcharacter = function () {
         };
@@ -575,34 +681,6 @@ var ThreejsAPI;
             var texture = new THREE.Texture(c);
             texture.needsUpdate = true;
             return texture;
-        };
-        Game.prototype.createHUD = function () {
-            this.hudCanvas = document.createElement('canvas');
-            var width = window.innerWidth;
-            var height = window.innerHeight;
-            // Again, set dimensions to fit the screen.
-            this.hudCanvas.width = window.innerWidth;
-            this.hudCanvas.height = window.innerHeight;
-            // Get 2D context and draw something supercool.
-            this.hudBitmap = this.hudCanvas.getContext('2d');
-            this.hudBitmap.font = "Normal 40px Arial";
-            this.hudBitmap.textAlign = 'center';
-            this.hudBitmap.fillStyle = "rgba(245,245,245,0.75)";
-            this.hudBitmap.fillText('Initializing...', width / 2, height / 2);
-            // Create the camera and set the viewport to match the screen dimensions.
-            this.cameraHUD = new THREE.OrthographicCamera(-width / 2, width / 2, height / 2, -height / 2, 0, 30);
-            // Create also a custom scene for HUD.
-            this.sceneHUD = new THREE.Scene();
-            // Create texture from rendered graphics.
-            this.hudTexture = new THREE.Texture(this.hudCanvas);
-            this.hudTexture.needsUpdate = true;
-            // Create HUD material.
-            var material = new THREE.MeshBasicMaterial({ map: this.hudTexture });
-            material.transparent = true;
-            // Create plane to render the HUD. This plane fill the whole screen.
-            var planeGeometry = new THREE.PlaneGeometry(width, height);
-            var plane = new THREE.Mesh(planeGeometry, material);
-            this.sceneHUD.add(plane);
         };
         Game.prototype.addStaticBox = function (size, position, rotation, spec) {
             //console.log(this.buffgeoBox);
@@ -991,8 +1069,12 @@ var ThreejsAPI;
                     }
                 });
             }
+            //this.effectComposer.render(0.05);
+            this.effectComposer.render();
+            //console.log(this.effectComposer);
+            //console.log('render?');
             // Render scene.
-            this.renderer.render(this.scene, this.camera);
+            //this.renderer.render(this.scene, this.camera);
             /*
             // Update HUD graphics.
             if(this.hudBitmap !=null){
