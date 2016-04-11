@@ -4,16 +4,17 @@
 
 ## License:
   [CC0 (Public Domain)](LICENSE.md)
-
+  
 ## Development Status: Early Stage.
-  - 
-  - 
+  - working on the custom editor to keep it simple to build.
+  - working on the rpg builds testing.
 
 ## Information:
   Create a threejs game and editor stand alone application to able to write save
   and load files.
   
   More information read the docs.md
+  [simple docs](docs.md)
 
 # Require to run application:
   * nodejs [4.4.x][5.10.x] https://nodejs.org/
