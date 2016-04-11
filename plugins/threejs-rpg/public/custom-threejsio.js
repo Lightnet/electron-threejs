@@ -12,6 +12,7 @@ var content_select;
 
 var selectnodeprops;
 var props = [];
+var editor;
 //var props_select;
 
 //get file ext
@@ -19,11 +20,37 @@ function getext(filename){
 	return filename.substr(filename.lastIndexOf('.'));
 }
 
+function initScriptEditor(){
+	editor = ace.edit("editor");
+	//editor.setTheme("ace/theme/twilight");
+	editor.setTheme("ace/theme/chrome");
+	editor.session.setMode("ace/mode/javascript");
+	//console.log(editor.getValue());
+
+	//var editor = ace.edit("editor");                   // the editor object
+	var editorDiv = document.getElementById("layout_layout_panel_main");     // its container
+	//var doc = editor.getSession().getDocument();  // a reference to the doc
+
+	function adaptEditor() {
+		//var editor = ace.edit("editor");
+		var chieght = parseInt(editorDiv.style.height) / editor.renderer.lineHeight;
+		var chieght = (Math.floor(chieght) - 5 ) * editor.renderer.lineHeight; //round and multiple
+		document.getElementById('editor').style.height = chieght + 'px';
+		editor.resize();
+		chieght = null;
+	}
+	window.onresize = function(event) {
+	    adaptEditor();
+	};
+}
+
 socketio.on('connect',()=>{
 	if(threejsapi == null){
 		console.log('connect.');
 		initEditor();
 		initDropzone();
+		initScriptEditor();
+
 		threejsapi = new ThreejsAPI.Game({onload:false});
 
 		var player = threejsapi.createplayer();
@@ -33,6 +60,10 @@ socketio.on('connect',()=>{
 		initangularnode();
 		RefreshContent();
 		NodePropsRefresh();
+
+
+
+
 	}
 });
 

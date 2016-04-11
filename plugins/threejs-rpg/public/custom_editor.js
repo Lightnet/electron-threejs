@@ -32,14 +32,27 @@ fa fa-wrench
 //$(document).ready(function () {
 function initEditor(){
 	console.log('init editor panel');
-	var canvas_html =	'<canvas width="800px" height="600px" id="myCanvas">'+
-							'<form  action="/file-upload" method="post" class="dropzone" enctype="multipart/form-data">'+
-								'<div class="fallback">'+
-									'<input name="project" type="text" value="threejseditor"/>'+
-									'<input name="file" type="file" multiple />'+
-								'</div>'+
-							'</form>'
-						'</canvas>';
+
+	var tabs = `<div id="tab-example">
+					<div id="tabs"></div>
+				    <div id="tab1" class="tab">
+					<canvas width="800px" height="600px" id="myCanvas">
+						<form  action="/file-upload" method="post" class="dropzone" enctype="multipart/form-data">
+							<div class="fallback">'+
+								<input name="project" type="text" value="threejseditor"/>
+								<input name="file" type="file" multiple />
+							</div>
+						</form>
+					</canvas>
+				    </div>
+				    <div id="tab2" class="tab">
+				        Tab2
+				    </div>
+				    <div id="tab3" class="tab">
+						File
+						<div id="editor" ></div>
+				    </div>
+				</div>`;
 
 	var pstyle = 'background-color: #F5F6F7; border: 1px solid #dfdfdf; padding: 0px;';
 	$('#layout').w2layout({
@@ -89,12 +102,35 @@ function initEditor(){
                     }
 				}
 			},
-			{ type: 'main', style: pstyle, resizable: false, overflow: 'hidden', content: canvas_html  },
+			{ type: 'main', style: pstyle, resizable: false, overflow: 'hidden', content: tabs },
 			//{ type: 'preview', size: '10%', resizable: true, style: pstyle, content: 'debug' },
 			{ type: 'right', size: 300, resizable: true, style: pstyle, content: '' },
 			{ type: 'bottom', size: 33, resizable: true, style: pstyle }
 		]
 	});
+
+	var configtabs = {
+		    tabs: {
+		        name: 'tabs',
+		        active: 'tab1',
+		        tabs: [
+		            { id: 'tab1', caption: 'Scene Editor' },
+		            { id: 'tab2', caption: 'Object Editor' },
+		            { id: 'tab3', caption: 'Script Editor' },
+		        ],
+		        onClick: function (event) {
+		            $('#tab-example .tab').hide();
+		            $('#tab-example #' + event.target).show();
+		        }
+		    }
+		}
+
+	$('#tabs').w2tabs(configtabs.tabs);
+	$('#tab1').hide();
+    //$('#tab1').show();
+	$('#tab2').hide();
+	//$('#tab3').hide();
+	$('#tab3').show();
 
 	//Assets sidebar
 	w2ui['layout'].content('left', $().w2sidebar({
@@ -360,6 +396,11 @@ function initEditor(){
 
 	w2ui['layout'].on('resize', function(target, data) {
 	    data.onComplete = function () {
+			//console.log('resize?');
+			//if(editor !=null){
+				//editor.resize();
+				//heightUpdateFunction();
+			//}
 			var mainpanel = document.getElementById("layout_layout_panel_main");
 			var canvaspanel = document.getElementById("myCanvas");
 			canvaspanel.style.width = mainpanel.style.width;
