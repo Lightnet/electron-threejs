@@ -1,0 +1,7 @@
+{
+    "name": "smoothie",
+    "information": "Very Basic Module Test",
+    "version":"0.0.1",
+    "bable": true,
+    "script":"module_index.js"
+}

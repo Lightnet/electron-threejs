@@ -2,36 +2,6 @@
 //three.d.ts
 /// <reference path="../../../DefinitelyTyped/threejs/three.d.ts" />
 /// <reference path="../../../DefinitelyTyped/threejs/three-orbitcontrols.d.ts" />
-/*
-var MyObject3D = function() {
-    // Run the Mesh constructor with the given arguments
-    THREE.Mesh.apply(this, arguments);
-};
-// Make MyObject3D have the same methods as Mesh
-MyObject3D.prototype = Object.create(THREE.Mesh.prototype);
-// Make sure the right constructor gets called
-MyObject3D.prototype.constructor = MyObject3D;
-
-Then to instantiate it:
-
-var testGeo = new THREE.CubeGeometry(20, 20, 20);
-var testMat = new Three.MeshNormalMaterial();
-var thing = new MyObject3D(testGeo, testMat);
-*/
-
-/*
-//make sure it not null
-	if(scene !=null){
-		scene.traverse( function ( object ) {
-			//update object Physics
-			if ( object.UpdatePhysics){//make sure the function is not null
-				object.UpdatePhysics();
-			}
-			//if ( object instanceof THREE.ObjPrefabShip ) {object.update();}
-		});
-	}
-
-*/
 
 //declare var THREE:any;
 declare var OIMO:any;
@@ -70,7 +40,9 @@ module ThreejsAPI{
 		matGroundTrans:any;
 		materialType:any = 'MeshBasicMaterial';
 
-		effectComposer:any;
+		effectComposer:any; //render layers
+
+
 
 		scene:any;
 		scenes:any = [];
@@ -108,8 +80,10 @@ module ThreejsAPI{
 		meshs:any = [];
 		bodies:any = [];
 		grounds:any = [];
-
+		//scripts
 		customscript:any = [];
+		scriptlist:any = [];
+		loadedscript:any = [];
 
 		// HUD Begin
 		hudCanvas:any;
@@ -319,6 +293,12 @@ module ThreejsAPI{
 			render.renderToScreen = true;
 			this.effectComposer.addPass(render);
 		}
+
+		createscript(scriptname,args){
+
+		}
+
+
 
 		initselectObject(){
 			this.canvas.addEventListener( 'mousedown',(event)=>{ this.onDocumentMouseDown(event) }, false );

@@ -2,22 +2,6 @@
 //three.d.ts
 /// <reference path="../../../DefinitelyTyped/threejs/three.d.ts" />
 /// <reference path="../../../DefinitelyTyped/threejs/three-orbitcontrols.d.ts" />
-/*
-var MyObject3D = function() {
-    // Run the Mesh constructor with the given arguments
-    THREE.Mesh.apply(this, arguments);
-};
-// Make MyObject3D have the same methods as Mesh
-MyObject3D.prototype = Object.create(THREE.Mesh.prototype);
-// Make sure the right constructor gets called
-MyObject3D.prototype.constructor = MyObject3D;
-
-Then to instantiate it:
-
-var testGeo = new THREE.CubeGeometry(20, 20, 20);
-var testMat = new Three.MeshNormalMaterial();
-var thing = new MyObject3D(testGeo, testMat);
-*/
 //declare var window:any;
 //var undefined:string = 'undefined';
 /*
@@ -56,7 +40,10 @@ var ThreejsAPI;
             this.meshs = [];
             this.bodies = [];
             this.grounds = [];
+            //scripts
             this.customscript = [];
+            this.scriptlist = [];
+            this.loadedscript = [];
             this.ToRad = 0.0174532925199432957;
             this.timeSteptimeStep = 1 / 60;
             //listen to load event
@@ -224,6 +211,8 @@ var ThreejsAPI;
             var render = new THREE.RenderPass(this.sceneHUD, this.camera);
             render.renderToScreen = true;
             this.effectComposer.addPass(render);
+        };
+        Game.prototype.createscript = function (scriptname, args) {
         };
         Game.prototype.initselectObject = function () {
             var _this = this;

@@ -31,9 +31,9 @@ var builder = ProtoBuf.loadProtoFile(path.join(__dirname, "/public", "example.pr
 //===============================================
 // Init Post
 //===============================================
-module.exports.initpost = function(){
-	console.log('init post');
-}
+//module.exports.initpost = function(){
+	//console.log('init post');
+//}
 //===============================================
 // Session
 //===============================================
@@ -51,21 +51,21 @@ module.exports.setAfterSession = function(app,session,config){
 //===============================================
 // route
 //===============================================
-/*
+
 module.exports.setroute = function(routes,app){
 	//console.log('Base Module ');
 	//add current dir plugin public folder
 	app.use(express.static(__dirname + '/public'));
 	//add current dir plugin views folder
-	app.set('views',path.join(__dirname,'/views'));
+	//app.set('views',path.join(__dirname,'/views'));
 
-	routes.get('/basemodule', function (req, res) {
-		res.contentType('text/html');
+	//routes.get('/basemodule', function (req, res) {
+		//res.contentType('text/html');
 		//res.send('Hello World!');
-		res.render('test',{});
-	});
+		//res.render('test',{});
+	//});
 };
-*/
+
 //===============================================
 // Socket.io
 //===============================================
