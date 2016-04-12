@@ -22,6 +22,8 @@ declare var OBJIONetworkType:any;
 declare var bConfigPlayCanvas:any;
 declare var config:any;
 
+//console.log('\x1b[36m', 'server' ,'\x1b[0m');
+
 var plugin = require('./app/libs/plugin.js');
 config = require(__dirname + "/app/config.js");
 plugin.setConfig(config);
@@ -66,6 +68,7 @@ model_files.forEach(function(modelFile){
 		require(__dirname + "/app/models/" + modelFile);
 	}
 });
+console.log('\x1b[36m', "err: ",'test========================','\x1b[0m');
 //load plugin module
 if (config.benablemodules) {
 	console.log("[ = enable modules = ]");
@@ -89,14 +92,14 @@ if (config.benablemodules) {
 					plugin.addModule(scriptmodule);
 					console.log("[PASS]Module Name:"+scriptconfig.name);
 				} catch (err) {
-					console.log("[FAIL]Module Name:"+scriptconfig.name);
-					console.log("err:"+err);
+					console.error("[FAIL]Module Name:"+scriptconfig.name);
+					console.error('\x1b[36m', "err: "+err,'\x1b[0m');
 				}
 			}
 		} catch (err) {
 			//console.log("Fail to load! | Doesn't exist!");
-			console.log("[FAIL]Module Name:" + modelFile);
-			console.log("err:"+err);
+			console.error("[FAIL]Module Name:" + modelFile);
+			console.error('\x1b[36m', "err: "+err,'\x1b[0m');
 		}
 	});
 }else{
@@ -120,7 +123,6 @@ var io = socketio.listen(server);
 //===============================================
 // express config start
 //===============================================
-
 router.use(express.static(path.resolve(__dirname, 'public')));
 router.set('view engine', 'ejs'); // set up ejs for templating
 router.set('views',path.join(__dirname,'/app/views'));
@@ -167,173 +169,7 @@ plugin.set_socketio(io);
 
 require('./app/libs/engineio_handle.js')(engineio);
 plugin.set_engineio(engineio);
-/*
-var messages = [];
-var sockets = [];
-io.on('connection', function (socket) {
-	console.log("socket.io user connected!");
-	console.log(socket.id);
-    messages.forEach(function (data) {
-		socket.emit('message', data);
-    });
 
-    sockets.push(socket);
-	//send back the ping message for transport time
-	socket.on('Latency', function () {
-		socket.emit('Latency');
-	});
-
-    socket.on('disconnect', function () {
-		sockets.splice(sockets.indexOf(socket), 1);
-		//updateRoster();
-		console.log("socket.io user disconnect!");
-		rethinkdb_socketio_remove(socket);
-    });
-    socket.on('message', function (msg) {
-		var text = String(msg || '');
-		if (!text)
-			return;
-		//socket.get('name', function (err, name) {
-			//var data = {
-				//name: name,
-				//text: text
-			//};
-			//broadcast('message', data);
-			//messages.push(data);
-		//});
-	});
-
-    socket.on('identify', function (name) {
-		//console.log('name:'+name);
-		var name:any = String(name || 'Anonymous');
-		//socket.set('name', String(name || 'Anonymous'), function (err) {
-			//updateRoster();
-
-			//console.log(socket.id);
-			//socket.name = String(name || 'Anonymous');
-		//});
-
-		r.table('socketio').insert([
-			{ 	id: socket.id,
-				name: name,
-				idname:socket.id
-			}
-		]).run(connection, function(err, result) {
-			if (err){
-				//console.log(err);
-				return;
-			}
-			socket.emit('identify',name);
-			//console.log("socket.io add id!");
-			//console.log(JSON.stringify(result, null, 2));
-		})
-	});
-});
-
-//delete id user name
-function rethinkdb_socketio_remove(socket){
-	r.table('socketio').
-    filter(r.row('id').eq(socket.id)).
-    delete().
-    run(connection, function(err, result) {
-        if (err){
-			console.log(err);
-			//throw err;
-		}
-        //console.log(JSON.stringify(result, null, 2));
-    });
-}
-
-function updateRoster() {
-	console.log('updateRoster');
-	async.map(
-		sockets,
-		function (socket, callback) {
-			//socket.get('name', callback);
-			//console.log("sockets?>> map");
-			//callback(socket.name);
-			r.table('socketio').filter(r.row('id').eq(socket.id)).
-		    run(connection, function(err, cursor) {
-				//console.log("get socket id ?");
-		        if (err)console.log(err);
-		        cursor.toArray(function(err, result) {
-		            if (err){
-						console.log(err);
-						return;
-					}
-					//console.log("get socket.io name??");
-
-					var user = JSON.stringify(result, null, 2);
-		            //console.log(user[0]['id']);
-					//console.log(user);
-					//console.log(result[0]['name']);
-					if(result.length > 0){
-						//console.log('name:' + result[0]['name']);
-						callback(result[0]['name']);
-					}else{
-						//console.log(JSON.stringify(result, null, 2));
-						callback(null);
-					}
-		        });
-		    });
-		},
-		function (err, names) {
-			broadcast('roster', names);
-		}
-	);
-}
-
-function broadcast(event, data) {
-	sockets.forEach(function (socket) {
-		socket.emit(event, data);
-	});
-}
-*/
-//=========================================================
-// engine.io
-//=========================================================
-
-//console.log(engineio);
-/*
-engineio.on('connection', function (socket) {
-	console.log("engine.io user connected.");
-	console.log(socket.id);
-    //console.log(engineio);
-    //console.log(engineio.clients);
-    //for(eid in engineio.clients) {
-        //console.log(engineio.clients[eid]);
-        //engineio.clients[eid].send('test');
-        //console.log(variable);
-    //}
-    //console.log(socket);
-
-    //socket.send('ping');
-    //socket.send("{test:'test'}"); //send out as string
-    socket.on('message', function(data){
-		if(data != 'Latency'){
-			console.log(data);
-		}
-		if(data == 'Latency'){
-            socket.send('Latency');
-        }
-    });
-    socket.on('close', function(){
-        console.log("engine.io user close.");
-    });
-    //socket.send('utf 8 string');
-    //socket.send(new Buffer([0, 1, 2, 3, 4, 5])); // binary data
-    //console.log(new Buffer([0, 1, 2, 3, 4, 5]));
-    //socket.send(new test()); // binary data
-});
-
-//create send clients
-function engineiobroadcast(data){
-    for(var eid in engineio.clients) {
-        //console.log(engineio.clients[eid]);
-        engineio.clients[eid].send(data);
-    }
-}
-*/
 //=========================================================
 // start listen express server
 //=========================================================

@@ -13,14 +13,9 @@ var plugin = require('../../app/libs/plugin.js');
 var fs = require('fs');
 var multer  = require('multer');
 //var upload = multer({ dest: 'uploads/' });
-
 //var upload = multer();
 //var busboy = require('connect-busboy');
 /*global getModules */
-//var io;
-//var socket;
-//var db;
-
 //===============================================
 // Config
 //===============================================
@@ -28,11 +23,10 @@ module.exports._config = require('./index.json');
 //===============================================
 // Init Post
 //===============================================
-module.exports.initpost = function(){
+//module.exports.initpost = function(){
 	//console.log('init post');
-	//require('./threejs-engine.js');
 	//console.log(connection);//get null since the connect didn't finish setup
-}
+//}
 
 //===============================================
 // Session
@@ -94,15 +88,11 @@ function fileFilter (req, file, cb) {
 	}
     //cb(new Error('TEST'));
 }
-
-//var upload = multer({ dest: 'tmp/' });
 var upload = multer({
 	dest: 'tmp/',
 	fileFilter: fileFilter
 });
-
 var projectid = "threejseditor";
-
 var assetfile = {
 	name:"",
 	projectid: "threejseditor",
@@ -198,7 +188,6 @@ module.exports.setroute = function(routes,app){
             			//console.log(JSON.stringify(result, null, 2));
         			});
     			});
-
 		}
 
 		fs.readFile( req.file.path, function (err, data) {//read tmp file
@@ -220,13 +209,10 @@ module.exports.setroute = function(routes,app){
 		//res.status(204).end()
 	});
 };
-
 //===============================================
 // Socket.io
 //===============================================
-
 module.exports.socketio_connect = function(io, socket){
-
  	socket.on('getassets',function(data){
 		console.log('getassets:'+data);
 		if((rethinkdb !=null)&&(connection !=null)){
@@ -345,8 +331,76 @@ module.exports.socketio_connect = function(io, socket){
 		}
 	});
 
+	console.log('listen? code');
 
+	socket.on('code', function(data){
 
+		if(data['action'] !=null){
+			console.log('get script code?');
+			if(data['action'] == 'get'){
+				if((rethinkdb !=null)&&(connection !=null)){
+					connection.use('test');
+					console.log(data.name);
+					console.log(data.projectid);
+					rethinkdb.table('assets').filter(  rethinkdb.row('name').eq(data.name).and( rethinkdb.row('projectid').eq(data.projectid) )   ). //get the assets files list
+		    			run(connection, function(err, cursor) {
+		        			if (err) throw err;
+		        			cursor.toArray(function(err, result) {
+		            			if (err){
+									console.log("err");
+									console.log(err);
+								};
+								if(result.length == 1){
+									//console.log(__dirname +"/public/"+ result[0]['path']);
+									fs.readFile(__dirname +"/public/"+ result[0]['path'], "utf8", function(err, data) {
+								        if (err) throw err;
+										console.log('loaded fs reading...');
+										socket.emit('code',{action:'load',script:data,name:result[0]['name']});
+								    });
+								}
+								if(result.length == 0){
+									console.log('file not found!');
+								}
+		        			});
+		    			});
+				}
+
+			}
+
+			if(data['action'] == 'save'){
+				if((rethinkdb !=null)&&(connection !=null)){
+					connection.use('test');
+					console.log(data.name);
+					console.log(data.projectid);
+					rethinkdb.table('assets').filter(  rethinkdb.row('name').eq(data.name).and( rethinkdb.row('projectid').eq(data.projectid) )   ). //get the assets files list
+		    			run(connection, function(err, cursor) {
+		        			if (err) throw err;
+		        			cursor.toArray(function(err, result) {
+		            			if (err){
+									console.log("err");
+									console.log(err);
+								};
+								if(result.length == 1){
+									fs.writeFile(__dirname +"/public/"+ result[0]['path'], data.content, function(err) {
+									    if(err) {
+									        return console.log(err);
+									    }
+									    console.log("The file was saved!");
+										socket.emit('code',{action:'save',message:'saved'});
+
+									});
+								}
+								if(result.length == 0){
+									console.log('file not found!');
+								}
+		        			});
+		    			});
+				}
+			}
+
+		}
+
+	});
 
 };
 module.exports.socketio_disconnect = function(io, socket){

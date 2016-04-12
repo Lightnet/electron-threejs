@@ -8,7 +8,6 @@
     body {
         overflow: hidden;
     }
-
     #editor {
         margin: 0;
         position: absolute;
@@ -29,17 +28,14 @@ function foo(items) {
     }
 	console.log('test');
 }</pre>
-
 <script src="src-min/ace.js" type="text/javascript" charset="utf-8"></script>
 <script>
-//https://ace.c9.io/#nav=howto
+	//https://ace.c9.io/#nav=howto
     var editor = ace.edit("editor");
     //editor.setTheme("ace/theme/twilight");
 	editor.setTheme("ace/theme/chrome");
     editor.session.setMode("ace/mode/javascript");
 	console.log(editor.getValue());
-	
 </script>
-
 </body>
 </html>

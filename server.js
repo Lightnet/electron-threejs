@@ -9,6 +9,9 @@
 /// <reference path="./app/libs/socketio_handle.ts" />
 /// <reference path="./app/libs/engineio_handle.ts" />
 /// <reference path="./app/libs/plugin.ts" />
+//console.log('\x1b[36m', 'sometext' ,'\x1b[0m');
+
+
 var plugin = require('./app/libs/plugin.js');
 config = require(__dirname + "/app/config.js");
 plugin.setConfig(config);

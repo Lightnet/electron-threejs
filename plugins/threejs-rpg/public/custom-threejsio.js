@@ -50,20 +50,13 @@ socketio.on('connect',()=>{
 		initEditor();
 		initDropzone();
 		initScriptEditor();
-
 		threejsapi = new ThreejsAPI.Game({onload:false});
-
 		var player = threejsapi.createplayer();
 		//console.log(player);
-
 		RefreshAssets();
 		initangularnode();
 		RefreshContent();
 		NodePropsRefresh();
-
-
-
-
 	}
 });
 
