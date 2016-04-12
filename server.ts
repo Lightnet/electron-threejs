@@ -16,13 +16,18 @@
 // A simple chat server using Socket.IO, Express, and Async.
 //
 
+//declare var require:any;
+//declare var __dirname:any;
+//declare var module:any;
+//declare var exports:any;
+//declare var process:any;
 declare var r:any;
 declare var connection:any;
 declare var OBJIONetworkType:any;
 declare var bConfigPlayCanvas:any;
 declare var config:any;
 
-//console.log('\x1b[36m', 'server' ,'\x1b[0m');
+console.log('\x1b[36m', 'threejs web server' ,'\x1b[0m');
 
 var plugin = require('./app/libs/plugin.js');
 config = require(__dirname + "/app/config.js");
@@ -68,7 +73,7 @@ model_files.forEach(function(modelFile){
 		require(__dirname + "/app/models/" + modelFile);
 	}
 });
-console.log('\x1b[36m', "err: ",'test========================','\x1b[0m');
+//console.log('\x1b[36m', "err: ",'test========================','\x1b[0m');
 //load plugin module
 if (config.benablemodules) {
 	console.log("[ = enable modules = ]");

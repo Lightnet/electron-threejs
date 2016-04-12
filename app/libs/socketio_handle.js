@@ -1,15 +1,4 @@
-/*
-    Name:
-    Link:https://bitbucket.org/Lightnet/
-    Created By: Lightnet
-    License: Creative Commons Zero [Note there multiple Licenses]
-    Please read the readme.txt file for more information.
-*/
-// <reference path="../../DefinitelyTyped/cryptojs/cryptojs.d.ts" />
 var plugin = require('./plugin.js');
-//var fs = require('fs');
-//var path = require('path');
-//var crypto = require('crypto');
 module.exports = function (io) {
     console.log("[ = init socket.io = ]");
     io.on('connection', function (socket) {
@@ -23,5 +12,4 @@ module.exports = function (io) {
             plugin.Call_SocketIO_Disconect(io, socket);
         });
     });
-    //console.log("[ = socket.io config... = ]");
 };

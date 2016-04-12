@@ -52,8 +52,8 @@ addListener("load", window,()=>{
 							{ text: '.md', icon: 'fa fa-file-code-o' },
 							{ text: '.html', icon: 'fa fa-file-code-o' },
 							{ text: '.xml', icon: 'fa fa-file-code-o' }
-			            ]},
-						{ type: 'button',  id: 'codedelete',  caption: '', icon: 'fa fa-trash-o', hint: 'Delete Script' }
+			            ]}//,
+						//{ type: 'button',  id: 'codedelete',  caption: '', icon: 'fa fa-trash-o', hint: 'Delete Script' }
 					],
 					onClick: function (id, event) {
 						//console.log(id);
@@ -141,7 +141,9 @@ addListener("load", window,()=>{
 
 	socketio.on('connect',()=>{
 		console.log('connect');
-		socketio.emit('code', {action:'get',projectid:projectid,name:filename} );
+		if(filename !=null){
+			socketio.emit('code', {action:'get',projectid:projectid,name:filename} );
+		}
 	});
 
 	socketio.on('code',(data)=>{
@@ -160,6 +162,10 @@ addListener("load", window,()=>{
 				}
 			}
 			if(data['action'] == 'save'){
+				$("#logstatus").text(data['message']);
+			}
+
+			if(data['action'] == 'message'){
 				$("#logstatus").text(data['message']);
 			}
 		}

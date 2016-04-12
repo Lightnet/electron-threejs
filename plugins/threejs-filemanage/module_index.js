@@ -56,6 +56,21 @@ var exts = [
 	'.mtl',
 	'.md',
 	'.html',
+	'.xml',
+	'.txt',
+	'.ts',
+	'.js',
+	'.json'
+];
+
+var extcodes = [
+	'.fbx',
+	'.dae',
+	'.obj',
+	'.mtl',
+	'.md',
+	'.html',
+	'.xml',
 	'.txt',
 	'.ts',
 	'.js',
@@ -360,6 +375,7 @@ module.exports.socketio_connect = function(io, socket){
 								}
 								if(result.length == 0){
 									console.log('file not found!');
+									socket.emit('code',{action:'message',message:'file not found!'});
 								}
 		        			});
 		    			});
@@ -368,9 +384,33 @@ module.exports.socketio_connect = function(io, socket){
 			}
 
 			if(data['action'] == 'save'){
+				if(data['name'].lastIndexOf('../') >= 0){ //check if file doesn't change the path
+					console.log('error path ../ not allow');
+					socket.emit('code',{action:'message',message:'error path ../ not allow'});
+					return;
+				}
+				var bmatch = false;
+
+				for(var i in extcodes) {
+					//console.log(exts[i]);
+					if( path.extname(data['name'] ) == extcodes[i] ){//check if ext files to block not added to the list of exts.
+						bmatch = true;
+						break;
+					}
+				}
+
+				if(bmatch == false){//exit if ext does not match
+					console.log('error ext does not match!');
+					socket.emit('code',{action:'message',message:'error ext does not match!'});
+					return;
+				}
 				if((rethinkdb !=null)&&(connection !=null)){
 					connection.use('test');
 					console.log(data.name);
+					if(data.name == null){
+						socket.emit('code',{action:'message',message:'file error null name!'});
+						return;
+					}
 					console.log(data.projectid);
 					rethinkdb.table('assets').filter(  rethinkdb.row('name').eq(data.name).and( rethinkdb.row('projectid').eq(data.projectid) )   ). //get the assets files list
 		    			run(connection, function(err, cursor) {
@@ -387,7 +427,6 @@ module.exports.socketio_connect = function(io, socket){
 									    }
 									    console.log("The file was saved!");
 										socket.emit('code',{action:'save',message:'saved'});
-
 									});
 								}
 								if(result.length == 0){
@@ -403,6 +442,8 @@ module.exports.socketio_connect = function(io, socket){
 	});
 
 };
+
+
 module.exports.socketio_disconnect = function(io, socket){
 };
 
