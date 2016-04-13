@@ -1,21 +1,64 @@
-var threejsangular = angular.module('threejsangular', []);
 var socketio = io();
-
+var threejsangular = angular.module('threejsangular', []);
+var threejsapi;
+var threejsapi_preview;
 var projectid = "threejseditor";
-
 var scripts = [];
-
 var rename = '';
 var assets = [];
 var assets_select;
-
 var contents = [];
 var content_select;
-
 var selectnodeprops;
 var props = [];
-var editor;
-//var props_select;
+var editor; //script editor
+
+var textures = [];
+var materials = [];
+var objectmeshs = [];
+
+var exts = [
+	'.jpg',
+	'.png',
+	'.jpeg',
+	'.gif',
+	'.fbx',
+	'.dae',
+	'.obj',
+	'.mtl',
+	'.md',
+	'.html',
+	'.txt',
+	'.ts',
+	'.js',
+	'.json'
+];
+
+var extmesh = [
+	'.fbx',
+	'.dae',
+	'.obj'
+];
+
+var extimages = [
+	'.jpg',
+	'.png',
+	'.jpeg',
+	'.gif'
+];
+
+var extcodes = [
+	'.fbx',
+	'.dae',
+	'.obj',
+	'.mtl',
+	'.md',
+	'.html',
+	'.txt',
+	'.ts',
+	'.js',
+	'.json'
+];
 
 //get file ext
 function getext(filename){
@@ -53,7 +96,10 @@ socketio.on('connect',()=>{
 		initDropzone();
 		initScriptEditor();
 		threejsapi = new ThreejsAPI.Game({onload:false});
-		var player = threejsapi.createplayer();
+		//var player = threejsapi.createplayer();
+
+		threejsapi_preview = new ThreejsAPI.Game({onload:false, canvasid:'objectCanvas'});
+
 		//console.log(player);
 		RefreshAssets();
 		initangularnode();
@@ -73,16 +119,16 @@ socketio.on('script',(data)=>{
 			scripts = [];
 		}
 		if(data['action'] == 'add'){
-			console.log(data);
+			//console.log(data);
 			scripts.push( {id:data['id'] ,name :data['name'], path:data['path'],script: data['script']});
 			//scripts[ data['id']  ].path =  data['path'];
 			//scripts[ data['id']  ].script =  data['script'];
 
-			console.log(scripts);
-			console.log(scripts.length);
+			//console.log(scripts);
+			//console.log(scripts.length);
 		}
 		if(data['action'] == 'length'){
-			console.log(scripts.length);
+			//console.log(scripts.length);
 		}
 	}
 });

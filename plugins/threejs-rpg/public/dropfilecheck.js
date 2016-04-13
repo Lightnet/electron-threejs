@@ -12,6 +12,7 @@ function initDropzone(){
 		'.mtl',
 		'.md',
 		'.html',
+		'.xml',
 		'.txt',
 		'.ts',
 		'.js',

@@ -26,7 +26,9 @@ if(!DEBUG){
 */
 module ThreejsAPI{
 	//http://codepen.io/ryonakae/pen/PPKxyw
-	export class Game{
+	export class Game {
+
+		// {
 		antialias:boolean = true;
 		bablenetwork:boolean = false;
 
@@ -42,8 +44,6 @@ module ThreejsAPI{
 
 		effectComposer:any; //render layers
 
-
-
 		scene:any;
 		scenes:any = [];
 		currentscene:string = "scene";
@@ -51,9 +51,11 @@ module ThreejsAPI{
 		camera:any;
 		cameras:any = [];
 		renderer:any;
+
+		//canvas
+		canvasid:any;
 		canvas:any;
 		manager:any;
-		cube:any;
 		bcanvasRatio:boolean = false;
 		brenderersize:boolean = false;
 
@@ -77,6 +79,7 @@ module ThreejsAPI{
 		scenenodes:any = [];
 		//physics end
 
+		cube:any;//test object
 		meshs:any = [];
 		bodies:any = [];
 		grounds:any = [];
@@ -95,10 +98,18 @@ module ThreejsAPI{
 		controls:any;
 		ToRad:number = 0.0174532925199432957;
 		timeSteptimeStep:number = 1/60;
+		// }
 
 		constructor(args){
 			//listen to load event
 			if(args != null){
+				if(args['canvasid'] != null){
+					//this.bcanvas = true;
+					this.canvasid = args['canvasid'];
+					console.log('canvasid>>'+args['canvasid']);
+				}
+
+				//this need to be last else it variable are not assign
 				if(args['onload'] == true){
 					this.addListener("load", window,()=>{
 						console.log('init threejs editor listen...');
@@ -114,6 +125,7 @@ module ThreejsAPI{
 					//this.init();
 				//});
 			}
+			return this;
 		}
 
 		//window load start three
@@ -126,6 +138,7 @@ module ThreejsAPI{
 		}
 
 		init(){
+			console.log("//==========================================");
 			console.log("init threejs engine");
 			this.initManger();
 
@@ -140,18 +153,22 @@ module ThreejsAPI{
 			this.scene = new THREE.Scene();
 			this.scene.name = "scene";
 			this.scenenodes.push(this.scene);
-			this.scene.add(this.camera);
+			//this.scene.add(this.camera);
 			//console.log(this.scene);
-			this.canvas = document.getElementById('myCanvas');
+			if(this.canvasid == null){
+				this.canvas = document.getElementById('myCanvas');
+				console.log("default canvasid: myCanvas");
+			}else{
+				console.log("get canvasid: "+this.canvasid);
+				this.canvas = document.getElementById(this.canvasid);
+			}
+
 			this.renderer = new THREE.WebGLRenderer({canvas:this.canvas,precision: "mediump",antialias:this.antialias});
 			if(this.brenderersize){
 				this.renderer.setSize( window.innerWidth, window.innerHeight );
 			}
 
-
-
 			this.renderer.autoClear = false;
-
 			this.renderer.shadowMap.enabled = true;
             this.renderer.shadowMap.type = THREE.PCFShadowMap;//THREE.BasicShadowMap;
 
@@ -179,7 +196,7 @@ module ThreejsAPI{
 			//background
 			this.createTexMat();
 
-			this.createscene_cube();
+			//this.createscene_cube();
 
 			//this.createHUD();
 			//this.createscene();//simple test
@@ -219,17 +236,17 @@ module ThreejsAPI{
 			//this.effectComposer.addPass(render);
 			//var maskPass1 = new THREE.MaskPass( this.scene, this.camera );
 			var scene = new THREE.Scene();
-			var geometry = new THREE.BoxGeometry( 1, 1, 1 );
-			var material = new THREE.MeshBasicMaterial( { color: 0xccccff } );
-			var cube = new THREE.Mesh( geometry, material );
-			cube.position.x = 1;
-			scene.add( cube );
+			//var geometry = new THREE.BoxGeometry( 1, 1, 1 );
+			//var material = new THREE.MeshBasicMaterial( { color: 0xccccff } );
+			//var cube = new THREE.Mesh( geometry, material );
+			//cube.position.x = 1;
+			//scene.add( cube );
 			var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 10000 );
 			//var maskPass2 = new THREE.MaskPass( scene, this.camera );
 			//var renderpass2 = new THREE.RenderPass(scene, camera);
 			var renderpass2 = new THREE.RenderPass(scene, this.camera);
 			//renderpass2.renderToScreen = false;
-			console.log(renderpass2);
+			//console.log(renderpass2);
 			renderpass2.clear = false;
 
 			var parameters = {
@@ -248,7 +265,7 @@ module ThreejsAPI{
 			//this.effectComposer.addPass( outputPass );
 			this.effectComposer.addPass( copyPass );
 
-			console.log(this.effectComposer);
+			//console.log(this.effectComposer);
 			this.update();
 		}
 
@@ -295,10 +312,8 @@ module ThreejsAPI{
 		}
 
 		createscript(scriptname,args){
-
+			console.log('script');
 		}
-
-
 
 		initselectObject(){
 			this.canvas.addEventListener( 'mousedown',(event)=>{ this.onDocumentMouseDown(event) }, false );
@@ -637,7 +652,7 @@ module ThreejsAPI{
 		}
 
 		createcharacter(){
-
+			console.log('');
 		}
 
 		getext(filename){
@@ -647,15 +662,21 @@ module ThreejsAPI{
 		LoadFile(filename){
 			console.log('file: '+ filename);
 			if(this.getext(filename) == '.fbx'){
-				this.LoadFBX(filename);
+				this.LoadFBX(filename,(object)=>{
+					this.scene.add(object);
+				});
 			}
 
 			if(this.getext(filename) == '.dae'){
-				this.LoadDAE(filename);
+				this.LoadDAE(filename,(object)=>{
+					this.scene.add(object);
+				});
 			}
 
 			if(this.getext(filename) == '.obj'){
-				this.LoadOBJ(filename);
+				this.LoadOBJ(filename,(object)=>{
+					this.scene.add(object);
+				});
 			}
 
 			if(this.getext(filename) == '.js'){
@@ -683,18 +704,22 @@ module ThreejsAPI{
 			var filepath = "/assets/" + filename;
 			var loader:any = new THREE.JSONLoader();
 			var self = this;
+			var name = filename;
 			loader.load(filepath, function ( geometry, materials ) {
 				var material = materials[ 0 ];
 				material.morphTargets = true;
 				material.color.setHex( 0xffaaaa );
 				var faceMaterial = new THREE.MultiMaterial( materials );
 				var mesh = new THREE.Mesh( geometry, faceMaterial );
+				mesh.name = name;
 				self.scene.add( mesh );
+				name = null;
 			},this.onProgressModel, this.onErrorModel );
 		}
 
-		LoadFBX(filename){
+		LoadFBX(filename,callback){
 			var filepath = "/assets/" + filename;
+			var name = filename;
 			console.log(filepath);
 			var loader = new THREE.FBXLoader( this.manager );
 			var self = this;
@@ -712,12 +737,16 @@ module ThreejsAPI{
 							}
 						}
 					} );
-					self.scene.add( object );
+					//self.scene.add( object );
+					object.name = name;
+					callback(object);
+					name = null;
 			}, this.onProgressModel, this.onErrorModel );
 		}
 
-		LoadDAE(filename){
+		LoadDAE(filename,callback){
 			var loader = new THREE.ColladaLoader( this.manager );
+			var name = filename;
 			var self = this;
 			loader.options.convertUpAxis = true;
 			var filepath = "/assets/" + filename;
@@ -733,13 +762,17 @@ module ThreejsAPI{
 				dae.updateMatrix();
 				//init();
 				//animate();
-				self.scene.add( dae );
+				//self.scene.add( dae );
+				dae.name = name;
+				callback(dae);
 				console.log("added");
+				name = null;
 			}, this.onProgressModel, this.onErrorModel);
 		}
 
-		LoadOBJ(filename){
+		LoadOBJ(filename,callback){
 			var self = this;
+			var name = filename;
 			var filepath = "/assets/" + filename;
 			var loader = new THREE.OBJLoader( this.manager );
 			//var loader = new THREE.OBJLoader();
@@ -750,7 +783,10 @@ module ThreejsAPI{
 						}
 					} );
 					//object.position.y = - 95;
-					self.scene.add( object );
+					//self.scene.add( object );
+					object.name = name;
+					callback(object);
+					name = null;
 			}, this.onProgressModel, this.onErrorModel);
 		}
 
@@ -1358,6 +1394,6 @@ module ThreejsAPI{
 		}
 	}
 }
-var threejsapi;
+
 //var threejsapi = new ThreejsAPI.Game();
 //console.log(app);
