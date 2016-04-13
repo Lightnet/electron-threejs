@@ -1,7 +1,9 @@
 var threejsangular = angular.module('threejsangular', []);
 var socketio = io();
 
-projectid = "threejseditor";
+var projectid = "threejseditor";
+
+var scripts = [];
 
 var rename = '';
 var assets = [];
@@ -57,6 +59,31 @@ socketio.on('connect',()=>{
 		initangularnode();
 		RefreshContent();
 		NodePropsRefresh();
+		getScripts();
+	}
+});
+
+function getScripts(){
+	socketio.emit('script',{action:'getscripts',projectid:projectid});
+}
+
+socketio.on('script',(data)=>{
+	if(data['action'] !=null){
+		if(data['action'] == 'clear'){
+			scripts = [];
+		}
+		if(data['action'] == 'add'){
+			console.log(data);
+			scripts.push( {id:data['id'] ,name :data['name'], path:data['path'],script: data['script']});
+			//scripts[ data['id']  ].path =  data['path'];
+			//scripts[ data['id']  ].script =  data['script'];
+
+			console.log(scripts);
+			console.log(scripts.length);
+		}
+		if(data['action'] == 'length'){
+			console.log(scripts.length);
+		}
 	}
 });
 

@@ -1,7 +1,28 @@
 var socketio;
 var editor;
 var filename;
+var idname;
 var projectid = "threejseditor";
+
+var extfiles = [
+	'.fbx',
+	'.dae',
+	'.obj',
+	'.mtl',
+	'.md',
+	'.html',
+	'.xml',
+	'.txt',
+	'.md',
+	'.ts',
+	'.js',
+	'.json'
+];
+
+//get file ext
+function getext(filename){
+	return filename.substr(filename.lastIndexOf('.'));
+}
 //window load start three
 function addListener(event, obj, fn) {
 	if (obj.addEventListener) {
@@ -34,16 +55,16 @@ addListener("load", window,()=>{
 			{ type: 'main', style: pstyle, resizable: true, content: '<div id="editor" />',
 				toolbar: {
 					items: [
-						{ type: 'button',  id: 'coderefresh',  caption: '', icon: 'fa fa-refresh', hint: 'Refresh Script' },
-						{ type: 'button',  id: 'codenew',  caption: '', icon: 'fa fa-plus-square-o', hint: 'New Script' },
-						{ type: 'button',  id: 'coderename',  caption: '', icon: 'fa fa-pencil', hint: 'Rename Script' },
-						{ type: 'button',  id: 'codesaveas',  caption: '', icon: 'fa fa-files-o', hint: 'Copy as' },
-						{ type: 'html',  id: 'codedelete',  caption: '', icon: 'fa fa-trash-o', hint: 'Delete Script',
+						{ type: 'button',  id: 'coderefresh',  caption: 'Refresh', icon: 'fa fa-refresh', hint: 'Refresh Script' },
+						{ type: 'button',  id: 'codenew',  caption: 'New', icon: 'fa fa-plus-square-o', hint: 'New Script' },
+						{ type: 'button',  id: 'codesaveas',  caption: 'Save As', icon: 'fa fa-files-o', hint: 'Copy as' },
+						{ type: 'html',  id: 'codefilename',  caption: '', icon: 'fa fa-trash-o', hint: 'File name Script',
 						html: '<div style="padding: 3px 10px;">'+
 		                      ' Script Name:'+
 		                      '    <input id="inputfilename" size="" style="padding: 3px; border-radius: 2px; border: 1px solid silver"/>'+
 		                      '</div>'
 						},
+						{ type: 'button',  id: 'coderename',  caption: 'Edit', icon: 'fa fa-pencil', hint: 'Rename Script' },
 						{ type: 'menu',   id: 'codelanguage', caption: 'Language', icon: 'fa fa-file-code-o', items: [
 			                { text: '.js', icon: 'fa fa-file-code-o'},
 			                { text: '.json', icon: 'fa fa-file-code-o' },
@@ -58,6 +79,39 @@ addListener("load", window,()=>{
 					onClick: function (id, event) {
 						//console.log(id);
 						//console.log(event);
+						if(event.target == 'coderename'){
+							//console.log($("#inputfilename").val());
+							var bmatch = false;
+							var ext = getext($("#inputfilename").val());
+							var tmpfilename = $("#inputfilename").val();
+							console.log(ext);
+							for(var i in extfiles) {
+								//console.log(exts[i]);
+								if( ext == extfiles[i] ){
+									bmatch = true;
+									break;
+								}
+							}
+
+							if(bmatch == false){
+								$("#logstatus").text('File extension do not match.');
+							}
+
+							if(bmatch == true){
+								console.log('checking...');
+								console.log(idname);
+								console.log(tmpfilename);
+								if((idname !=null)&&(tmpfilename !=null)&&(tmpfilename != filename)){
+									console.log('rename');
+									socketio.emit('assets',{action:"rename",projectid:projectid,id:idname,name:tmpfilename});
+									filename = tmpfilename;
+									tmpfilename =null;
+								}else{
+									$("#logstatus").text('Same file name.');
+								}
+							}
+						}
+
 						if(event.target == 'codelanguage:.js'){
 							editor.session.setMode("ace/mode/javascript");
 						}
@@ -155,6 +209,7 @@ addListener("load", window,()=>{
 				}
 				if(data['script'] != null){
 					console.log('loaded script');
+					idname = data['id'];
 					editor.setValue(data['script'],-1);
 					$("#logstatus").text('file loaded.');
 					//editor.setValue(data['script']);

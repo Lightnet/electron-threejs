@@ -346,10 +346,7 @@ module.exports.socketio_connect = function(io, socket){
 		}
 	});
 
-	console.log('listen? code');
-
 	socket.on('code', function(data){
-
 		if(data['action'] !=null){
 			console.log('get script code?');
 			if(data['action'] == 'get'){
@@ -370,7 +367,7 @@ module.exports.socketio_connect = function(io, socket){
 									fs.readFile(__dirname +"/public/"+ result[0]['path'], "utf8", function(err, data) {
 								        if (err) throw err;
 										console.log('loaded fs reading...');
-										socket.emit('code',{action:'load',script:data,name:result[0]['name']});
+										socket.emit('code',{action:'load',script:data,id:result[0]['id'],name:result[0]['name']});
 								    });
 								}
 								if(result.length == 0){
@@ -436,9 +433,63 @@ module.exports.socketio_connect = function(io, socket){
 		    			});
 				}
 			}
-
 		}
 
+	});
+
+	socket.on('script',function(data){
+		if(data['action'] !=null){
+			if(data['action'] == 'getscripts'){
+				console.log('script list???????');
+				if((rethinkdb !=null)&&(connection !=null)){
+					connection.use('test');
+					//console.log(data.name);
+					//console.log(data.projectid);
+					rethinkdb.table('assets').filter(  rethinkdb.row('name').match('.js$').and( rethinkdb.row('projectid').eq(data.projectid) )   ). //get the assets files list
+		    			run(connection, function(err, cursor) {
+		        			if (err) throw err;
+		        			cursor.toArray(function(err, result) {
+		            			if (err){
+									console.log("err");
+									console.log(err);
+								};
+								console.log(result.length);
+								if(result.length > 0){
+									//console.log(__dirname +"/public/"+ result[0]['path']);
+									//socket.emit('script',{action:'clear'});
+									for (var i = 0; i < result.length;i++){//loop to load script file
+										console.log('result[i]');
+										console.log(result[i]);
+										var assets_data = result[i];
+
+										fs.readFile(__dirname +"/public/"+ assets_data['path'], "utf8", function(err, data) {
+									        if (err) throw err;
+											console.log('loaded fs reading...');
+											console.log(assets_data);
+
+											socket.emit('script',{	action:'add',
+																	script:data,
+																	id:assets_data['id'],
+																	name:assets_data['name'],
+																	path:assets_data['path']
+																});
+									    });
+										//socket.emit('script',{	action:'length'});
+									}
+
+								}
+								if(result.length == 0){
+									console.log('scripts not found!');
+									socket.emit('code',{action:'message',message:'files not found!'});
+								}
+								//console.log(JSON.stringify(result, null, 2));
+								//res.end( JSON.stringify( response ) );
+		        			});
+		    			});
+				}
+
+			}
+		}
 	});
 
 };

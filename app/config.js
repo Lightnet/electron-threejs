@@ -1,12 +1,3 @@
-/*
-    Name:
-    Link:https://bitbucket.org/Lightnet/
-    Created By: Lightnet
-    License: Creative Commons Zero [Note there multiple Licenses]
-    Please read the readme.txt file for more information.
-*/
-/* global config */
-//import required lib
 var args = require('minimist')(process.argv.slice(2));
 var extend = require('extend');
 var fs = require('fs');
@@ -22,10 +13,8 @@ var common_config = {
     database_type: "mongodb",
     cachetime: (365 * 24 * 60 * 60 * 1000)
 };
-//token key
 var tokenkeys = require("./tokenkeys.json");
 extend(false, common_config, tokenkeys);
-//environment specific configuration
 var conf = {
     production: {
         ip: args.ip || "0.0.0.0",
@@ -49,5 +38,4 @@ var conf = {
 extend(false, conf.production, common_config);
 extend(false, conf.development, common_config);
 extend(false, conf.alpha, common_config);
-//set config on the arguments default
 module.exports = config = conf[environment];
