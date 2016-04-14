@@ -33,7 +33,7 @@ var exts = [
 	'.js',
 	'.json'
 ];
-
+//filter out files for manage
 var extmesh = [
 	'.fbx',
 	'.dae',
@@ -119,12 +119,13 @@ socketio.on('script',(data)=>{
 			scripts = [];
 		}
 		if(data['action'] == 'add'){
+			console.log(data);
 			//console.log(data);
 			scripts.push( {id:data['id'] ,name :data['name'], path:data['path'],script: data['script']});
 			//scripts[ data['id']  ].path =  data['path'];
 			//scripts[ data['id']  ].script =  data['script'];
 
-			//console.log(scripts);
+			console.log(scripts);
 			//console.log(scripts.length);
 		}
 		if(data['action'] == 'length'){
@@ -405,34 +406,85 @@ threejsangular.directive("clearobjectnodes", function($compile){
 	};
 });
 
-//Directive for adding buttons on click that show an alert on click
-/*
-threejsangular.directive("objectnodecomponets", function($compile){
-	return function(scope, element, attrs){
-		element.bind("click", function(){
-			//scope.count++;
-			console.log('add?');
-			var myEl = angular.element(
-				document.getElementById('listcomponent')
-			);
-			//clear children
-			myEl.empty();
 
-			if(selectnodeprops['uuid'] !=null){
-				myEl.append($compile(`<nodelabelcomponent params="params='uuid'"></nodelabelcomponent>`)(scope));
-			}
-			if(selectnodeprops['visible'] !=null){
-				myEl.append($compile(`<nodebooleancomponent params="params='visible'"></nodebooleancomponent>`)(scope));
-			}
-			if(selectnodeprops['position'] !=null){
-				myEl.append($compile(`<nodeinputcomponent params="params='position.x'"></nodeinputcomponent>`)(scope));
-				myEl.append($compile(`<nodeinputcomponent params="params='position.y'"></nodeinputcomponent>`)(scope));
-				myEl.append($compile(`<nodeinputcomponent params="params='position.z'"></nodeinputcomponent>`)(scope));
-			}
-		});
+
+//===============================================
+
+
+threejsangular.component('nodescriptscomponent', {
+	bindings: {
+		//params:'=',
+		//confirmed:'='
+		//scriptselect:'='
+	},
+	scope: {
+		scriptselect:'=',
+		scripts:'=' //local var
+	},
+  	controller:'nodescriptCtrl',
+  	template: function($element, $attrs){
+		return `<div>`+
+					//`<label>{{$ctrl.params}}</label>`+
+					//`<input type="checkbox" ng-model="confirmed" ng-change="$ctrl.change()" />` +
+					`<select ng-change="$ctrl.change();" ng-model="$ctrl.scriptselect">`+
+						`<option ng-repeat="script in scripts" ng-value="script.id">{{script.name}}</option>`+
+					`</select>`+
+					`<button ng-click="$ctrl.add();">add</button>`+
+					`<button ng-click="$ctrl.remove();">remove</button>`+
+					`<button ng-click="$ctrl.refresh();">refresh</button>`+
+				`</div>`;
+	}
+}).controller('nodescriptCtrl', function nodescriptCtrl($scope) {
+	function change() {
+	  //console.log($scope.$ctrl.params);
+	  //_.set(cube, $scope.$ctrl.params, $scope.confirmed);
+	  console.log($scope.$ctrl.scriptselect);
 	};
+	this.change = change;
+	function add(){
+		console.log('add');
+		addScriptComponent($scope.$ctrl.scriptselect);
+		//console.log($scope.$ctrl.scriptselect);
+		//console.log($scope.scripts);
+	}
+	this.add = add;
+	function remove(){
+		//console.log($scope.$ctrl.scriptselect);
+		removeScriptComponent($scope.$ctrl.scriptselect);
+		console.log('remove');
+	}
+	this.remove = remove;
+	function refresh(){
+		console.log('refresh');
+		$scope.scripts = scripts;
+		//console.log(scripts);
+	}
+	this.refresh = refresh;
+	this.$onInit = function () {
+		$scope.scriptselect = 0;
+		// component initialisation
+		//$scope.confirmed = _.get(cube, $scope.$ctrl.params);
+		$scope.scripts = scripts;
+		console.log(scripts);
+		//$scope.scripts = [
+    		//{'name': 'Mesh',
+     		//'id': '0'},
+    		//{'name': 'Animation',
+     		//'id': '1'},
+    		//{'name': 'Texture',
+     		//'id': '2'}
+  			//];
+  	};
+  	this.$postLink = function () {
+    	// component post-link
+  	};
+  	this.$onDestroy = function () {
+    	// component $destroy function
+  	};
 });
-*/
+
+
+//===============================================
 function checknodecomponents(){
 	setTimeout(function () {
 		var $target = document.getElementById('listcomponent');
@@ -443,7 +495,14 @@ function checknodecomponents(){
 		//console.log(this);
 		angular.element($target).injector().invoke(function($compile) {
 			var scope = angular.element($target).scope();
-			var propEl = angular.element($target);
+			var propE10 = angular.element($target);
+
+			//propE10.append($(`<div id='objectscene'>Object <button>Toggle</button></div>`).append($(`<div id=objectprops></div>`)) );
+			propE10.append($compile(`<div id='objectscene'>Object <button onclick="$('#objectvar').toggle();">Toggle</button>`)(scope));
+			propE10.append($compile(`<div id=objectvar></div>`)(scope));
+			$('#objectvar').toggle();
+			var propEl = angular.element(document.getElementById('objectvar'));
+			//propEl.empty();
 			if(selectnodeprops['uuid'] !=null){
 				propEl.append($compile(`<nodelabelcomponent params="params='uuid'"></nodelabelcomponent>`)(scope));
 			}
@@ -453,7 +512,6 @@ function checknodecomponents(){
 			if(selectnodeprops['name'] !=null){
 				propEl.append($compile(`<nodeinputcomponent params="params='name'"></nodeinputcomponent>`)(scope));
 			}
-
 			if(selectnodeprops['position'] !=null){
 				propEl.append($compile(`<nodeinputcomponent params="params='position.x'"></nodeinputcomponent>`)(scope));
 				propEl.append($compile(`<nodeinputcomponent params="params='position.y'"></nodeinputcomponent>`)(scope));
@@ -469,7 +527,6 @@ function checknodecomponents(){
 				propEl.append($compile(`<nodeinputcomponent params="params='scale.y'"></nodeinputcomponent>`)(scope));
 				propEl.append($compile(`<nodeinputcomponent params="params='scale.z'"></nodeinputcomponent>`)(scope));
 			}
-
 			if(selectnodeprops['castShadow'] !=null){
 				propEl.append($compile(`<nodebooleancomponent params="params='castShadow'"></nodebooleancomponent>`)(scope));
 			}
@@ -503,8 +560,26 @@ function checknodecomponents(){
 				propEl.append($compile(`<nodeinputcomponent params="params='zoom'"></nodeinputcomponent>`)(scope));
 			}
 			// Finally, refresh the watch expressions in the new element
-			scope.$apply();
+
 			//console.log('add?');
+
+			if(selectnodeprops['script'] !=null){
+				//var $target = document.getElementById('listcomponent');
+				//var myEl = angular.element(
+					//$target
+				//);
+				myEl.append($compile(`<nodescriptscomponent />`)(scope));
+
+				console.log('script init');
+				for(var cn in selectnodeprops.script){
+					console.log(cn);
+					console.log(selectnodeprops.script[cn]);
+				}
+			}else{
+				console.log('script not build');
+			}
+
+			scope.$apply();
 		});
 	}, 50);
 }
@@ -549,6 +624,72 @@ function RefreshScene(){
 		//console.log('scene???');
 		//socketio.emit('getscene','threejseditor');
 	}
+}
+
+function ObjectAddScript(){
+	if(selectnodeprops !=null){
+		console.log('selectnodeprops');
+		console.log(selectnodeprops);
+		if(selectnodeprops['script'] == null){
+			selectnodeprops['script'] = {};
+		}
+		console.log(selectnodeprops);
+	}
+}
+
+function addScriptComponent(id){
+	if(selectnodeprops !=null){
+		var scriptobject;
+		for(i in scripts){
+			if(scripts[i].id == id){
+				console.log('found script file:'+scripts[i].name);
+				scriptobject = scripts[i];
+				break;
+			}
+		}
+		if(scriptobject !=null){
+			console.log(scriptobject);
+			//scriptobject.name
+			var name = scriptobject.name.replace(/\.[^/.]+$/, "");
+
+			//check if class var exist
+			if(selectnodeprops.script[name] == null){
+				//var functions = ( new Function( scriptWrapParams, script.source + '\nreturn ' + scriptWrapResult + ';' ).bind( object ) )( this, renderer, scene, camera );
+				//selectnodeprops.script[name] = ( new Function( scriptobject.script + '\nreturn ' + 'this' + ';' ).bind( selectnodeprops ) )();
+				selectnodeprops.script[name] = ( new Function( scriptobject.script + '\nreturn ' + 'this' + ';' ).bind( selectnodeprops ) )();
+			}else{
+				console.log('class, variables, & function exist');
+				console.log(selectnodeprops);
+			}
+			console.log(selectnodeprops);
+		}
+	}
+}
+
+function removeScriptComponent(id){
+	if(selectnodeprops !=null){
+		var scriptobject;
+		for(i in scripts){
+			if(scripts[i].id == id){
+				console.log('found script file:'+scripts[i].name);
+				scriptobject = scripts[i];
+				break;
+			}
+		}
+		if(scriptobject !=null){
+			console.log(scriptobject);
+			var name = scriptobject.name.replace(/\.[^/.]+$/, "");
+			if(selectnodeprops.script[name] != null){
+				selectnodeprops.script[name] = null;
+				delete selectnodeprops.script[name];
+			}else{
+				console.log('class, variables, & function exist');
+				console.log(selectnodeprops);
+			}
+			console.log(selectnodeprops);
+		}
+	}
+
 }
 
 function RefreshScript(){

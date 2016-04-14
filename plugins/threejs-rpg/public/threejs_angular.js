@@ -114,6 +114,70 @@ threejsangular.component('nodebooleancomponent', {
   	};
 });
 
+threejsangular.component('nodelistcomponent', {
+	bindings: {
+		//params:'=',
+		//confirmed:'='
+		//scriptselect:'='
+	},
+	scope: {
+		scriptselect:'=',
+		scripts:'=' //local var
+	},
+  	controller:'nodelistCtrl',
+  	template: function($element, $attrs){
+		return `<div>`+
+					//`<label>{{$ctrl.params}}</label>`+
+					//`<input type="checkbox" ng-model="confirmed" ng-change="$ctrl.change()" />` +
+					`<select ng-change="$ctrl.change();" ng-model="$ctrl.scriptselect">`+
+						`<option ng-repeat="script in scripts" value="{{script.id}}">{{script.name}}</option>`+
+					`</select>`+
+					`<button ng-click="$ctrl.add();">add</button>`+
+					`<button ng-click="$ctrl.remove();">remove</button>`+
+					`<button ng-click="$ctrl.refresh();">refresh</button>`+
+				`</div>`;
+	}
+}).controller('nodelistCtrl', function nodelistCtrl($scope) {
+	function change() {
+	  //console.log($scope.$ctrl.params);
+	  //_.set(cube, $scope.$ctrl.params, $scope.confirmed);
+	  console.log($scope.$ctrl.scriptselect);
+	};
+	this.change = change;
+	function add(){
+		console.log('add');
+	}
+	this.add = add;
+	function remove(){
+		console.log('remove');
+	}
+	this.remove = remove;
+	function refresh(){
+		console.log('refresh');
+	}
+	this.refresh = refresh;
+	this.$onInit = function () {
+		$scope.scriptselect = 0;
+		// component initialisation
+		//$scope.confirmed = _.get(cube, $scope.$ctrl.params);
+		$scope.scripts = [
+    		{'name': 'Mesh',
+     		'id': '0'},
+    		{'name': 'Animation',
+     		'id': '1'},
+    		{'name': 'Texture',
+     		'id': '2'}
+  			];
+
+  	};
+  	this.$postLink = function () {
+    	// component post-link
+  	};
+  	this.$onDestroy = function () {
+    	// component $destroy function
+  	};
+});
+
 //===============================================
 // node components
 //===============================================

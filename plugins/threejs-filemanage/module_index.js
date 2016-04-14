@@ -457,11 +457,25 @@ module.exports.socketio_connect = function(io, socket){
 								if(result.length > 0){
 									//console.log(__dirname +"/public/"+ result[0]['path']);
 									//socket.emit('script',{action:'clear'});
+									console.log('//====================================');
 									for (var i = 0; i < result.length;i++){//loop to load script file
-										console.log('result[i]');
-										console.log(result[i]);
+										console.log('result[i]'+result['name']);
+										//console.log(result[i]);
 										var assets_data = result[i];
+										try{
+											var contents = fs.readFileSync(__dirname +"/public/"+ assets_data['path'], "utf8").toString();
+											//console.log(contents);
+											socket.emit('script',{	action:'add',
+																script:contents,
+																id:assets_data['id'],
+																name:assets_data['name'],
+																path:assets_data['path']
+															});
+										}catch(error){
+											console.log('file script not found!');
+										}
 
+										/*
 										fs.readFile(__dirname +"/public/"+ assets_data['path'], "utf8", function(err, data) {
 									        if (err) throw err;
 											console.log('loaded fs reading...');
@@ -474,6 +488,7 @@ module.exports.socketio_connect = function(io, socket){
 																	path:assets_data['path']
 																});
 									    });
+										*/
 										//socket.emit('script',{	action:'length'});
 									}
 

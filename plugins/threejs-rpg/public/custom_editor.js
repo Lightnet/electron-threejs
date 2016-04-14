@@ -238,10 +238,14 @@ function initEditor(){
 					 	 },
 						 { type: 'button',  id: 'contentdelete',  caption: '', icon: 'fa fa-trash-o', hint: 'Delete Node' }
 					 ],
-					 onClick: function (event) {
+					 onClick: function (id, event) {
 						 //this.owner.content('left', event);
-						 //console.log( 'id: ' + event.target);
-						 //RefreshScene();
+						 console.log( 'id: ' + event.target);
+						 console.log( 'event: ' + event);
+						 if(id == 'addcomponent:script'){
+							 ObjectAddScript();
+							 checknodecomponents();
+						 }
 						 if(event.target == 'contentrefresh'){
 							 NodePropsRefresh();
 						 }
@@ -343,7 +347,7 @@ function initEditor(){
 
 	w2ui.toolbar.on('*', function (event) {
 		if(event.target == 'EditorCode'){
-			console.log(assets_select);
+			//console.log(assets_select);
 			if(assets_select !=null){
 				var bfile = false;
 				var tfilename;
@@ -378,7 +382,7 @@ function initEditor(){
 			}
 		}
 		if(event.target == 'EditorViewObject'){
-			console.log(assets_select);
+			//console.log(assets_select);
 			if(assets_select !=null){
 				var bfileimage = false;
 				var bfilemesh = false;
@@ -414,9 +418,6 @@ function initEditor(){
 				}
 				if((bfile ==  true)&&(bfileimage ==  true)){
 					console.log('found texture');
-					//window.open("http://127.0.0.1/code-editor.html"+'?file='+tfilename);
-
-					//=========
 					var bfound = false;
 					for (var t in textures){
 						if(textures[t].name == tfilename){
@@ -450,21 +451,20 @@ function initEditor(){
 						var sprite = new THREE.Sprite( material );
 						threejsapi_preview.scene.add( sprite );
 					}
-					console.log('texture image');
+					//console.log('texture image');
 					$('#tab-example .tab').hide();
 		            $('#tab-example #' + 'tab2').show();
 				}
 
 				if((bfile ==  true)&&(bfilemesh ==  true)){
-					console.log('found mesh object');
+					//console.log('found mesh object');
 					var bfound = false;
-					console.log(objectmeshs);
+					//console.log(objectmeshs);
 					for (var t in objectmeshs){
 						console.log(objectmeshs[t]);
 						if(objectmeshs[t].name == tfilename){
 							bfound = true;
 							mesh = objectmeshs[t];
-
 							break;
 						}
 					}
@@ -501,13 +501,9 @@ function initEditor(){
 						}
 					}
 
-
 					$('#tab-example .tab').hide();
 		            $('#tab-example #' + 'tab2').show();
 				}
-
-
-
 
 				bfound = null;
 				bfilemesh = null;
@@ -525,7 +521,7 @@ function initEditor(){
 
 		}
 
-		console.log(' TARGET: '+ event.target);
+		//console.log(' TARGET: '+ event.target);
 		threejsapi.toolbar(event.target);
 		//console.log(' TARGET: '+ event.target, event);
         //console.log('EVENT: '+ event.type + ' TARGET: '+ event.target, event);

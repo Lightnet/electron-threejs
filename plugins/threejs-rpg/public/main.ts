@@ -44,6 +44,8 @@ module ThreejsAPI{
 
 		effectComposer:any; //render layers
 
+		bprototype:boolean = false;
+
 		scene:any;
 		scenes:any = [];
 		currentscene:string = "scene";
@@ -106,7 +108,13 @@ module ThreejsAPI{
 				if(args['canvasid'] != null){
 					//this.bcanvas = true;
 					this.canvasid = args['canvasid'];
-					console.log('canvasid>>'+args['canvasid']);
+					//console.log('canvasid>>'+args['canvasid']);
+				}
+
+				if(args['bprototype'] != null){
+					//this.bcanvas = true;
+					this.bprototype = args['bprototype'];
+					//console.log('canvasid>>'+args['canvasid']);
 				}
 
 				//this need to be last else it variable are not assign
@@ -138,8 +146,8 @@ module ThreejsAPI{
 		}
 
 		init(){
-			console.log("//==========================================");
-			console.log("init threejs engine");
+			//console.log("//==========================================");
+			//console.log("init threejs engine");
 			this.initManger();
 
 			this.camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 10000 );
@@ -157,9 +165,9 @@ module ThreejsAPI{
 			//console.log(this.scene);
 			if(this.canvasid == null){
 				this.canvas = document.getElementById('myCanvas');
-				console.log("default canvasid: myCanvas");
+				//console.log("default canvasid: myCanvas");
 			}else{
-				console.log("get canvasid: "+this.canvasid);
+				//console.log("get canvasid: "+this.canvasid);
 				this.canvas = document.getElementById(this.canvasid);
 			}
 
@@ -379,7 +387,7 @@ module ThreejsAPI{
 		}
 
 		toolbar(action){
-			console.log(action);
+			//console.log(action);
 			if(action == 'EditorComponents:BoxGeometry'){
 				this.createshape({shape:"BoxGeometry"});
 			}

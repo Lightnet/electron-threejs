@@ -59,3 +59,6 @@
   * protobuf.min.js https://github.com/dcodeIO/protobuf.js
   * playcanvas-stable.js http://playcanvas.com
   * smoothie.js http://smoothiecharts.org/
+
+## rethinkdb
+ * r.table('assets').filter(  r.row('name').match('.js$')   ) //get the assets files list

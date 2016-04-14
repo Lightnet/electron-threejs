@@ -26,6 +26,7 @@ var ThreejsAPI;
             this.antialias = true;
             this.bablenetwork = false;
             this.materialType = 'MeshBasicMaterial';
+            this.bprototype = false;
             this.scenes = [];
             this.currentscene = "scene";
             this.currenthudscene = "hud";
@@ -52,7 +53,10 @@ var ThreejsAPI;
                 if (args['canvasid'] != null) {
                     //this.bcanvas = true;
                     this.canvasid = args['canvasid'];
-                    console.log('canvasid>>' + args['canvasid']);
+                }
+                if (args['bprototype'] != null) {
+                    //this.bcanvas = true;
+                    this.bprototype = args['bprototype'];
                 }
                 //this need to be last else it variable are not assign
                 if (args['onload'] == true) {
@@ -80,8 +84,8 @@ var ThreejsAPI;
             }
         };
         Game.prototype.init = function () {
-            console.log("//==========================================");
-            console.log("init threejs engine");
+            //console.log("//==========================================");
+            //console.log("init threejs engine");
             this.initManger();
             this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 10000);
             this.camera.name = "camera";
@@ -97,10 +101,9 @@ var ThreejsAPI;
             //console.log(this.scene);
             if (this.canvasid == null) {
                 this.canvas = document.getElementById('myCanvas');
-                console.log("default canvasid: myCanvas");
             }
             else {
-                console.log("get canvasid: " + this.canvasid);
+                //console.log("get canvasid: "+this.canvasid);
                 this.canvas = document.getElementById(this.canvasid);
             }
             this.renderer = new THREE.WebGLRenderer({ canvas: this.canvas, precision: "mediump", antialias: this.antialias });
@@ -287,7 +290,7 @@ var ThreejsAPI;
             console.log('');
         };
         Game.prototype.toolbar = function (action) {
-            console.log(action);
+            //console.log(action);
             if (action == 'EditorComponents:BoxGeometry') {
                 this.createshape({ shape: "BoxGeometry" });
             }
