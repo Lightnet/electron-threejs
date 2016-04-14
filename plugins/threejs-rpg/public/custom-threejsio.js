@@ -573,6 +573,7 @@ function checknodecomponents(){
 				console.log('script init');
 				for(var cn in selectnodeprops.script){
 					console.log(cn);
+					myEl.append($compile(`<div>`+cn +`</div>`)(scope));
 					console.log(selectnodeprops.script[cn]);
 				}
 			}else{
@@ -657,6 +658,7 @@ function addScriptComponent(id){
 				//var functions = ( new Function( scriptWrapParams, script.source + '\nreturn ' + scriptWrapResult + ';' ).bind( object ) )( this, renderer, scene, camera );
 				//selectnodeprops.script[name] = ( new Function( scriptobject.script + '\nreturn ' + 'this' + ';' ).bind( selectnodeprops ) )();
 				selectnodeprops.script[name] = ( new Function( scriptobject.script + '\nreturn ' + 'this' + ';' ).bind( selectnodeprops ) )();
+				checknodecomponents();
 			}else{
 				console.log('class, variables, & function exist');
 				console.log(selectnodeprops);
@@ -689,7 +691,6 @@ function removeScriptComponent(id){
 			console.log(selectnodeprops);
 		}
 	}
-
 }
 
 function RefreshScript(){
