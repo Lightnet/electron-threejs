@@ -2,8 +2,16 @@
 
  Created by: Lightnet
 
-## License:
-  [CC0 (Public Domain)](LICENSE.md)
+# working features:
+ * drag file to scene editor to upload files filter by type extensions. Work in progress.
+ * rename file assets & delete
+ * preview assets mesh and texture
+ * add and remove scene object and parenting object.
+ * add some base shapes
+ * javascript files can be edited and can be attaching script component to object3d.
+ * script code editor (save/rename)
+ * object properties variables are limited in transform edit (position, rotation, scale, visible)
+ * rename/new/copy function may not work in many places.
 
 # Plugins:(they can be turn off/on for projects test build that might conflict other similar builds)
  * baseplugin -basic setup
@@ -24,10 +32,8 @@
 ## Base stuff:
  * Currently it start a server from background and not the window browser.
  * localhost/editor.html (url for threejs editor)
- * localhost/threejs-rpg  (work in progress)
- * localhost/threejs-custom.html  (work in progress)
+ * localhost/threejs-editor.html  (work in progress)
  * localhost/threejs-physics.html  (working)
- * localhost/upload.html  (working, simple upload file)
 
 ## Application Menus
   * Check Status (no function yet)
@@ -61,4 +67,4 @@
   * smoothie.js http://smoothiecharts.org/
 
 ## rethinkdb
- * r.table('assets').filter(  r.row('name').match('.js$')   ) //get the assets files list
+ * r.table('assets').filter(  r.row('name').match('.js$')  ) //get the assets files list
