@@ -119,13 +119,12 @@ socketio.on('script',(data)=>{
 			scripts = [];
 		}
 		if(data['action'] == 'add'){
-			console.log(data);
+			//console.log(data);
 			//console.log(data);
 			scripts.push( {id:data['id'] ,name :data['name'], path:data['path'],script: data['script']});
 			//scripts[ data['id']  ].path =  data['path'];
 			//scripts[ data['id']  ].script =  data['script'];
-
-			console.log(scripts);
+			//console.log(scripts);
 			//console.log(scripts.length);
 		}
 		if(data['action'] == 'length'){
@@ -442,7 +441,7 @@ threejsangular.component('nodescriptscomponent', {
 	};
 	this.change = change;
 	function add(){
-		console.log('add');
+		//console.log('add');
 		addScriptComponent($scope.$ctrl.scriptselect);
 		//console.log($scope.$ctrl.scriptselect);
 		//console.log($scope.scripts);
@@ -451,11 +450,11 @@ threejsangular.component('nodescriptscomponent', {
 	function remove(){
 		//console.log($scope.$ctrl.scriptselect);
 		removeScriptComponent($scope.$ctrl.scriptselect);
-		console.log('remove');
+		//console.log('remove');
 	}
 	this.remove = remove;
 	function refresh(){
-		console.log('refresh');
+		//console.log('refresh');
 		$scope.scripts = scripts;
 		//console.log(scripts);
 	}
@@ -465,7 +464,7 @@ threejsangular.component('nodescriptscomponent', {
 		// component initialisation
 		//$scope.confirmed = _.get(cube, $scope.$ctrl.params);
 		$scope.scripts = scripts;
-		console.log(scripts);
+		//console.log(scripts);
 		//$scope.scripts = [
     		//{'name': 'Mesh',
      		//'id': '0'},
@@ -560,26 +559,26 @@ function checknodecomponents(){
 				propEl.append($compile(`<nodeinputcomponent params="params='zoom'"></nodeinputcomponent>`)(scope));
 			}
 			// Finally, refresh the watch expressions in the new element
-
 			//console.log('add?');
-
 			if(selectnodeprops['script'] !=null){
 				//var $target = document.getElementById('listcomponent');
 				//var myEl = angular.element(
 					//$target
 				//);
 				myEl.append($compile(`<nodescriptscomponent />`)(scope));
-
 				console.log('script init');
 				for(var cn in selectnodeprops.script){
 					console.log(cn);
-					myEl.append($compile(`<div>`+cn +`</div>`)(scope));
 					console.log(selectnodeprops.script[cn]);
+					var scomponent = selectnodeprops.script[cn];
+					for(var sc in scomponent){
+						console.log(sc);
+					}
+					myEl.append($compile(`<div>`+cn +`</div>`)(scope));
 				}
 			}else{
 				console.log('script not build');
 			}
-
 			scope.$apply();
 		});
 	}, 50);
@@ -588,7 +587,6 @@ function checknodecomponents(){
 //===============================================
 //
 //===============================================
-
 function RefreshAssets(){
 	console.log('refresh assets socket.io');
 	//if(socketio !=null){
@@ -648,22 +646,60 @@ function addScriptComponent(id){
 				break;
 			}
 		}
+		//console.log(scriptobject);
 		if(scriptobject !=null){
 			console.log(scriptobject);
 			//scriptobject.name
-			var name = scriptobject.name.replace(/\.[^/.]+$/, "");
-
+			var oname = scriptobject.name.replace(/\.[^/.]+$/, "");
 			//check if class var exist
-			if(selectnodeprops.script[name] == null){
-				//var functions = ( new Function( scriptWrapParams, script.source + '\nreturn ' + scriptWrapResult + ';' ).bind( object ) )( this, renderer, scene, camera );
-				//selectnodeprops.script[name] = ( new Function( scriptobject.script + '\nreturn ' + 'this' + ';' ).bind( selectnodeprops ) )();
-				selectnodeprops.script[name] = ( new Function( scriptobject.script + '\nreturn ' + 'this' + ';' ).bind( selectnodeprops ) )();
+			if(selectnodeprops.script[oname] == null){
+
+				events = {
+					init: [],
+					start: [],
+					stop: [],
+					keydown: [],
+					keyup: [],
+					mousedown: [],
+					mouseup: [],
+					mousemove: [],
+					touchstart: [],
+					touchend: [],
+					touchmove: [],
+					update: []
+				};
+
+				var scriptWrapParams = 'renderer,scene,camera';
+				var scriptWrapResultObj = {};
+
+				for ( var eventKey in events ) {
+					scriptWrapParams += ',' + eventKey;
+					scriptWrapResultObj[ eventKey ] = eventKey;
+				}
+				var scriptWrapResult = JSON.stringify( scriptWrapResultObj ).replace( /\"/g, '' );
+				selectnodeprops.script[oname] = ( new Function(scriptWrapParams, scriptobject.script + '\nreturn ' + scriptWrapResult + ';'  ).bind( selectnodeprops ) )();
+
+				for ( var name in selectnodeprops.script[oname] ) {
+
+					if ( selectnodeprops.script[oname][ name ] === undefined ) continue;
+
+					if ( events[ name ] === undefined ) {
+						console.warn( 'APP.Player: Event type not supported (', name, ')' );
+						continue;
+					}
+					events[ name ].push( selectnodeprops.script[oname][ name ].bind( selectnodeprops ) );
+				}
+				//if(selectnodeprops.script[oname].init !=null){
+					//selectnodeprops.script[oname].init();
+				//}
+				//console.log(selectnodeprops.script[oname]);
+				//console.log(selectnodeprops);
 				checknodecomponents();
 			}else{
 				console.log('class, variables, & function exist');
-				console.log(selectnodeprops);
+				//console.log(selectnodeprops);
 			}
-			console.log(selectnodeprops);
+			//console.log(selectnodeprops);
 		}
 	}
 }
