@@ -2,6 +2,7 @@ var socketio = io();
 var threejsangular = angular.module('threejsangular', []);
 var threejsapi;
 var threejsapi_preview;
+var threejsapi_play;
 var projectid = "threejseditor";
 var scripts = [];
 var rename = '';
@@ -70,6 +71,7 @@ function initScriptEditor(){
 	//editor.setTheme("ace/theme/twilight");
 	editor.setTheme("ace/theme/chrome");
 	editor.session.setMode("ace/mode/javascript");
+	editor.setValue('//work in progress nothing added this for core setup threejs game and user interface.')
 	//console.log(editor.getValue());
 
 	//var editor = ace.edit("editor");                   // the editor object
@@ -97,8 +99,8 @@ socketio.on('connect',()=>{
 		initScriptEditor();
 		threejsapi = new ThreejsAPI.Game({onload:false});
 		//var player = threejsapi.createplayer();
-
 		threejsapi_preview = new ThreejsAPI.Game({onload:false, canvasid:'objectCanvas'});
+		threejsapi_play = new ThreejsAPI.Game({onload:false, canvasid:'playCanvas'});
 
 		//console.log(player);
 		RefreshAssets();
@@ -108,6 +110,12 @@ socketio.on('connect',()=>{
 		getScripts();
 	}
 });
+
+function loadScripts(){
+	for(var i = 0; i < scripts.length;i++){
+		threejsapi.addScript(scripts[i].path);
+	}
+}
 
 function getScripts(){
 	socketio.emit('script',{action:'getscripts',projectid:projectid});
@@ -129,6 +137,10 @@ socketio.on('script',(data)=>{
 		}
 		if(data['action'] == 'length'){
 			//console.log(scripts.length);
+		}
+		if(data['action'] == 'finish'){
+			//console.log(scripts.length);
+			loadScripts();
 		}
 	}
 });
@@ -405,10 +417,9 @@ threejsangular.directive("clearobjectnodes", function($compile){
 	};
 });
 
-
-
 //===============================================
-
+//
+//===============================================
 
 threejsangular.component('nodescriptscomponent', {
 	bindings: {
@@ -482,7 +493,8 @@ threejsangular.component('nodescriptscomponent', {
   	};
 });
 
-
+//===============================================
+// object props edit data var
 //===============================================
 function checknodecomponents(){
 	setTimeout(function () {
@@ -560,20 +572,20 @@ function checknodecomponents(){
 			}
 			// Finally, refresh the watch expressions in the new element
 			//console.log('add?');
-			if(selectnodeprops['script'] !=null){
+			if(selectnodeprops.userData['script'] !=null){
 				//var $target = document.getElementById('listcomponent');
 				//var myEl = angular.element(
 					//$target
 				//);
 				myEl.append($compile(`<nodescriptscomponent />`)(scope));
-				console.log('script init');
-				for(var cn in selectnodeprops.script){
-					console.log(cn);
-					console.log(selectnodeprops.script[cn]);
-					var scomponent = selectnodeprops.script[cn];
-					for(var sc in scomponent){
-						console.log(sc);
-					}
+				//console.log('script init');
+				for(var cn in selectnodeprops.userData.script){
+					//console.log(cn);
+					//console.log(selectnodeprops.script[cn]);
+					//var scomponent = selectnodeprops.script[cn];
+					//for(var sc in scomponent){
+						//console.log(sc);
+					//}
 					myEl.append($compile(`<div>`+cn +`</div>`)(scope));
 				}
 			}else{
@@ -624,18 +636,23 @@ function RefreshScene(){
 		//socketio.emit('getscene','threejseditor');
 	}
 }
-
+//===============================================
+// init script object3d scene
+//===============================================
 function ObjectAddScript(){
 	if(selectnodeprops !=null){
 		console.log('selectnodeprops');
 		console.log(selectnodeprops);
-		if(selectnodeprops['script'] == null){
-			selectnodeprops['script'] = {};
+		if(selectnodeprops.userData['script'] == null){
+			selectnodeprops.userData['script'] = {};
 		}
 		console.log(selectnodeprops);
 	}
 }
 
+//===============================================
+// Script components
+//===============================================
 function addScriptComponent(id){
 	if(selectnodeprops !=null){
 		var scriptobject;
@@ -648,11 +665,11 @@ function addScriptComponent(id){
 		}
 		//console.log(scriptobject);
 		if(scriptobject !=null){
-			console.log(scriptobject);
+			//console.log(scriptobject);
 			//scriptobject.name
 			var oname = scriptobject.name.replace(/\.[^/.]+$/, "");
 			//check if class var exist
-			if(selectnodeprops.script[oname] == null){
+			if(selectnodeprops.userData.script[oname] == null){
 
 				events = {
 					init: [],
@@ -677,18 +694,23 @@ function addScriptComponent(id){
 					scriptWrapResultObj[ eventKey ] = eventKey;
 				}
 				var scriptWrapResult = JSON.stringify( scriptWrapResultObj ).replace( /\"/g, '' );
-				selectnodeprops.script[oname] = ( new Function(scriptWrapParams, scriptobject.script + '\nreturn ' + scriptWrapResult + ';'  ).bind( selectnodeprops ) )();
+				var functions = ( new Function(scriptWrapParams, scriptobject.script));
+				//console.log(functions);
 
-				for ( var name in selectnodeprops.script[oname] ) {
+				selectnodeprops.userData.script[oname] = ( new Function(scriptWrapParams, scriptobject.script + '\nreturn ' + scriptWrapResult + ';'  ).bind( selectnodeprops ) )();
 
-					if ( selectnodeprops.script[oname][ name ] === undefined ) continue;
+				for ( var name in selectnodeprops.userData.script[oname] ) {
+						//console.log(name);
+					if ( selectnodeprops.userData.script[oname][ name ] === undefined ) continue;
 
 					if ( events[ name ] === undefined ) {
 						console.warn( 'APP.Player: Event type not supported (', name, ')' );
 						continue;
 					}
-					events[ name ].push( selectnodeprops.script[oname][ name ].bind( selectnodeprops ) );
+					events[ name ].push( selectnodeprops.userData.script[oname][ name ].bind( selectnodeprops ) );
 				}
+
+				//console.log(selectnodeprops.script[oname]);
 				//if(selectnodeprops.script[oname].init !=null){
 					//selectnodeprops.script[oname].init();
 				//}
@@ -717,9 +739,9 @@ function removeScriptComponent(id){
 		if(scriptobject !=null){
 			console.log(scriptobject);
 			var name = scriptobject.name.replace(/\.[^/.]+$/, "");
-			if(selectnodeprops.script[name] != null){
-				selectnodeprops.script[name] = null;
-				delete selectnodeprops.script[name];
+			if(selectnodeprops.userData.script[name] != null){
+				selectnodeprops.userData.script[name] = null;
+				delete selectnodeprops.userData.script[name];
 			}else{
 				console.log('class, variables, & function exist');
 				console.log(selectnodeprops);
@@ -832,5 +854,68 @@ function removenodelist(obj,nodes){
 			removenodelist(obj,nodes[0].nodes);
 		}
 		obj.remove(nodes[0].id);
+	}
+}
+
+//===============================================
+//
+//===============================================
+function NewMap(){
+	console.log('NewMap');
+	//console.log(threejsapi.scene);
+}
+
+function SaveMap(){
+	console.log('SaveMap');
+	console.log(threejsapi.scene);
+	console.log(threejsapi.scene.toJSON());
+	//toJSON
+}
+
+function LoadMap(){
+	console.log('LoadMap');
+	//console.log(threejsapi.scene);
+}
+
+//===============================================
+// Debug game setup
+//===============================================
+
+function startPlay(){
+	for( var i = threejsapi_play.scene.children.length - 1; i >= 1; i--) {
+		console.log('remove item?');
+		threejsapi_play.scene.remove(threejsapi_preview.scene.children[i]);
+	}
+	console.log('startPlay');
+	var clonescene = threejsapi.scene.clone();
+	//console.log(threejsapi.scene);
+	console.log(clonescene);
+	console.log("//=======================");
+	clonescene.traverse(function(object){
+
+		if(typeof object.update != 'undefined'){
+			object.update();
+		}
+		console.log(object.userData['script']);
+		if(typeof object.userData['script'] != 'undefined'){
+			for(var cs in object.userData['script']){
+				console.log(cs);
+				console.log(object.userData['script'][cs]());
+				if(typeof object.userData['script'][cs].init != 'undefined'){
+
+					object.userData['script'][cs].init();
+				}
+			}
+			//object.update();
+		}
+	});
+	threejsapi_play.scene.add(clonescene);
+}
+
+function stopPlay(){
+	console.log('stopPlay');
+	for( var i = threejsapi_play.scene.children.length - 1; i >= 1; i--) {
+		console.log('remove item?');
+		threejsapi_play.scene.remove(threejsapi_preview.scene.children[i]);
 	}
 }

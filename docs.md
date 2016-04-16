@@ -3,6 +3,7 @@
  Created by: Lightnet
 
 # working features:
+ * database -deal with file manage without need to used fs not too much dealing with dir folder listing.
  * drag file to scene editor to upload files filter by type extensions. Work in progress.
  * rename file assets & delete
  * preview assets mesh and texture

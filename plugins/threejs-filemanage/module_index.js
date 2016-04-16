@@ -491,6 +491,7 @@ module.exports.socketio_connect = function(io, socket){
 										*/
 										//socket.emit('script',{	action:'length'});
 									}
+									socket.emit('script',{action:'finish',message:'scriptslistend'});
 
 								}
 								if(result.length == 0){

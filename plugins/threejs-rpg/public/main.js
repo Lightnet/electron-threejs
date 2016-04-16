@@ -43,9 +43,10 @@ var ThreejsAPI;
             this.bodies = [];
             this.grounds = [];
             //scripts
-            this.customscript = [];
-            this.scriptlist = [];
+            //customscript:any = [];
+            //scriptlist:any = [];
             this.loadedscript = [];
+            this.scriptcomponents = [];
             this.ToRad = 0.0174532925199432957;
             this.timeSteptimeStep = 1 / 60;
             //listen to load event
@@ -96,6 +97,7 @@ var ThreejsAPI;
             this.scenenodes.push(this.camera);
             this.scene = new THREE.Scene();
             this.scene.name = "scene";
+            this.scene.userData.test = 'test';
             this.scenenodes.push(this.scene);
             //this.scene.add(this.camera);
             //console.log(this.scene);
@@ -231,8 +233,20 @@ var ThreejsAPI;
             render.renderToScreen = true;
             this.effectComposer.addPass(render);
         };
+        Game.prototype.addScript = function (filename) {
+            var head = document.getElementsByTagName('head')[0];
+            var escript = document.createElement('script');
+            escript.src = filename;
+            escript.type = "text/javascript";
+            head.appendChild(escript);
+        };
         Game.prototype.createscript = function (scriptname, args) {
+            console.log('script component name: ' + scriptname);
             console.log('script');
+            this.scriptcomponents[scriptname] = args;
+            console.log(this.scriptcomponents[scriptname]);
+            //if(this.scriptcomponents[scriptname] != null){
+            //}
         };
         Game.prototype.initselectObject = function () {
             var _this = this;

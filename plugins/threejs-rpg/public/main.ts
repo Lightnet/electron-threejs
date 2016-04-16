@@ -86,9 +86,10 @@ module ThreejsAPI{
 		bodies:any = [];
 		grounds:any = [];
 		//scripts
-		customscript:any = [];
-		scriptlist:any = [];
+		//customscript:any = [];
+		//scriptlist:any = [];
 		loadedscript:any = [];
+		scriptcomponents:any = [];
 
 		// HUD Begin
 		hudCanvas:any;
@@ -145,6 +146,8 @@ module ThreejsAPI{
 		    }
 		}
 
+
+
 		init(){
 			//console.log("//==========================================");
 			//console.log("init threejs engine");
@@ -160,6 +163,7 @@ module ThreejsAPI{
 
 			this.scene = new THREE.Scene();
 			this.scene.name = "scene";
+			this.scene.userData.test = 'test';
 			this.scenenodes.push(this.scene);
 			//this.scene.add(this.camera);
 			//console.log(this.scene);
@@ -319,8 +323,21 @@ module ThreejsAPI{
 			this.effectComposer.addPass(render);
 		}
 
-		createscript(scriptname,args){
+		addScript(filename){
+			var head  = document.getElementsByTagName('head')[0];
+			var escript  = document.createElement('script');
+			escript.src = filename;
+			escript.type="text/javascript";
+			head.appendChild(escript);
+		}
+
+		createscript(scriptname, args){
+			console.log('script component name: '+scriptname);
 			console.log('script');
+			this.scriptcomponents[scriptname] = args;
+			console.log(this.scriptcomponents[scriptname]);
+			//if(this.scriptcomponents[scriptname] != null){
+			//}
 		}
 
 		initselectObject(){

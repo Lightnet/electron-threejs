@@ -52,6 +52,10 @@ function initEditor(){
 				    <div id="tab3" class="tab">
 						<div id="editor" ></div>
 				    </div>
+					<div id="tab4" class="tab">
+						<canvas width="800px" height="600px" id="playCanvas">
+						</canvas>
+				    </div>
 				</div>`;
 	var pstyle = 'background-color: #F5F6F7; border: 1px solid #dfdfdf; padding: 0px;';
 	$('#layout').w2layout({
@@ -116,6 +120,7 @@ function initEditor(){
 		            { id: 'tab1', caption: 'Scene Editor' },
 		            { id: 'tab2', caption: 'Object Editor' },
 		            { id: 'tab3', caption: 'Script Editor' },
+					{ id: 'tab4', caption: 'Play' },
 		        ],
 		        onClick: function (event) {
 		            $('#tab-example .tab').hide();
@@ -130,6 +135,7 @@ function initEditor(){
 	$('#tab2').hide();
 	$('#tab3').hide();
 	//$('#tab3').show();
+	$('#tab4').hide();
 
 	//Assets sidebar
 	w2ui['layout'].content('left', $().w2sidebar({
@@ -262,6 +268,10 @@ function initEditor(){
 		name: 'toolbar',
 		items: [
 			{ type: 'menu',   id: 'EditorFile', caption: 'File', items: [
+				{type:'button', text: 'New', icon: 'icon-page'},
+				{type:'button', text: 'Save', icon: 'icon-page'},
+				//{type:'button', text: 'Save As', icon: 'icon-page'},
+				{type:'button', text: 'Load', icon: 'icon-page'},
 				{type:'button', text: 'Open', icon: 'icon-page'},
 				{type:'button', text: 'Close', icon: 'icon-page'},
 				{type:'button', text: 'Import', icon: 'icon-page'},
@@ -328,6 +338,7 @@ function initEditor(){
 				{ text: 'Local', icon: 'icon-page' },
 				{ text: 'Host & Local', icon: 'icon-page' }
 			]},
+			{ type: 'button',   id: 'EditorStop', caption: 'Stop'},
 			{ type: 'menu',   id: 'EditorExample', caption: 'Example', items: [
 				{ text: 'Item 1', icon: 'icon-page' }
 			]},
@@ -345,7 +356,24 @@ function initEditor(){
 	});
 	w2ui['layout'].content('top', w2ui['toolbar']);
 
-	w2ui.toolbar.on('*', function (event) {
+	w2ui.toolbar.on('*', function (id, event) {
+		//console.log('id:'+id);
+		if(id == 'EditorFile:New'){
+			NewMap();
+		}
+		if(id == 'EditorFile:Save'){
+			SaveMap();
+		}
+
+		if(id == 'EditorFile:Load'){
+			LoadMap();
+		}
+		if(id == 'EditorPlay'){
+			startPlay();
+		}
+		if(id == 'EditorStop'){
+			stopPlay();
+		}
 		if(event.target == 'EditorCode'){
 			//console.log(assets_select);
 			if(assets_select !=null){

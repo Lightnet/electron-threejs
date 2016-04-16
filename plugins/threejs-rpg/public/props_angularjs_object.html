@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html ng-app="threejsangular">
+	<head>
+		<meta charset=utf-8>
+		<title>My first Three.js app</title>
+		<link rel="stylesheet" href="css/index.css">
+		<style>
+			* {
+				color: gray;
+			}
+			body { margin: 0px; width: 100%; height: 100%;border: 0;overflow: hidden;}
+			canvas { top:0px;left:0px; width: 100%; height: 100%;margin: 0px; }
+			#objectprops {position: absolute; color:white;top:0px;left:0px; margin: 0px; }
+		</style>
+		<script src="js/lodash.min.js"></script>
+		<script src="js/jquery.min.js"></script>
+		<script src="js/angular.min.js"></script>
+		<script src="js/three.min.js"></script>
+		<script src="threejs_angular.js"></script>
+		<script>
+
+		</script>
+	</head>
+	<body>
+		<script src="threejsscene.js"></script>
+		<div id="objectprops">
+			<div id="nodecontroller" ng-controller="nodecomponentCtrl as vm">
+				<nodecomponent ></nodecomponent>
+				<nodelistcomponent />
+				<div id="listcomponent"></div>
+			</div>
+		<script>
+		var scriptobject = {script:[]};
+		var oname = 'component';
+
+		scriptobject.script = `var test = "test string";
+		function update(){
+			console.log('update');
+		}
+		function getvar(){
+			for (var name in this){
+				console.log(name);
+			}
+		}
+		`;
+		cube.script = {};
+		if(cube.script[oname] == null){
+
+			events = {
+				init: [],
+				start: [],
+				stop: [],
+				keydown: [],
+				keyup: [],
+				mousedown: [],
+				mouseup: [],
+				mousemove: [],
+				touchstart: [],
+				touchend: [],
+				touchmove: [],
+				update: []//,
+				//getvar:[]
+			};
+
+			var scriptWrapParams = 'renderer,scene,camera';
+			var scriptWrapResultObj = {};
+
+			for ( var eventKey in events ) {
+				//console.log(eventKey);
+				scriptWrapParams += ',' + eventKey;
+				scriptWrapResultObj[ eventKey ] = eventKey;
+			}
+
+
+			var scriptWrapResult = JSON.stringify( scriptWrapResultObj ).replace( /\"/g, '' );
+			scriptWrapResultObj[ 'test' ] = 'test';
+			//var functions = ( new Function(scriptWrapParams, scriptobject.script + '\nreturn ' + scriptWrapResult + ';'  ) )();
+
+			cube.script[oname] = ( new Function(scriptWrapParams, scriptobject.script + '\nreturn ' + scriptWrapResult + ';'  ).bind( cube ) )();
+			cube.script[oname]['getvar'] = function(){
+				for (var name in this){
+					console.log(name);
+				}
+			}
+			for ( var name in cube.script[oname] ) {
+					//console.log(name);
+				if ( cube.script[oname][ name ] === undefined ) continue;
+
+				if ( events[ name ] === undefined ) {
+					console.warn( 'APP.Player: Event type not supported (', name, ')' );
+					continue;
+				}
+				events[ name ].push( cube.script[oname][ name ].bind( cube ) );
+			}
+
+			console.log(cube);
+			//cube.script[oname].getvar();
+
+			
+			//console.log(cube.script[oname]);
+			//if(selectnodeprops.script[oname].init !=null){
+				//selectnodeprops.script[oname].init();
+			//}
+			//console.log(selectnodeprops.script[oname]);
+			//console.log(selectnodeprops);
+		}
+
+
+		</script>
+
+	</body>
+</html>
