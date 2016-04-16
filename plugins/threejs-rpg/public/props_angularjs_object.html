@@ -17,6 +17,49 @@
 		<script src="js/angular.min.js"></script>
 		<script src="js/three.min.js"></script>
 		<script src="threejs_angular.js"></script>
+
+		<script>
+		scriptcomponents = [];
+		var threejsapi = {};
+		var createscript = function(scriptname, args){
+			console.log('script component name: '+scriptname);
+			console.log('script');
+			scriptcomponents[scriptname] = args;
+			//console.log(scriptcomponents[scriptname]);
+			//if(this.scriptcomponents[scriptname] != null){
+			//}
+		}
+		//threejsapi.createscript
+
+		function createComponent(object, name){
+			var capp;
+			for(var sc in scriptcomponents ){
+				console.log(sc);
+				if(name == sc){
+					capp = scriptcomponents[sc];
+					break;
+					console.log('found!');
+				}
+			}
+			if(capp !=null){
+				var sapp = capp({beta:"test"});
+				object.script[name] = new sapp(object);
+				console.log(object);
+			}
+			for ( var ov in object.script[name] ){
+				//console.log(typeof object.script[name][ov]);
+				//console.log(ov);
+			}
+
+			if(object.script[name].init != null){
+				object.script[name].init();
+			}
+		}
+
+		</script>
+
+
+		<script src="testcomponent.js"></script>
 		<script>
 
 		</script>
@@ -43,9 +86,25 @@
 			}
 		}
 		`;
-		cube.script = {};
-		if(cube.script[oname] == null){
+		cube.script = {}; //create variable object
 
+		if(cube.script[oname] == null){
+			/*
+			for(var sc in scriptcomponents ){
+				//console.log(sc);
+				var testapp = scriptcomponents[sc]({beta:"test"});
+				var osc = new testapp({object:"test"});
+				for ( var ov in osc ){
+					//console.log(typeof osc[ov]);
+					//console.log(ov);
+				}
+				//console.log(osc);
+			}
+			*/
+			//cube.script[''];
+			createComponent(cube,'testcomponent');
+
+			/*
 			events = {
 				init: [],
 				start: [],
@@ -70,8 +129,9 @@
 				scriptWrapParams += ',' + eventKey;
 				scriptWrapResultObj[ eventKey ] = eventKey;
 			}
+			*/
 
-
+			/*
 			var scriptWrapResult = JSON.stringify( scriptWrapResultObj ).replace( /\"/g, '' );
 			scriptWrapResultObj[ 'test' ] = 'test';
 			//var functions = ( new Function(scriptWrapParams, scriptobject.script + '\nreturn ' + scriptWrapResult + ';'  ) )();
@@ -92,11 +152,10 @@
 				}
 				events[ name ].push( cube.script[oname][ name ].bind( cube ) );
 			}
+			*/
 
 			console.log(cube);
 			//cube.script[oname].getvar();
-
-			
 			//console.log(cube.script[oname]);
 			//if(selectnodeprops.script[oname].init !=null){
 				//selectnodeprops.script[oname].init();
