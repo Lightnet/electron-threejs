@@ -531,10 +531,9 @@ module ThreejsAPI{
 						var material = new THREE.MeshBasicMaterial( {color: 0x00ff00} );
 						var objmesh = new THREE.Mesh( geometry, material );
 
-
-
-
 						console.log(objmesh.geometry.parameters);
+						//for(){
+						//}
 
 						objmesh.name = "BoxGeometry";
 						tmpobj = objmesh;

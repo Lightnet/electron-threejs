@@ -44,6 +44,23 @@ threejsangular.component('nodelabelcomponent', {
     	// component $destroy function
   	};
 });
+
+function updateGroupGeometry( mesh, geometry ) {
+	//console.log("set?");
+	//console.log(mesh);
+	//console.log(geometry);
+
+	mesh.geometry.dispose();
+	mesh.geometry = geometry
+}
+
+function SetParamObject(mesh){
+	updateGroupGeometry( mesh,
+		new THREE.BoxGeometry(
+			mesh.geometry.parameters.width, mesh.geometry.parameters.height, mesh.geometry.parameters.depth, mesh.geometry.parameters.widthSegments, mesh.geometry.parameters.heightSegments, mesh.geometry.parameters.depthSegments
+		)
+	);
+}
 //===============================================
 // Node Input
 //===============================================
@@ -60,17 +77,22 @@ threejsangular.component('nodeinputcomponent', {
 					`<input type="input" ng-model="value" ng-value="value" ng-change="$ctrl.change()" />` +
 				`</div>`;
 	}
-}).controller('nodeinputCtrl', function nodebooleanCtrl($scope) {
+}).controller('nodeinputCtrl', function nodeinputCtrl($scope) {
 	function change() {
-	  console.log($scope.$ctrl.params);
+	  //console.log($scope.$ctrl.params);
 	  _.set(cube, $scope.$ctrl.params, $scope.value);
-	  console.log(cube);
+	  //console.log($scope.$ctrl.params.match('geometry.parameters'));
+	  if($scope.$ctrl.params.match('geometry.parameters') !=null){
+		  SetParamObject(cube);
+	  }
+	  //console.log(cube);
 	};
 	this.change = change;
 	this.$onInit = function () {
 		// component initialisation
-		console.log(this);
+		//console.log(this);
 		$scope.value = _.get(cube, $scope.$ctrl.params);
+		//console.log($scope.$ctrl.params.match('geometry.parameters'));
   	};
   	this.$postLink = function () {
     	// component post-link
@@ -79,6 +101,10 @@ threejsangular.component('nodeinputcomponent', {
     	// component $destroy function
   	};
 });
+
+
+
+
 
 //===============================================
 // Node boolean
@@ -265,6 +291,25 @@ threejsangular.directive("objectnodecomponets", function($compile){
 				myEl.append($compile(`<nodeinputcomponent params="params='position.x'"></nodeinputcomponent>`)(scope));
 				myEl.append($compile(`<nodeinputcomponent params="params='position.y'"></nodeinputcomponent>`)(scope));
 				myEl.append($compile(`<nodeinputcomponent params="params='position.z'"></nodeinputcomponent>`)(scope));
+			}
+			if(cube['geometry'] !=null){
+				if(cube['geometry']['parameters']){
+					for(var p in cube.geometry.parameters){
+						console.log(typeof cube.geometry.parameters[p]);
+						if(typeof cube.geometry.parameters[p] != 'undefined'){
+							//var ps = 'geometry.parameters.' + p;
+							//cube.geometry.parameters.width = 5;
+							//cube.geometry.parameters.verticesNeedUpdate = true;
+							//cube.geometry.parameters.dynamic  = true;
+							//console.log(cube.geometry);
+							//console.log(ps);
+							myEl.append($compile(`<nodeinputcomponent params="params='`+ 'geometry.parameters.' + p + `'"></nodeinputcomponent>`)(scope));
+						}else{
+							console.log("parameters null:"+p);
+							console.log("parameters null:"+cube.geometry.parameters[p]);
+						}
+					}
+				}
 			}
 		});
 	};
