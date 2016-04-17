@@ -79,6 +79,7 @@ module ThreejsAPI{
 		world:any = null;
 		editornode:any = [];
 		scenenodes:any = [];
+		mapscenenodes:any = [];
 		//physics end
 
 		cube:any;//test object
@@ -323,8 +324,22 @@ module ThreejsAPI{
 			this.effectComposer.addPass(render);
 		}
 
+		clearScripts(){
+			var myNode = document.getElementById('scriptcomponents');
+			while (myNode.firstChild) {
+    			myNode.removeChild(myNode.firstChild);
+			}
+			//for( var i = threejsapi_play.scene.children.length - 1; i >= 1; i--) {
+				//console.log('remove item?');
+				//threejsapi_play.scene.remove(threejsapi_preview.scene.children[i]);
+			//}
+		}
+
 		addScript(filename){
-			var head  = document.getElementsByTagName('head')[0];
+			//'scriptcomponents';
+			//$('scriptcomponents');
+			//var head  = document.getElementsByTagName('head')[0];
+			var head  = document.getElementById('scriptcomponents');
 			var escript  = document.createElement('script');
 			escript.src = filename;
 			escript.type="text/javascript";
@@ -332,13 +347,44 @@ module ThreejsAPI{
 		}
 
 		createscript(scriptname, args){
-			console.log('script component name: '+scriptname);
-			console.log('script');
+			console.log('loaded script component name: '+scriptname);
+			//console.log('script');
 			this.scriptcomponents[scriptname] = args;
-			console.log(this.scriptcomponents[scriptname]);
+			//console.log(this.scriptcomponents[scriptname]);
 			//if(this.scriptcomponents[scriptname] != null){
 			//}
 		}
+
+		createComponent(object, name){
+
+			var capp;
+			for(var sc in this.scriptcomponents ){
+				//console.log(sc);
+				if(name == sc){
+					capp = this.scriptcomponents[sc];
+					//console.log('found!');
+					break;
+				}
+			}
+			if(capp !=null){
+				var sapp = capp(this);
+				//console.log(sapp);
+				object.script[name] = new sapp(object);
+				//console.log(object.script[name]);
+				//console.log(object);
+				capp = null;
+				sapp = null;
+			}
+			//for ( var ov in object.script[name] ){
+				//console.log(typeof object.script[name][ov]);
+				//console.log(ov);
+			//}
+			//if(object.script[name].init != null){
+				//object.script[name].init();
+			//}
+		}
+
+
 
 		initselectObject(){
 			this.canvas.addEventListener( 'mousedown',(event)=>{ this.onDocumentMouseDown(event) }, false );

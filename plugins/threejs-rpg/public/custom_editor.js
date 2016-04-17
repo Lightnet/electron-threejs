@@ -357,7 +357,14 @@ function initEditor(){
 	w2ui['layout'].content('top', w2ui['toolbar']);
 
 	w2ui.toolbar.on('*', function (id, event) {
-		//console.log('id:'+id);
+		console.log('id:'+id);
+		if(id == 'EditorCompile'){
+			compileApp();
+		}
+		if(id == 'EditorBuild'){
+			buildApp();
+		}
+
 		if(id == 'EditorFile:New'){
 			NewMap();
 		}
@@ -369,10 +376,10 @@ function initEditor(){
 			LoadMap();
 		}
 		if(id == 'EditorPlay'){
-			startPlay();
+			startApp();
 		}
 		if(id == 'EditorStop'){
-			stopPlay();
+			stopApp();
 		}
 		if(event.target == 'EditorCode'){
 			//console.log(assets_select);

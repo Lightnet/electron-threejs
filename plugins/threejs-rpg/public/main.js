@@ -39,6 +39,7 @@ var ThreejsAPI;
             this.world = null;
             this.editornode = [];
             this.scenenodes = [];
+            this.mapscenenodes = [];
             this.meshs = [];
             this.bodies = [];
             this.grounds = [];
@@ -233,19 +234,59 @@ var ThreejsAPI;
             render.renderToScreen = true;
             this.effectComposer.addPass(render);
         };
+        Game.prototype.clearScripts = function () {
+            var myNode = document.getElementById('scriptcomponents');
+            while (myNode.firstChild) {
+                myNode.removeChild(myNode.firstChild);
+            }
+            //for( var i = threejsapi_play.scene.children.length - 1; i >= 1; i--) {
+            //console.log('remove item?');
+            //threejsapi_play.scene.remove(threejsapi_preview.scene.children[i]);
+            //}
+        };
         Game.prototype.addScript = function (filename) {
-            var head = document.getElementsByTagName('head')[0];
+            //'scriptcomponents';
+            //$('scriptcomponents');
+            //var head  = document.getElementsByTagName('head')[0];
+            var head = document.getElementById('scriptcomponents');
             var escript = document.createElement('script');
             escript.src = filename;
             escript.type = "text/javascript";
             head.appendChild(escript);
         };
         Game.prototype.createscript = function (scriptname, args) {
-            console.log('script component name: ' + scriptname);
-            console.log('script');
+            console.log('loaded script component name: ' + scriptname);
+            //console.log('script');
             this.scriptcomponents[scriptname] = args;
-            console.log(this.scriptcomponents[scriptname]);
+            //console.log(this.scriptcomponents[scriptname]);
             //if(this.scriptcomponents[scriptname] != null){
+            //}
+        };
+        Game.prototype.createComponent = function (object, name) {
+            var capp;
+            for (var sc in this.scriptcomponents) {
+                //console.log(sc);
+                if (name == sc) {
+                    capp = this.scriptcomponents[sc];
+                    //console.log('found!');
+                    break;
+                }
+            }
+            if (capp != null) {
+                var sapp = capp(this);
+                //console.log(sapp);
+                object.script[name] = new sapp(object);
+                //console.log(object.script[name]);
+                //console.log(object);
+                capp = null;
+                sapp = null;
+            }
+            //for ( var ov in object.script[name] ){
+            //console.log(typeof object.script[name][ov]);
+            //console.log(ov);
+            //}
+            //if(object.script[name].init != null){
+            //object.script[name].init();
             //}
         };
         Game.prototype.initselectObject = function () {
