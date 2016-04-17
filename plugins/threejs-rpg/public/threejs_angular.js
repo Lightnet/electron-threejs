@@ -54,7 +54,7 @@ function updateGroupGeometry( mesh, geometry ) {
 	mesh.geometry = geometry
 }
 
-function SetParamObject(mesh){
+function SetParamGeom(mesh){
 	updateGroupGeometry( mesh,
 		new THREE.BoxGeometry(
 			mesh.geometry.parameters.width, mesh.geometry.parameters.height, mesh.geometry.parameters.depth, mesh.geometry.parameters.widthSegments, mesh.geometry.parameters.heightSegments, mesh.geometry.parameters.depthSegments
@@ -83,7 +83,7 @@ threejsangular.component('nodeinputcomponent', {
 	  _.set(cube, $scope.$ctrl.params, $scope.value);
 	  //console.log($scope.$ctrl.params.match('geometry.parameters'));
 	  if($scope.$ctrl.params.match('geometry.parameters') !=null){
-		  SetParamObject(cube);
+		  SetParamGeom(cube);
 	  }
 	  //console.log(cube);
 	};

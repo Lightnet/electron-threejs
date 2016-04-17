@@ -97,7 +97,7 @@ socketio.on('connect',()=>{
 		initEditor();
 		initDropzone();
 		initScriptEditor();
-		threejsapi = new ThreejsAPI.Game({onload:false});
+		threejsapi = new ThreejsAPI.Game({onload:false,bupdateobjects:false});
 		//var player = threejsapi.createplayer();
 		threejsapi_preview = new ThreejsAPI.Game({onload:false, canvasid:'objectCanvas'});
 		threejsapi_play = new ThreejsAPI.Game({onload:false, canvasid:'playCanvas'});
@@ -269,6 +269,13 @@ threejsangular.component('nodelabelcomponent', {
 //===============================================
 // Node Input
 //===============================================
+
+
+
+
+
+
+
 //<nodeinputcomponent params="params='name'"></nodeinputcomponent>
 threejsangular.component('nodeinputcomponent', {
 	bindings: {
@@ -284,15 +291,21 @@ threejsangular.component('nodeinputcomponent', {
 	}
 }).controller('nodeinputCtrl', function nodeinputCtrl($scope) {
 	function change() {
-	  console.log($scope.$ctrl.params);
+	  //console.log($scope.$ctrl.params);
 	  _.set(selectnodeprops, $scope.$ctrl.params, $scope.value);
-	  console.log(selectnodeprops);
+	  if($scope.$ctrl.params.match('geometry.parameters') !=null){
+		  threejsapi.SetParamGeom(selectnodeprops);
+	  }
+	  //console.log(selectnodeprops);
 	};
 	this.change = change;
 	this.$onInit = function () {
 		// component initialisation
 		//console.log(this);
 		$scope.value = _.get(selectnodeprops, $scope.$ctrl.params);
+		if($scope.$ctrl.params.match('geometry.parameters') !=null){
+  		  threejsapi.SetParamGeom(selectnodeprops);
+  	  	}
   	};
   	this.$postLink = function () {
     	// component post-link
@@ -523,6 +536,32 @@ function checknodecomponents(){
 			if(selectnodeprops['name'] !=null){
 				propEl.append($compile(`<nodeinputcomponent params="params='name'"></nodeinputcomponent>`)(scope));
 			}
+
+			if(selectnodeprops['geometry'] !=null){
+				if(selectnodeprops['geometry']['parameters']){
+					for(var p in selectnodeprops.geometry.parameters){
+						//console.log(typeof selectnodeprops.geometry.parameters[p]);
+						if(typeof selectnodeprops.geometry.parameters[p] != 'undefined'){
+							//var ps = 'geometry.parameters.' + p;
+							//cube.geometry.parameters.width = 5;
+							//cube.geometry.parameters.verticesNeedUpdate = true;
+							//cube.geometry.parameters.dynamic  = true;
+							//console.log(cube.geometry);
+							//console.log(ps);
+							console.log( selectnodeprops.geometry.parameters[p]);
+							if(typeof selectnodeprops.geometry.parameters[p] == 'boolean'){
+								propEl.append($compile(`<nodebooleancomponent params="params='`+ 'geometry.parameters.' + p + `'"></nodebooleancomponent>`)(scope));
+							}else{
+								propEl.append($compile(`<nodeinputcomponent params="params='`+ 'geometry.parameters.' + p + `'"></nodeinputcomponent>`)(scope));
+							}
+						}else{
+							console.log("parameters null:"+p);
+							console.log("parameters null:"+selectnodeprops.geometry.parameters[p]);
+						}
+					}
+				}
+			}
+
 			if(selectnodeprops['position'] !=null){
 				propEl.append($compile(`<nodeinputcomponent params="params='position.x'"></nodeinputcomponent>`)(scope));
 				propEl.append($compile(`<nodeinputcomponent params="params='position.y'"></nodeinputcomponent>`)(scope));
@@ -589,7 +628,7 @@ function checknodecomponents(){
 					myEl.append($compile(`<div>Script:`+cn +`</div>`)(scope));
 				}
 			}else{
-				console.log('script not build');
+				//console.log('script not build');
 			}
 			scope.$apply();
 		});
@@ -867,7 +906,46 @@ function removenodelist(obj,nodes){
 }
 
 //===============================================
-//
+// Object management
+//===============================================
+
+function SaveObjectS(obj){
+	var objstring = JSON.stringify(obj);
+	//console.log(objstring);
+	socketio.emit('mapscene',{action:'save', projectid:projectid,uuid:obj.uuid,object:objstring});
+}
+
+function DeleteObjectS(obj){
+	socketio.emit('mapscene',{action:'load',projectid:projectid,name:'',uuid:''});
+}
+
+function LoadObjectS(obj){
+	socketio.emit('mapscene',{action:'load',projectid:projectid,name:'',uuid:''});
+}
+
+function LoadMapScene(){
+	console.log('send socket.io loadmapscene');
+	socketio.emit('mapscene',{action:'loadmapscene',projectid:projectid});
+}
+
+socketio.on('mapscene',function(data){
+	if(data !=null){
+		if(data['action'] !=null){
+			if(data['action'] == 'clear'){
+				console.log('clear mapscene!');
+			}
+			if(data['action'] == 'add'){
+				//console.log(data);
+				if(data.object){
+					threejsapi.parseObject(data.object);
+				}
+			}
+		}
+	}
+});
+
+//===============================================
+// App Save & Load
 //===============================================
 function NewMap(){
 	console.log('NewMap');
@@ -878,15 +956,20 @@ function SaveMap(){
 	console.log('SaveMap');
 	//console.log(threejsapi.scene);
 	//console.log(threejsapi.scene.toJSON());
-	var result = threejsapi.scene.toJSON();
-	console.log(result);
+	//var result = threejsapi.scene.toJSON();
+	//console.log(result);
 	//console.log(JSON.stringify(result));
 	//toJSON
+	for(var i = 0; i < threejsapi.mapscenenodes.length;i++){
+		SaveObjectS(threejsapi.mapscenenodes[i]);
+	}
+
 }
 
 function LoadMap(){
 	console.log('LoadMap');
 	//console.log(threejsapi.scene);
+	LoadMapScene();
 }
 
 function buildApp(){
@@ -955,28 +1038,31 @@ function InitObjectData(object){
 function startApp(){
 	console.log('startApp');
 	for( var i = threejsapi_play.scene.children.length - 1; i >= 1; i--) {
-		console.log('remove item?');
-		threejsapi_play.scene.remove(threejsapi_preview.scene.children[i]);
+		//console.log('remove item?');
+		threejsapi_play.scene.remove(threejsapi_play.scene.children[i]);
 	}
-	console.log("//=======================");
+	//console.log("//=======================");
 	AssignObjectId(threejsapi.scene);
-
+	//copy scene and objects at once
 	var clonescene = threejsapi.scene.clone();
 	//console.log(threejsapi.scene);
-	console.log(clonescene);
+	//console.log(clonescene);
 	//copy script components
 	CopyObjectData(clonescene);
 	//init setup
 	InitObjectData(clonescene);
-
-
 	threejsapi_play.scene.add(clonescene);
+	w2ui.tabs.click('tab4');
 }
-
+//remove play app from scene and stop update
 function stopApp(){
 	console.log('stopPlay');
-	for( var i = threejsapi_play.scene.children.length - 1; i >= 1; i--) {
-		console.log('remove item?');
-		threejsapi_play.scene.remove(threejsapi_preview.scene.children[i]);
+	for( var i = threejsapi_play.scene.children.length; i > 0; i--) {
+		//console.log('remove item?');
+		var scene = threejsapi_preview.scene.children[i];
+		threejsapi_play.scene.remove(threejsapi_play.scene.children[i]);
+		delete scene;
 	}
+	//console.log(threejsapi_play.scene.children.length);
+	//console.log(threejsapi_play.scene.children);
 }

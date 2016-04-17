@@ -287,7 +287,7 @@ function initEditor(){
 			]},
 			{ type: 'menu',   id: 'EditorComponents', caption: 'Components', items: [
 				{ text: 'Object3D', icon: 'fa fa-cube' },
-				{ text: 'Mesh', icon: 'fa fa-cube' },
+				//{ text: 'Mesh', icon: 'fa fa-cube' },
 				{ text: 'BoxGeometry', icon: 'fa fa-cube' },
 				{ text: 'CircleGeometry', icon: 'fa fa-cube' },
 				{ text: 'CylinderGeometry', icon: 'fa fa-cube' },
@@ -350,14 +350,19 @@ function initEditor(){
 			{ type: 'button',   id: 'EditorViewObject', caption: 'View Object'},
 			{ type: 'button',   id: 'EditorCompile', caption: 'Compile'},
 			{ type: 'button',   id: 'EditorBuild', caption: 'Build'},
+			{ type: 'button',  id: 'projectid', caption: 'ProjectID:',img: 'icon-page' },
 			{ type: 'spacer' },
 			 { type: 'check',  id: 'projectautosave', caption: 'AutoSave', icon: 'w2ui-icon-check', checked: true }
 		]
 	});
+
 	w2ui['layout'].content('top', w2ui['toolbar']);
 
+	w2ui.toolbar['items'][12].caption = "projectid:"+projectid;
+	console.log(w2ui.toolbar);
+
 	w2ui.toolbar.on('*', function (id, event) {
-		console.log('id:'+id);
+		//console.log('id:'+id);
 		if(id == 'EditorCompile'){
 			compileApp();
 		}

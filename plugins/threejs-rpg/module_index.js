@@ -22,12 +22,10 @@ module.exports._config = require('./index.json');
 //===============================================
 // Init Post
 //===============================================
-module.exports.initpost = function(){
+//module.exports.initpost = function(){
 	//console.log('init post');
 	//require('./threejs-engine.js');
-}
-
-
+//}
 //===============================================
 // Session
 //===============================================
@@ -45,7 +43,6 @@ module.exports.setAfterSession = function(app,session,config){
 //===============================================
 // route
 //===============================================
-
 module.exports.setroute = function(routes,app){
 	//console.log('Base Module ');
 	//add current dir plugin public folder
@@ -59,16 +56,92 @@ module.exports.setroute = function(routes,app){
 		res.render('threejs-rpg',{}); //render file .ejs
 	});
 };
-
 //===============================================
 // Socket.io
 //===============================================
-/*
+
 module.exports.socketio_connect = function(io, socket){
+	socket.on('mapscene',function(data){
+		console.log('mapscene?');
+		if(data != null){
+			console.log('mapscene');
+			if(data['action'] == 'save'){
+				if((rethinkdb !=null)&&(connection !=null)){
+					connection.use('test');
+					rethinkdb.table('mapscene').filter(rethinkdb.row('uuid').eq(data.uuid).and( rethinkdb.row('projectid').eq(data.projectid)) ).
+		    			run(connection, function(err, cursor) {
+		        			if (err) throw err;
+		        			cursor.toArray(function(err, result) {
+		            			if (err){
+									console.log("err");
+									console.log(err);
+								};
+								if(result.length == 0){//if file not found in the list add to table
+									console.log("Not Found");
+									var mapscenedata = {
+										projectid:data.projectid,
+										uuid:data.uuid,
+										object:data.object,
+									}
+									rethinkdb.table('mapscene').insert(mapscenedata).run(connection, function(err, result) {
+						    			if (err) throw err;
+										console.log("insert mapscene");
+						    			console.log(JSON.stringify(result, null, 2));
+										mapscenedata = null;
+									});
+								}else{//else update //need to change this.
+									console.log("Found Data, Update");
+									var mapscenedata = {
+										object:data.object,
+									}
+									rethinkdb.table('mapscene').
+										filter(rethinkdb.row("uuid").eq(data.uuid)).
+										update(mapscenedata).
+										run(connection, function(err, result) {
+											if (err) throw err;
+											//console.log(JSON.stringify(result, null, 2));
+										});
+
+								}
+								//display data
+		            			//console.log(JSON.stringify(result, null, 2));
+		        			});
+		    			});
+				}
+			}
+			if(data['action'] == 'loadmapscene'){
+				console.log('loadmapscene');
+				if((rethinkdb !=null)&&(connection !=null)){
+					connection.use('test');
+					rethinkdb.table('mapscene').filter(   rethinkdb.row('projectid').eq(data.projectid)   ).
+		    			run(connection, function(err, cursor) {
+		        			if (err) throw err;
+		        			cursor.toArray(function(err, result) {
+		            			if (err){
+									console.log("err");
+									console.log(err);
+								};
+								socket.emit('mapscene',{action:'clear'});
+								if(result.length > 0){
+									for(var i = 0; i < result.length;i++){
+										socket.emit('mapscene',{action:'add',uuid:result[i].uuid, object:result[i].object});
+									}
+								}
+								socket.emit('mapscene',{action:'finish'});
+								//display data
+		            			//console.log(JSON.stringify(result, null, 2));
+		        			});
+		    			});
+				}
+
+			}
+		}
+	});
+
 };
 module.exports.socketio_disconnect = function(io, socket){
 };
-*/
+
 //===============================================
 // Engine.io
 //===============================================

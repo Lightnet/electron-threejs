@@ -16,6 +16,7 @@ rethinkdb.connect( {host: 'localhost', port: 28015}, function(err, conn) {
 	CheckDataBase('test');
 	CheckTable('test','assets');
 	CheckTable('test','config');
+	CheckTable('test','mapscene');
 
 	//CheckTable('test','beta');
 });

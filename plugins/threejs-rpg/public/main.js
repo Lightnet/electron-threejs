@@ -40,6 +40,7 @@ var ThreejsAPI;
             this.editornode = [];
             this.scenenodes = [];
             this.mapscenenodes = [];
+            this.bupdateobjects = true; //make sure it doesn't update for editor
             this.meshs = [];
             this.bodies = [];
             this.grounds = [];
@@ -59,6 +60,10 @@ var ThreejsAPI;
                 if (args['bprototype'] != null) {
                     //this.bcanvas = true;
                     this.bprototype = args['bprototype'];
+                }
+                if (args['bupdateobjects'] != null) {
+                    //this.bcanvas = true;
+                    this.bupdateobjects = args['bupdateobjects'];
                 }
                 //this need to be last else it variable are not assign
                 if (args['onload'] == true) {
@@ -98,6 +103,8 @@ var ThreejsAPI;
             this.scenenodes.push(this.camera);
             this.scene = new THREE.Scene();
             this.scene.name = "scene";
+            this.scene.uuid = 'B1E79603-A80E-4CE5-9C5E-34B223CEECF9';
+            console.log(this.scene);
             this.scene.userData.test = 'test';
             this.scenenodes.push(this.scene);
             //this.scene.add(this.camera);
@@ -397,6 +404,9 @@ var ThreejsAPI;
             if (action == 'EditorComponents:WireframeHelper') {
                 this.createshape({ shape: "WireframeHelper" });
             }
+            if (action == 'EditorComponents:Sprite2D') {
+                this.createshape({ shape: "Sprite" });
+            }
         };
         Game.prototype.SaveJSON = function () {
             console.log('saving json...');
@@ -408,66 +418,175 @@ var ThreejsAPI;
             console.log(args);
             console.log('loading json...');
         };
+        Game.prototype.parentObj = function (object, uuid) {
+            for (var i = 0; i < this.scenenodes.length; i++) {
+                if (this.scenenodes[i].uuid == uuid) {
+                    this.scenenodes[i].add(object);
+                    break;
+                }
+            }
+        };
+        Game.prototype.parseObject = function (strobj) {
+            var tmpobj;
+            var geometry;
+            var objmesh;
+            var edges;
+            var material;
+            var obj = JSON.parse(strobj);
+            this.mapscenenodes.push(obj);
+            console.log(obj);
+            if (obj.type == "Object3D") {
+                objmesh = new THREE.Object3D();
+                objmesh.uuid = obj.uuid;
+                objmesh.name = obj.name;
+                tmpobj = objmesh;
+            }
+            //if(obj.type == "Object3D"){
+            //objmesh = new THREE.Object3D();
+            //objmesh.name = obj.name;
+            //tmpobj = objmesh;
+            //}
+            console.log(tmpobj);
+            //if(this.scene.uuid == obj.parent){
+            //tmpobj.parent =  this.scene;
+            //}
+            this.parentObj(tmpobj, obj.parent);
+            console.log(tmpobj);
+            this.scenenodes.push(tmpobj);
+            //NodeSelectObject({object:tmpobj});
+            //tmpmap = this.copyobjectprops(objmesh);
+            //console.log(tmpmap);
+            //this.mapscenenodes.push(tmpmap);
+            tmpobj = null;
+            geometry = null;
+            objmesh = null;
+            edges = null;
+            material = null;
+            RefreshContent();
+        };
         Game.prototype.createobject3d = function () {
-            var object = function () {
-                this.id = "";
-            };
+            //var tobject = function (){
+            this.uuid = "uuid";
+            this.name = "name";
+            this.position;
+            this.rotation;
+            this.scale;
+            this.parent;
+            this.children = [];
+            //return this;
+            //};
+            return this;
+        };
+        Game.prototype.updateGroupGeometry = function (mesh, geometry) {
+            //console.log("set?");
+            //console.log(mesh);
+            //console.log(geometry);
+            mesh.geometry.dispose();
+            mesh.geometry = geometry;
+        };
+        Game.prototype.SetParamGeom = function (mesh) {
+            if (mesh.geometry.type == "BoxGeometry") {
+                this.updateGroupGeometry(mesh, new THREE.BoxGeometry(mesh.geometry.parameters.width, mesh.geometry.parameters.height, mesh.geometry.parameters.depth, mesh.geometry.parameters.widthSegments, mesh.geometry.parameters.heightSegments, mesh.geometry.parameters.depthSegments));
+            }
+            if (mesh.geometry.type == "CircleGeometry") {
+                this.updateGroupGeometry(mesh, new THREE.CircleGeometry(mesh.geometry.parameters.radius, mesh.geometry.parameters.segments, mesh.geometry.parameters.thetaStart, mesh.geometry.parameters.thetaLength));
+            }
+            if (mesh.geometry.type == "CylinderGeometry") {
+                this.updateGroupGeometry(mesh, new THREE.CylinderGeometry(mesh.geometry.parameters.radiusTop, mesh.geometry.parameters.radiusBottom, mesh.geometry.parameters.height, mesh.geometry.parameters.radiusSegments, mesh.geometry.parameters.heightSegments, mesh.geometry.parameters.openEnded, mesh.geometry.parameters.thetaStart, mesh.geometry.parameters.thetaLength));
+            }
+            if (mesh.geometry.type == "PlaneGeometry") {
+                this.updateGroupGeometry(mesh, new THREE.PlaneGeometry(mesh.geometry.parameters.width, mesh.geometry.parameters.height, mesh.geometry.parameters.widthSegments, mesh.geometry.parameters.heightSegments));
+            }
+            if (mesh.geometry.type == "SphereGeometry") {
+                this.updateGroupGeometry(mesh, new THREE.SphereGeometry(mesh.geometry.parameters.radius, mesh.geometry.parameters.widthSegments, mesh.geometry.parameters.heightSegments, mesh.geometry.parameters.phiStart, mesh.geometry.parameters.phiLength, mesh.geometry.parameters.thetaStart, mesh.geometry.parameters.thetaLength));
+            }
+        };
+        Game.prototype.copyobjectprops = function (obj) {
+            var o3d = new this.createobject3d();
+            o3d.uuid = obj.uuid;
+            o3d.name = obj.name;
+            o3d.type = obj.type;
+            o3d.parent = obj.parent.uuid;
+            o3d.children = [];
+            if (obj.geometry != null) {
+                o3d.geometrytype = obj.geometry.type;
+                if (obj.geometry.parameters != null) {
+                    o3d.parameters = obj.geometry.parameters;
+                }
+            }
+            o3d.position = obj.position;
+            o3d.rotation = obj.rotation;
+            o3d.scale = obj.scale;
+            return o3d;
         };
         Game.prototype.createshape = function (args) {
             if (args != null) {
                 if (args['shape'] != null) {
                     var tmpobj;
-                    if (args['shape'] == 'BoxGeometry') {
-                        var geometry = new THREE.BoxGeometry(1, 1, 1);
-                        var material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
-                        var objmesh = new THREE.Mesh(geometry, material);
-                        console.log(objmesh.geometry.parameters);
-                        //for(){
-                        //}
-                        objmesh.name = "BoxGeometry";
+                    var geometry;
+                    var objmesh;
+                    var edges;
+                    var material;
+                    var tmpmap;
+                    if (args['shape'] == 'Sprite') {
+                        //var map = new THREE.TextureLoader().load( "sprite.png" );
+                        //var material = new THREE.SpriteMaterial( { map: map, color: 0xffffff, fog: true } );
+                        material = new THREE.SpriteMaterial({ color: 0xffffff, fog: true });
+                        objmesh = new THREE.Sprite(material);
+                        objmesh.name = 'Sprite';
                         tmpobj = objmesh;
                     }
                     if (args['shape'] == 'Object3D') {
-                        tmpobj = new THREE.Object3D();
-                        tmpobj.name = 'Object3D';
+                        //console.log('object 3d??');
+                        objmesh = new THREE.Object3D();
+                        objmesh.name = 'Object3D';
+                        //console.log(objmesh);
                         tmpobj = objmesh;
                     }
-                    if (args['shape'] == 'CylinderGeometry') {
-                        var geometry = new THREE.CylinderGeometry(5, 5, 20, 32);
-                        var material = new THREE.MeshBasicMaterial({ color: 0xffff00 });
-                        var objmesh = new THREE.Mesh(geometry, material);
+                    if (args['shape'] == 'BoxGeometry') {
+                        geometry = new THREE.BoxGeometry(1, 1, 1, 1, 1, 1);
+                        material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+                        objmesh = new THREE.Mesh(geometry, material);
+                        objmesh.name = "BoxGeometry";
+                        console.log(objmesh);
+                        tmpobj = objmesh;
+                    }
+                    if (args['shape'] == 'CircleGeometry') {
+                        geometry = new THREE.CircleGeometry(2, 8, 0, 2 * Math.PI);
+                        material = new THREE.MeshBasicMaterial({ color: 0xffff00, side: THREE.DoubleSide });
+                        objmesh = new THREE.Mesh(geometry, material);
                         objmesh.name = "CylinderGeometry";
                         console.log(objmesh.geometry.parameters);
                         tmpobj = objmesh;
                     }
-                    if (args['shape'] == 'CircleGeometry') {
-                        var geometry = new THREE.CircleGeometry(5, 12);
-                        var material = new THREE.MeshBasicMaterial({ color: 0xffff00, side: THREE.DoubleSide });
-                        var objmesh = new THREE.Mesh(geometry, material);
+                    if (args['shape'] == 'CylinderGeometry') {
+                        geometry = new THREE.CylinderGeometry(5, 5, 10, 8, 1, false, 0, 2 * Math.PI);
+                        material = new THREE.MeshBasicMaterial({ color: 0xffff00 });
+                        objmesh = new THREE.Mesh(geometry, material);
                         objmesh.name = "CylinderGeometry";
                         console.log(objmesh.geometry.parameters);
                         tmpobj = objmesh;
                     }
                     if (args['shape'] == 'PlaneGeometry') {
-                        var geometry = new THREE.PlaneGeometry(5, 20, 32);
-                        var material = new THREE.MeshBasicMaterial({ color: 0xffff00, side: THREE.DoubleSide });
-                        var objmesh = new THREE.Mesh(geometry, material);
+                        geometry = new THREE.PlaneGeometry(10, 10, 1, 1);
+                        material = new THREE.MeshBasicMaterial({ color: 0xffff00, side: THREE.DoubleSide });
+                        objmesh = new THREE.Mesh(geometry, material);
                         objmesh.name = "PlaneGeometry";
                         console.log(objmesh.geometry.parameters);
                         tmpobj = objmesh;
                     }
                     if (args['shape'] == 'SphereGeometry') {
-                        var geometry = new THREE.SphereGeometry(5, 32, 32);
-                        var material = new THREE.MeshBasicMaterial({ color: 0xffff00 });
-                        var objmesh = new THREE.Mesh(geometry, material);
+                        geometry = new THREE.SphereGeometry(5, 32, 32, 0, 2 * Math.PI, 0, 2 * Math.PI);
+                        material = new THREE.MeshBasicMaterial({ color: 0xffff00 });
+                        objmesh = new THREE.Mesh(geometry, material);
                         objmesh.name = "SphereGeometry";
                         console.log(objmesh.geometry.parameters);
                         tmpobj = objmesh;
                     }
                     if (args['shape'] == 'TextGeometry') {
-                        var geometry = new THREE.TextGeometry('Text', {});
-                        var material = new THREE.MeshBasicMaterial({ color: 0xffff00 });
-                        var objmesh = new THREE.Mesh(geometry, material);
+                        geometry = new THREE.TextGeometry('Text', {});
+                        material = new THREE.MeshBasicMaterial({ color: 0xffff00 });
+                        objmesh = new THREE.Mesh(geometry, material);
                         objmesh.name = "TextGeometry";
                         tmpobj = objmesh;
                     }
@@ -484,7 +603,7 @@ var ThreejsAPI;
                         tmpobj = axisHelper;
                     }
                     if (args['shape'] == 'BoundingBoxHelper') {
-                        var objmesh = new THREE.Object3D();
+                        objmesh = new THREE.Object3D();
                         var hex = 0xff0000;
                         var sphereMaterial = new THREE.MeshLambertMaterial({ color: 0x00ff00 });
                         var sphere = new THREE.Mesh(new THREE.SphereGeometry(30, 12, 12), sphereMaterial);
@@ -495,21 +614,21 @@ var ThreejsAPI;
                         tmpobj = objmesh;
                     }
                     if (args['shape'] == 'EdgesHelper') {
-                        var objmesh = new THREE.Object3D();
-                        var geometry = new THREE.BoxGeometry(10, 10, 10, 2, 2, 2);
-                        var material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+                        objmesh = new THREE.Object3D();
+                        geometry = new THREE.BoxGeometry(10, 10, 10, 2, 2, 2);
+                        material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
                         var object = new THREE.Mesh(geometry, material);
-                        var edges = new THREE.EdgesHelper(object, 0x00ff00);
+                        edges = new THREE.EdgesHelper(object, 0x00ff00);
                         objmesh.add(object);
                         objmesh.add(edges);
                         tmpobj = objmesh;
                     }
                     if (args['shape'] == 'FaceNormalsHelper') {
-                        var objmesh = new THREE.Object3D();
-                        var geometry = new THREE.BoxGeometry(10, 10, 10, 2, 2, 2);
-                        var material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+                        objmesh = new THREE.Object3D();
+                        geometry = new THREE.BoxGeometry(10, 10, 10, 2, 2, 2);
+                        material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
                         var object = new THREE.Mesh(geometry, material);
-                        var edges = new THREE.FaceNormalsHelper(object, 2, 0x00ff00, 1);
+                        edges = new THREE.FaceNormalsHelper(object, 2, 0x00ff00, 1);
                         objmesh.add(object);
                         objmesh.add(edges);
                         tmpobj = objmesh;
@@ -521,7 +640,7 @@ var ThreejsAPI;
                         tmpobj = gridHelper;
                     }
                     if (args['shape'] == 'PointLightHelper') {
-                        var objmesh = new THREE.Object3D();
+                        objmesh = new THREE.Object3D();
                         var pointLight = new THREE.PointLight(0xff0000, 1, 100);
                         pointLight.position.set(10, 10, 10);
                         objmesh.add(pointLight);
@@ -531,7 +650,7 @@ var ThreejsAPI;
                         tmpobj = objmesh;
                     }
                     if (args['shape'] == 'SpotLightHelper') {
-                        var objmesh = new THREE.Object3D();
+                        objmesh = new THREE.Object3D();
                         var spotLight = new THREE.SpotLight(0xffffff);
                         spotLight.position.set(10, 10, 10);
                         objmesh.add(spotLight);
@@ -540,19 +659,19 @@ var ThreejsAPI;
                         tmpobj = objmesh;
                     }
                     if (args['shape'] == 'VertexNormalsHelper') {
-                        var objmesh = new THREE.Object3D();
-                        var geometry = new THREE.BoxGeometry(10, 10, 10, 2, 2, 2);
-                        var material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+                        objmesh = new THREE.Object3D();
+                        geometry = new THREE.BoxGeometry(10, 10, 10, 2, 2, 2);
+                        material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
                         var object = new THREE.Mesh(geometry, material);
-                        var edges = new THREE.VertexNormalsHelper(object, 2, 0x00ff00, 1);
+                        edges = new THREE.VertexNormalsHelper(object, 2, 0x00ff00, 1);
                         objmesh.add(object);
                         objmesh.add(edges);
                         tmpobj = objmesh;
                     }
                     if (args['shape'] == 'WireframeHelper') {
-                        var objmesh = new THREE.Object3D();
-                        var geometry = new THREE.BoxGeometry(10, 10, 10, 2, 2, 2);
-                        var material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+                        objmesh = new THREE.Object3D();
+                        geometry = new THREE.BoxGeometry(10, 10, 10, 2, 2, 2);
+                        material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
                         var object = new THREE.Mesh(geometry, material);
                         var wireframe = new THREE.WireframeHelper(object, 0x00ff00);
                         objmesh.add(object);
@@ -569,7 +688,14 @@ var ThreejsAPI;
                         this.scenenodes.push(tmpobj);
                         console.log(tmpobj);
                         NodeSelectObject({ object: tmpobj });
+                        tmpmap = this.copyobjectprops(objmesh);
+                        console.log(tmpmap);
+                        this.mapscenenodes.push(tmpmap);
                         tmpobj = null;
+                        geometry = null;
+                        objmesh = null;
+                        edges = null;
+                        material = null;
                         RefreshContent();
                     }
                 }
@@ -1162,11 +1288,20 @@ var ThreejsAPI;
             }
             //custom update function check
             if (this.scene != null) {
-                this.scene.traverse(function (object) {
-                    if (typeof object.update != 'undefined') {
-                        object.update();
-                    }
-                });
+                if (this.bupdateobjects == true) {
+                    this.scene.traverse(function (object) {
+                        if (typeof object.update != 'undefined') {
+                            object.update();
+                        }
+                        if (typeof object.script != 'undefined') {
+                            for (var obs in object.script) {
+                                if (object.script[obs].update != null) {
+                                    object.script[obs].update();
+                                }
+                            }
+                        }
+                    });
+                }
             }
             //this.effectComposer.render(0.05);
             this.effectComposer.render();
