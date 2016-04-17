@@ -901,34 +901,75 @@ function compileApp(){
 //===============================================
 // Debug game setup
 //===============================================
+function AssignObjectId(object){
+	object.userData.id = object.uuid;
+	for(var i = 0; i < object.children.length;i++){
+		if(object.children[i].children.length > 0){
+			AssignObjectId(object.children[i]);
+		}
+	}
+}
+
+function CopyObjectData(object){
+	//object.userData.id
+	var tmpdata;
+	for(var i = 0; i < threejsapi.scenenodes.length;i++){
+		if(threejsapi.scenenodes[i].uuid == object.userData.id){
+			tmpdata = threejsapi.scenenodes[i];
+		}
+	}
+	if(tmpdata != null){
+		if(tmpdata.script != null){
+			//object.script = tmpdata.script;//doesn't copy right
+			object.script={};
+			for(var sc in tmpdata.script){
+				threejsapi.createComponent(object, sc);
+			}
+		}
+	}
+
+	if(object.children.length > 0){
+		for(var i = 0; i < object.children.length;i++){
+			if(object.children[i].children.length > 0){
+				CopyObjectData(object.children[i]);
+			}
+		}
+	}
+}
+
+function InitObjectData(object){
+	if(object.script != null){
+		for(var sname in object.script){
+			if(object.script[sname].init !=null){
+				object.script[sname].init();
+			}
+		}
+	}
+	if(object.children.length > 0){
+		for(var i = 0; i < object.children.length;i++){
+			InitObjectData(object.children[i]);
+		}
+	}
+}
 
 function startApp(){
+	console.log('startApp');
 	for( var i = threejsapi_play.scene.children.length - 1; i >= 1; i--) {
 		console.log('remove item?');
 		threejsapi_play.scene.remove(threejsapi_preview.scene.children[i]);
 	}
-	console.log('startPlay');
+	console.log("//=======================");
+	AssignObjectId(threejsapi.scene);
+
 	var clonescene = threejsapi.scene.clone();
 	//console.log(threejsapi.scene);
 	console.log(clonescene);
-	console.log("//=======================");
-	clonescene.traverse(function(object){
+	//copy script components
+	CopyObjectData(clonescene);
+	//init setup
+	InitObjectData(clonescene);
 
-		if(typeof object.update != 'undefined'){
-			object.update();
-		}
-		console.log(object['script']);
-		if(typeof object['script'] != 'undefined'){
-			for(var cs in object['script']){
-				console.log(cs);
-				console.log(object['script'][cs]());
-				if(typeof object['script'][cs].init != 'undefined'){
-					object['script'][cs].init();
-				}
-			}
-			//object.update();
-		}
-	});
+
 	threejsapi_play.scene.add(clonescene);
 }
 

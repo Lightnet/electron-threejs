@@ -516,6 +516,12 @@ module ThreejsAPI{
 			console.log('loading json...');
 		}
 
+		createobject3d(){
+			var object = function (){
+				this.id = "";
+			};
+		}
+
 		createshape(args){
 			if(args !=null){
 				if(args['shape'] != null){
@@ -524,6 +530,12 @@ module ThreejsAPI{
 						var geometry = new THREE.BoxGeometry( 1, 1, 1 );
 						var material = new THREE.MeshBasicMaterial( {color: 0x00ff00} );
 						var objmesh = new THREE.Mesh( geometry, material );
+
+
+
+
+						console.log(objmesh.geometry.parameters);
+
 						objmesh.name = "BoxGeometry";
 						tmpobj = objmesh;
 					}
@@ -537,13 +549,15 @@ module ThreejsAPI{
 						var material = new THREE.MeshBasicMaterial( {color: 0xffff00} );
 						var objmesh = new THREE.Mesh( geometry, material );
 						objmesh.name = "CylinderGeometry";
+						console.log(objmesh.geometry.parameters);
 						tmpobj = objmesh;
 					}
-					if(args['shape'] == 'CylinderGeometry'){
+					if(args['shape'] == 'CircleGeometry'){
 						var geometry = new THREE.CircleGeometry( 5, 12 );
 						var material = new THREE.MeshBasicMaterial( {color: 0xffff00,side: THREE.DoubleSide} );
 						var objmesh = new THREE.Mesh( geometry, material );
 						objmesh.name = "CylinderGeometry";
+						console.log(objmesh.geometry.parameters);
 						tmpobj = objmesh;
 					}
 					if(args['shape'] == 'PlaneGeometry'){
@@ -551,6 +565,7 @@ module ThreejsAPI{
 						var material = new THREE.MeshBasicMaterial( {color: 0xffff00, side: THREE.DoubleSide} );
 						var objmesh = new THREE.Mesh( geometry, material );
 						objmesh.name = "PlaneGeometry";
+						console.log(objmesh.geometry.parameters);
 						tmpobj = objmesh;
 					}
 
@@ -559,6 +574,7 @@ module ThreejsAPI{
 						var material = new THREE.MeshBasicMaterial( {color: 0xffff00} );
 						var objmesh = new THREE.Mesh( geometry, material );
 						objmesh.name = "SphereGeometry";
+						console.log(objmesh.geometry.parameters);
 						tmpobj = objmesh;
 					}
 
