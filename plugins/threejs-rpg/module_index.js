@@ -135,6 +135,20 @@ module.exports.socketio_connect = function(io, socket){
 				}
 
 			}
+			if(data['action'] == 'delete'){
+				console.log('delete');
+				if((rethinkdb !=null)&&(connection !=null)){
+					connection.use('test');
+					rethinkdb.table('mapscene').filter(   rethinkdb.row('uuid').eq(data.uuid)   ).
+						delete().
+		    			run(connection, function(err, cursor) {
+		        			if (err) throw err;
+							console.log(cursor);
+							socket.emit('mapscene',{action:'message',message:'delete objectid:'+data.uuid});
+		    			});
+				}
+
+			}
 		}
 	});
 

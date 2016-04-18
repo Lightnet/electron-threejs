@@ -161,7 +161,9 @@ function initEditor(){
 		nodes: [
 			{ id: 'ContentNode', text: 'Node', img: 'icon-folder', expanded: true, group: true }
 		],
-		onClick: function (event) {
+		onClick: function (id,event) {
+			console.log('id:'+id);
+			content_select = event.target;//uuid
 			//w2ui['layout'].content('main', 'id: ' + event.target);
 			//console.log( 'id: ' + event.target);
 			//list all objects node scene
@@ -220,7 +222,8 @@ function initEditor(){
 							 RefreshContent();
 						 }
 						 if(event.target == 'contentdelete'){
-							 DeleteContent();
+							 DeleteObjectNode();
+							 RefreshContent();
 						 }
 					 }
 				 }
@@ -247,7 +250,7 @@ function initEditor(){
 					 onClick: function (id, event) {
 						 //this.owner.content('left', event);
 						 console.log( 'id: ' + event.target);
-						 console.log( 'event: ' + event);
+						 //console.log( 'event: ' + event);
 						 if(id == 'addcomponent:script'){
 							 ObjectAddScript();
 							 checknodecomponents();
@@ -287,6 +290,7 @@ function initEditor(){
 			]},
 			{ type: 'menu',   id: 'EditorComponents', caption: 'Components', items: [
 				{ text: 'Object3D', icon: 'fa fa-cube' },
+				{ text: 'Scene', icon: 'fa fa-cube' },
 				//{ text: 'Mesh', icon: 'fa fa-cube' },
 				{ text: 'BoxGeometry', icon: 'fa fa-cube' },
 				{ text: 'CircleGeometry', icon: 'fa fa-cube' },

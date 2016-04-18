@@ -9,8 +9,9 @@ var rename = '';
 var assets = [];
 var assets_select;
 var contents = [];
+var deletecontents = [];
 var content_select;
-var selectnodeprops;
+var selectnodeprops; //object scene selected
 var props = [];
 var editor; //script editor
 
@@ -548,7 +549,7 @@ function checknodecomponents(){
 							//cube.geometry.parameters.dynamic  = true;
 							//console.log(cube.geometry);
 							//console.log(ps);
-							console.log( selectnodeprops.geometry.parameters[p]);
+							//console.log( selectnodeprops.geometry.parameters[p]);
 							if(typeof selectnodeprops.geometry.parameters[p] == 'boolean'){
 								propEl.append($compile(`<nodebooleancomponent params="params='`+ 'geometry.parameters.' + p + `'"></nodebooleancomponent>`)(scope));
 							}else{
@@ -877,8 +878,32 @@ function NodeSelectObject(args){
 	}
 }
 
-function DeleteContent(){
-	console.log('refresh Content');
+function DeleteNodeChildren(node){
+	for(var i = 0;i < node.children.length;i++){
+		DeleteNodeChildren(node.children[i]);
+	}
+	deletecontents.push(node.uuid);
+	for(var ii = 0;ii < threejsapi.scenenodes.length;ii++){
+		if(node.uuid == threejsapi.scenenodes[ii].uuid){
+			threejsapi.scenenodes.splice(ii,1);
+			console.log('remove');
+			break;
+		}
+	}
+	threejsapi.scene.remove(node);
+}
+
+function DeleteObjectNode(){
+	console.log('DeleteObjectNode');
+	console.log(content_select);
+	if(content_select !=null){
+		for(var i = 0;i < threejsapi.scenenodes.length;i++){
+			if(threejsapi.scenenodes[i].uuid == content_select){
+				DeleteNodeChildren(threejsapi.scenenodes[i]);
+				break;
+			}
+		}
+	}
 }
 
 function SideBarAddNode(obj,_id,childid,name){
@@ -915,8 +940,8 @@ function SaveObjectS(obj){
 	socketio.emit('mapscene',{action:'save', projectid:projectid,uuid:obj.uuid,object:objstring});
 }
 
-function DeleteObjectS(obj){
-	socketio.emit('mapscene',{action:'load',projectid:projectid,name:'',uuid:''});
+function DeleteObjectS(uuid){
+	socketio.emit('mapscene',{action:'delete',uuid:uuid});
 }
 
 function LoadObjectS(obj){
@@ -940,6 +965,9 @@ socketio.on('mapscene',function(data){
 					threejsapi.parseObject(data.object);
 				}
 			}
+			if(data['action'] == 'message'){
+				console.log(data['message']);
+			}
 		}
 	}
 });
@@ -960,19 +988,20 @@ function NewMap(){
 
 function SaveMap(){
 	console.log('SaveMap');
-	//console.log(threejsapi.scene);
-	//console.log(threejsapi.scene.toJSON());
-	//var result = threejsapi.scene.toJSON();
-	//console.log(result);
-	//console.log(JSON.stringify(result));
-	//toJSON
+	//save object as json
+	threejsapi.mapscenenodes = [];
+	for(var is = 0; is < threejsapi.scenenodes.length;is++){
+		console.log(threejsapi.scenenodes[is].name);
+		var mapobj = new threejsapi.copyobjectprops(threejsapi.scenenodes[is]);
+		threejsapi.mapscenenodes.push(mapobj);//rebuild object
+	}
+
 	for(var i = 0; i < threejsapi.mapscenenodes.length;i++){
-		for(var is = 0; is < threejsapi.scenenodes.length;is++){
-			if(threejsapi.mapscenenodes[i].uuid == threejsapi.scenenodes[is].uuid){
-				threejsapi.mapscenenodes[i] = threejsapi.copyobjectprops(threejsapi.scenenodes[is]);//rebuild object
-			}
-		}
 		SaveObjectS(threejsapi.mapscenenodes[i]);
+	}
+	//delete scene node objects
+	for(var di = 0; di < deletecontents.length; di++){
+		DeleteObjectS(deletecontents[di]);
 	}
 }
 
