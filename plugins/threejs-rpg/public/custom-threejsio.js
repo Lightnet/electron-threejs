@@ -950,6 +950,12 @@ socketio.on('mapscene',function(data){
 function NewMap(){
 	console.log('NewMap');
 	//console.log(threejsapi.scene);
+	//threejsapi.mapscenenodes = [];
+	//threejsapi.scenenodes = [];
+	//for( var i = threejsapi.scene.children.length - 1; i >= 1; i--) {
+		//console.log('remove item?');
+		//threejsapi.scene.remove(threejsapi.scene.children[i]);
+	//}
 }
 
 function SaveMap(){
@@ -961,9 +967,13 @@ function SaveMap(){
 	//console.log(JSON.stringify(result));
 	//toJSON
 	for(var i = 0; i < threejsapi.mapscenenodes.length;i++){
+		for(var is = 0; is < threejsapi.scenenodes.length;is++){
+			if(threejsapi.mapscenenodes[i].uuid == threejsapi.scenenodes[is].uuid){
+				threejsapi.mapscenenodes[i] = threejsapi.copyobjectprops(threejsapi.scenenodes[is]);//rebuild object
+			}
+		}
 		SaveObjectS(threejsapi.mapscenenodes[i]);
 	}
-
 }
 
 function LoadMap(){

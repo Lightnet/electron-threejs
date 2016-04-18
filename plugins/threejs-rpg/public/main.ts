@@ -542,10 +542,12 @@ module ThreejsAPI{
 			var objmesh;
 			var edges;
 			var material;
+			material = new THREE.MeshBasicMaterial( {color: 0x00ff00} );
 
 			var obj = JSON.parse(strobj);
 			this.mapscenenodes.push(obj);
 			console.log(obj);
+
 
 			if(obj.type == "Object3D"){
 				objmesh = new THREE.Object3D();
@@ -553,6 +555,93 @@ module ThreejsAPI{
 				objmesh.name = obj.name;
 				tmpobj = objmesh;
 			}
+
+			if(obj.type == "Mesh"){
+				if(obj.geometrytype == "BoxGeometry"){
+					geometry = new THREE.BoxGeometry(
+						obj.parameters.width,
+						obj.parameters.height,
+					    obj.parameters.depth,
+						obj.parameters.widthSegments,
+						obj.parameters.heightSegments,
+						obj.parameters.depthSegments
+					);
+					objmesh = new THREE.Mesh( geometry, material );
+					objmesh.uuid = obj.uuid;
+					objmesh.name = obj.name;
+					tmpobj = objmesh;
+				}
+				if(obj.geometrytype == "CircleGeometry"){
+					geometry = new THREE.CircleGeometry(
+						obj.parameters.radius,
+						obj.parameters.segments,
+						obj.parameters.thetaStart,
+						obj.parameters.thetaLength
+					);
+					objmesh = new THREE.Mesh( geometry, material );
+					objmesh.uuid = obj.uuid;
+					objmesh.name = obj.name;
+					tmpobj = objmesh;
+				}
+				if(obj.geometrytype == "CylinderGeometry"){
+					geometry = new THREE.CylinderGeometry(
+						obj.parameters.radiusTop,
+						obj.parameters.radiusBottom,
+						obj.parameters.height,
+						obj.parameters.radiusSegments,
+						obj.parameters.heightSegments,
+						obj.parameters.openEnded,
+						obj.parameters.thetaStart,
+						obj.parameters.thetaLength
+					);
+					objmesh = new THREE.Mesh( geometry, material );
+					objmesh.uuid = obj.uuid;
+					objmesh.name = obj.name;
+					tmpobj = objmesh;
+				}
+				if(obj.geometrytype == "PlaneGeometry"){
+					geometry = new THREE.PlaneGeometry(
+						obj.parameters.width,
+						obj.parameters.height,
+						obj.parameters.widthSegments,
+						obj.parameters.heightSegments
+					);
+					objmesh = new THREE.Mesh( geometry, material );
+					objmesh.uuid = obj.uuid;
+					objmesh.name = obj.name;
+					tmpobj = objmesh;
+				}
+
+				if(obj.geometrytype == "PlaneGeometry"){
+					geometry = new THREE.PlaneGeometry(
+						obj.parameters.width,
+						obj.parameters.height,
+						obj.parameters.widthSegments,
+						obj.parameters.heightSegments
+					);
+					objmesh = new THREE.Mesh( geometry, material );
+					objmesh.uuid = obj.uuid;
+					objmesh.name = obj.name;
+					tmpobj = objmesh;
+				}
+				if(obj.geometrytype == "SphereGeometry"){
+					geometry = new THREE.SphereGeometry(
+						obj.parameters.radius,
+						obj.parameters.widthSegments,
+						obj.parameters.heightSegments,
+						obj.parameters.phiStart,
+						obj.parameters.phiLength,
+						obj.parameters.thetaStart,
+						obj.parameters.thetaLength
+					);
+					objmesh = new THREE.Mesh( geometry, material );
+					objmesh.uuid = obj.uuid;
+					objmesh.name = obj.name;
+					tmpobj = objmesh;
+				}
+
+			}
+
 
 			//if(obj.type == "Object3D"){
 				//objmesh = new THREE.Object3D();
@@ -565,22 +654,24 @@ module ThreejsAPI{
 			//if(this.scene.uuid == obj.parent){
 				//tmpobj.parent =  this.scene;
 			//}
-			this.parentObj(tmpobj, obj.parent);
+			if(tmpobj !=null){
+				this.parentObj(tmpobj, obj.parent);
 
-			console.log(tmpobj);
+				console.log(tmpobj);
 
-			this.scenenodes.push(tmpobj);
-			//NodeSelectObject({object:tmpobj});
-			//tmpmap = this.copyobjectprops(objmesh);
-			//console.log(tmpmap);
-			//this.mapscenenodes.push(tmpmap);
+				this.scenenodes.push(tmpobj);
+				//NodeSelectObject({object:tmpobj});
+				//tmpmap = this.copyobjectprops(objmesh);
+				//console.log(tmpmap);
+				//this.mapscenenodes.push(tmpmap);
 
-			tmpobj = null;
-			geometry = null;
-			objmesh = null;
-			edges = null;
-			material = null;
-			RefreshContent();
+				tmpobj = null;
+				geometry = null;
+				objmesh = null;
+				edges = null;
+				material = null;
+				RefreshContent();
+			}
 
 		}
 
@@ -597,7 +688,7 @@ module ThreejsAPI{
 			//};
 			return this;
 		}
-
+		//update geom object changes
 		updateGroupGeometry( mesh, geometry ) {
 			//console.log("set?");
 			//console.log(mesh);
@@ -605,7 +696,7 @@ module ThreejsAPI{
 			mesh.geometry.dispose();
 			mesh.geometry = geometry
 		}
-
+		//check which geom type mesh to change
 		SetParamGeom(mesh){
 			if(mesh.geometry.type == "BoxGeometry"){
 				this.updateGroupGeometry( mesh,
@@ -672,7 +763,6 @@ module ThreejsAPI{
 			}
 		}
 
-
 		copyobjectprops(obj){
 			var o3d = new this.createobject3d();
 			o3d.uuid = obj.uuid;
@@ -686,7 +776,6 @@ module ThreejsAPI{
 					o3d.parameters = obj.geometry.parameters;
 				}
 			}
-
 			o3d.position = obj.position;
 			o3d.rotation = obj.rotation;
 			o3d.scale = obj.scale;
@@ -731,7 +820,7 @@ module ThreejsAPI{
 						geometry = new THREE.CircleGeometry( 2, 8, 0, 2*Math.PI );
 						material = new THREE.MeshBasicMaterial( {color: 0xffff00,side: THREE.DoubleSide} );
 						objmesh = new THREE.Mesh( geometry, material );
-						objmesh.name = "CylinderGeometry";
+						objmesh.name = "CircleGeometry";
 						console.log(objmesh.geometry.parameters);
 						tmpobj = objmesh;
 					}
@@ -960,22 +1049,6 @@ module ThreejsAPI{
 			if(this.getext(filename) == '.js'){
 				this.LoadJSONObj(filename);
 			}
-		}
-
-		LoadJPEG(filename){
-
-		}
-
-		LoadPNG(filename){
-
-		}
-
-		LoadJPG(filename){
-
-		}
-
-		LoadGIF(filename){
-
 		}
 
 		LoadJSONObj(filename){
