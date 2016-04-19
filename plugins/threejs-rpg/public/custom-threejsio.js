@@ -997,6 +997,7 @@ function SaveMap(){
 	}
 
 	for(var i = 0; i < threejsapi.mapscenenodes.length;i++){
+		console.log(threejsapi.mapscenenodes[i]);
 		SaveObjectS(threejsapi.mapscenenodes[i]);
 	}
 	//delete scene node objects

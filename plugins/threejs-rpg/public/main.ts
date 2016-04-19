@@ -179,7 +179,7 @@ module ThreejsAPI{
 			//this.camera.position.set( 0, 10, 10 );
 			this.camera.position.set( 0, 0, 10 );
 			//console.log(this.camera);
-			this.scenenodes.push(this.camera);
+			//this.scenenodes.push(this.camera);
 
 			this.scene = new THREE.Scene();
 			this.scene.name = "scene";
@@ -586,10 +586,8 @@ module ThreejsAPI{
     			polygonOffsetUnits: 1
 			});
 
-
-
-
 			var obj = JSON.parse(strobj);
+			console.log(obj);
 			//this.mapscenenodes.push(obj);
 			if(obj.type == "Scene"){
 				objmesh = new THREE.Scene();
@@ -677,6 +675,21 @@ module ThreejsAPI{
 					objmesh = new THREE.Mesh( geometry, material );
 					objmesh.uuid = obj.uuid;
 					objmesh.name = obj.name;
+				}
+			}
+
+			//check if script component exist
+			if(obj.script !=null){
+				if(objmesh !=null){//make sure that mesh or object exist
+					objmesh.script = {};
+					for(var os in obj.script){
+						this.createComponent(objmesh, os);
+						for(var sv in obj.script[os]){
+							//need make object data variable work current doesn't work
+							//
+							objmesh.script[os][sv] = obj.script[os][sv];//copy variable
+						}
+					}
 				}
 			}
 
@@ -808,6 +821,61 @@ module ThreejsAPI{
 					o3d.parameters = obj.geometry.parameters;
 				}
 			}
+
+			if(obj.script !=null){
+				/*
+				var is_array = function (value) {
+				    return value &&
+				    typeof value === 'object' &&
+				    typeof value.length === 'number' &&
+				    typeof value.splice === 'function' &&
+				    !(value.propertyIsEnumerable('length'));
+				};
+				*/
+				o3d.script = {};//create script object
+				for(var os in obj.script){//loop function class
+					o3d.script[os] = {};//create object
+					for(var param in obj.script[os]){//loop function variable
+						//console.log(typeof obj.script[os][param]);
+						//console.log(obj.script[os][param]);
+						if((typeof obj.script[os][param] == 'object')){
+							if(param != 'entity'){//ignore name entity
+								o3d.script[os][param] = obj.script[os][param];
+							}
+							//if(Object.prototype.toString.call( obj.script[os][param] ) === '[object Array]'){
+								//o3d.script[os][param] = obj.script[os][param];
+							//}
+							//if(is_array(obj.script[os][param] )){
+								//o3d.script[os][param] = obj.script[os][param];
+							//}
+							//work with array = [] , not {}
+							//if (obj.script[os][param] instanceof Array) {
+								//o3d.script[os][param] = obj.script[os][param];
+							//}
+
+							//if(  Array.isArray(obj.script[os][param])  ){
+								//o3d.script[os][param] = obj.script[os][param];
+							//}
+						}
+						if((typeof obj.script[os][param] == 'string')){
+							o3d.script[os][param] = obj.script[os][param];//assign var
+						}
+						if((typeof obj.script[os][param] == 'string')){
+							o3d.script[os][param] = obj.script[os][param];//assign var
+						}
+						if((typeof obj.script[os][param] == 'boolean')){
+							o3d.script[os][param] = obj.script[os][param];//assign var
+						}
+						if((typeof obj.script[os][param] == 'number')){
+							o3d.script[os][param] = obj.script[os][param];//assign var
+						}
+						//if(typeof obj.script[os][param] != 'function'){//ignore function
+							//o3d.script[os][param] = obj.script[os][param];//assign var
+						//}
+					}
+				}
+			}
+
 			o3d.position = obj.position;
 			o3d.rotation = obj.rotation;
 			o3d.scale = obj.scale;
