@@ -291,6 +291,18 @@ function initEditor(){
 			{ type: 'menu',   id: 'EditorComponents', caption: 'Components', items: [
 				{ text: 'Object3D', icon: 'fa fa-cube' },
 				{ text: 'Scene', icon: 'fa fa-cube' },
+				//{ text: 'Camera', icon: 'fa fa-cube' },
+				{ text: 'PerspectiveCamera', icon: 'fa fa-cube' },
+				{ text: 'OrthographicCamera', icon: 'fa fa-cube' },
+				{ text: 'CubeCamera', icon: 'fa fa-cube' },
+				{ text: 'AmbientLight', icon: 'fa fa-cube' },
+				{ text: 'DirectionalLight', icon: 'fa fa-cube' },
+				{ text: 'HemisphereLight', icon: 'fa fa-cube' },
+				{ text: 'Light', icon: 'fa fa-cube' },
+				{ text: 'PointLight', icon: 'fa fa-cube' },
+				{ text: 'SpotLight', icon: 'fa fa-cube' },
+
+				{ text:'',type: 'break', id: 'break1' },
 				//{ text: 'Mesh', icon: 'fa fa-cube' },
 				{ text: 'BoxGeometry', icon: 'fa fa-cube' },
 				{ text: 'CircleGeometry', icon: 'fa fa-cube' },
@@ -306,26 +318,26 @@ function initEditor(){
 				{ text: 'TextGeometry', icon: 'fa fa-cube' },
 				{ text: 'Sprite2D', icon: 'fa fa-cube' },
 
-				{ text: 'ArrowHelper', icon: 'fa fa-cube' },
-				{ text: 'AxisHelper', icon: 'fa fa-cube' },
-				{ text: 'BoundingBoxHelper', icon: 'fa fa-cube' },
+				//{ text: 'ArrowHelper', icon: 'fa fa-cube' },
+				//{ text: 'AxisHelper', icon: 'fa fa-cube' },
+				//{ text: 'BoundingBoxHelper', icon: 'fa fa-cube' },
 				//{ text: 'CameraHelper', icon: 'fa fa-cube' },
 				//{ text: 'DirectionalLightHelper', icon: 'fa fa-cube' },
-				{ text: 'EdgesHelper', icon: 'fa fa-cube' },
-				{ text: 'FaceNormalsHelper', icon: 'fa fa-cube' },
-				{ text: 'GridHelper', icon: 'fa fa-cube' },
+				//{ text: 'EdgesHelper', icon: 'fa fa-cube' },
+				//{ text: 'FaceNormalsHelper', icon: 'fa fa-cube' },
+				//{ text: 'GridHelper', icon: 'fa fa-cube' },
 				//{ text: 'HemisphereLightHelper', icon: 'fa fa-cube' },
-				{ text: 'PointLightHelper', icon: 'fa fa-cube' },
-				{ text: 'SpotLightHelper', icon: 'fa fa-cube' },
-				{ text: 'VertexNormalsHelper', icon: 'fa fa-cube' },
-				{ text: 'WireframeHelper', icon: 'fa fa-cube' },
+				//{ text: 'PointLightHelper', icon: 'fa fa-cube' },
+				//{ text: 'SpotLightHelper', icon: 'fa fa-cube' },
+				//{ text: 'VertexNormalsHelper', icon: 'fa fa-cube' },
+				//{ text: 'WireframeHelper', icon: 'fa fa-cube' },
 
 				//{ text: 'Tetrahedron', icon: 'fa fa-cube' },
 				//{ text: 'OctahedronGeometry', icon: 'fa fa-cube' },
 				//{ text: 'DodecahedronGeometry', icon: 'fa fa-cube' },
 				//{ text: 'IcosahedronGeometry', icon: 'fa fa-cube' },
 
-				{ text:'',type: 'break', id: 'break' },
+				{ text:'',type: 'break', id: 'break2' },
 				{ text: 'model', icon: 'fa fa-cube' },
 				{ text: 'texture', icon: 'fa fa-file-image-o' },
 				{ text: 'material', icon: 'fa fa-file-image-o' },
@@ -366,7 +378,7 @@ function initEditor(){
 	console.log(w2ui.toolbar);
 
 	w2ui.toolbar.on('*', function (id, event) {
-		//console.log('id:'+id);
+		console.log('id:'+id);
 		if(id == 'EditorCompile'){
 			compileApp();
 		}

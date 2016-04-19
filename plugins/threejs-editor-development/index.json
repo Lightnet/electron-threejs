@@ -1,0 +1,7 @@
+{
+    "name": "threejs-editor-development",
+    "information": "threejs-editor-development",
+    "version":"0.0.1",
+    "bable": true,
+    "script":"module_index.js"
+}

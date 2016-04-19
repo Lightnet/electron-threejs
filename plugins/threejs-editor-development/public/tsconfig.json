@@ -13,7 +13,7 @@
         "!./DefinitelyTyped/**/*.ts"
     ],
     "files": [
-        "./main.ts"
+        "./threejsapi.ts"
     ],
     "atom": {
         "rewriteTsconfig": true

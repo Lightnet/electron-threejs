@@ -392,6 +392,27 @@ var ThreejsAPI;
             if (action == 'EditorComponents:SphereGeometry') {
                 this.createshape({ shape: "SphereGeometry" });
             }
+            if (action == 'EditorComponents:DodecahedronGeometry') {
+                this.createshape({ shape: "DodecahedronGeometry" });
+            }
+            if (action == 'EditorComponents:IcosahedronGeometry') {
+                this.createshape({ shape: "IcosahedronGeometry" });
+            }
+            if (action == 'EditorComponents:OctahedronGeometry') {
+                this.createshape({ shape: "OctahedronGeometry" });
+            }
+            if (action == 'EditorComponents:RingGeometry') {
+                this.createshape({ shape: "RingGeometry" });
+            }
+            if (action == 'EditorComponents:TetrahedronGeometry') {
+                this.createshape({ shape: "TetrahedronGeometry" });
+            }
+            if (action == 'EditorComponents:TorusGeometry') {
+                this.createshape({ shape: "TorusGeometry" });
+            }
+            if (action == 'EditorComponents:TorusKnotGeometry') {
+                this.createshape({ shape: "TorusKnotGeometry" });
+            }
             if (action == 'EditorComponents:TextGeometry') {
                 this.createshape({ shape: "TextGeometry" });
             }
@@ -427,6 +448,100 @@ var ThreejsAPI;
             }
             if (action == 'EditorComponents:Sprite2D') {
                 this.createshape({ shape: "Sprite" });
+            }
+            if (action == 'EditorComponents:CubeCamera') {
+                this.createObjectScene({ object: 'CubeCamera' });
+            }
+            if (action == 'EditorComponents:PerspectiveCamera') {
+                this.createObjectScene({ object: 'PerspectiveCamera' });
+            }
+            if (action == 'EditorComponents:OrthographicCamera') {
+                this.createObjectScene({ object: 'OrthographicCamera' });
+            }
+            if (action == 'EditorComponents:AmbientLight') {
+                this.createObjectScene({ object: 'AmbientLight' });
+            }
+            if (action == 'EditorComponents:DirectionalLight') {
+                this.createObjectScene({ object: 'DirectionalLight' });
+            }
+            if (action == 'EditorComponents:HemisphereLight') {
+                this.createObjectScene({ object: 'HemisphereLight' });
+            }
+            if (action == 'EditorComponents:Light') {
+                this.createObjectScene({ object: 'Light' });
+            }
+            if (action == 'EditorComponents:PointLight') {
+                this.createObjectScene({ object: 'PointLight' });
+            }
+            if (action == 'EditorComponents:SpotLight') {
+                this.createObjectScene({ object: 'SpotLight' });
+            }
+        };
+        Game.prototype.createObjectScene = function (args) {
+            if (args != null) {
+                if (args['object'] != null) {
+                    var objscene;
+                    if (args['object'] == 'PerspectiveCamera') {
+                        objscene = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 10000);
+                        objscene.name = "PerspectiveCamera";
+                    }
+                    if (args['object'] == 'OrthographicCamera') {
+                        objscene = new THREE.OrthographicCamera(window.innerWidth / -2, window.innerWidth / 2, window.innerHeight / 2, window.innerHeight / -2, 1, 10000);
+                        objscene.name = "OrthographicCamera";
+                    }
+                    if (args['object'] == 'CubeCamera') {
+                        objscene = new THREE.CubeCamera(1, 100000, 128);
+                        objscene.name = "CubeCamera";
+                    }
+                    if (args['object'] == 'AmbientLight') {
+                        objscene = new THREE.AmbientLight(0x404040); // soft white light
+                        objscene.name = "AmbientLight";
+                    }
+                    if (args['object'] == 'DirectionalLight') {
+                        objscene = new THREE.DirectionalLight(0xffffff, 0.5);
+                        objscene.position.set(0, 1, 0);
+                        objscene.name = "DirectionalLight";
+                    }
+                    if (args['object'] == 'HemisphereLight') {
+                        objscene = new THREE.HemisphereLight(0xffffbb, 0x080820, 1);
+                        objscene.name = "HemisphereLight";
+                    }
+                    if (args['object'] == 'Light') {
+                        objscene = new THREE.Light(0xff0000);
+                        objscene.name = "Light";
+                    }
+                    if (args['object'] == 'PointLight') {
+                        objscene = new THREE.PointLight(0xff0000, 1, 100);
+                        objscene.name = "PointLight";
+                    }
+                    if (args['object'] == 'SpotLight') {
+                        objscene = new THREE.SpotLight(0xffffff);
+                        objscene.name = "SpotLight";
+                    }
+                    if (objscene != null) {
+                        if (this.selectobject != null) {
+                            this.selectobject.add(objscene); //attach to current selected
+                        }
+                        else {
+                            this.scene.add(objscene);
+                        }
+                        this.scenenodes.push(objscene);
+                        console.log('create object?');
+                        console.log(objscene);
+                        NodeSelectObject({ object: objscene });
+                        var tmpmap = this.copyobjectprops(objscene);
+                        //console.log(tmpmap);
+                        this.mapscenenodes.push(tmpmap);
+                        //var test3d = new object3d();
+                        //console.log(test3d);
+                        //tmpobj = null;
+                        //geometry = null;
+                        //objmesh = null;
+                        //edges = null;
+                        //material = null;
+                        RefreshContent();
+                    }
+                }
             }
         };
         Game.prototype.SaveJSON = function () {
@@ -523,6 +638,48 @@ var ThreejsAPI;
                     objmesh.uuid = obj.uuid;
                     objmesh.name = obj.name;
                 }
+                if (obj.geometrytype == "DodecahedronGeometry") {
+                    geometry = new THREE.DodecahedronGeometry(obj.parameters.radius, obj.parameters.detail);
+                    objmesh = new THREE.Mesh(geometry, material);
+                    objmesh.uuid = obj.uuid;
+                    objmesh.name = obj.name;
+                }
+                if (obj.geometrytype == "IcosahedronGeometry") {
+                    geometry = new THREE.IcosahedronGeometry(obj.parameters.radius, obj.parameters.detail);
+                    objmesh = new THREE.Mesh(geometry, material);
+                    objmesh.uuid = obj.uuid;
+                    objmesh.name = obj.name;
+                }
+                if (obj.geometrytype == "OctahedronGeometry") {
+                    geometry = new THREE.OctahedronGeometry(obj.parameters.radius, obj.parameters.detail);
+                    objmesh = new THREE.Mesh(geometry, material);
+                    objmesh.uuid = obj.uuid;
+                    objmesh.name = obj.name;
+                }
+                if (obj.geometrytype == "RingGeometry") {
+                    geometry = new THREE.RingGeometry(obj.parameters.innerRadius, obj.parameters.outerRadius, obj.parameters.thetaSegments, obj.parameters.phiSegments, obj.parameters.thetaStart, obj.parameters.thetaLength);
+                    objmesh = new THREE.Mesh(geometry, material);
+                    objmesh.uuid = obj.uuid;
+                    objmesh.name = obj.name;
+                }
+                if (obj.geometrytype == "TetrahedronGeometry") {
+                    geometry = new THREE.TetrahedronGeometry(obj.parameters.radius, obj.parameters.detail);
+                    objmesh = new THREE.Mesh(geometry, material);
+                    objmesh.uuid = obj.uuid;
+                    objmesh.name = obj.name;
+                }
+                if (obj.geometrytype == "TorusGeometry") {
+                    geometry = new THREE.TorusGeometry(obj.parameters.radius, obj.parameters.tube, obj.parameters.radialSegments, obj.parameters.tubularSegments, obj.parameters.arc);
+                    objmesh = new THREE.Mesh(geometry, material);
+                    objmesh.uuid = obj.uuid;
+                    objmesh.name = obj.name;
+                }
+                if (obj.geometrytype == "TorusKnotGeometry") {
+                    geometry = new THREE.TorusKnotGeometry(obj.parameters.radius, obj.parameters.tube, obj.parameters.radialSegments, obj.parameters.tubularSegments, obj.parameters.p, obj.parameters.q, obj.parameters.heightScale);
+                    objmesh = new THREE.Mesh(geometry, material);
+                    objmesh.uuid = obj.uuid;
+                    objmesh.name = obj.name;
+                }
             }
             //check if script component exist
             if (obj.script != null) {
@@ -532,8 +689,34 @@ var ThreejsAPI;
                         this.createComponent(objmesh, os);
                         for (var sv in obj.script[os]) {
                             //need make object data variable work current doesn't work
-                            //
-                            objmesh.script[os][sv] = obj.script[os][sv]; //copy variable
+                            if (typeof obj.script[os][sv] == 'object') {
+                                //console.log('OBJECT    script');
+                                //console.log('obj.script'+ os+'.'+sv);
+                                if (Array.isArray(obj.script[os][sv])) {
+                                    console.log('found array object');
+                                    objmesh.script[os][sv] = obj.script[os][sv];
+                                }
+                                else {
+                                    if (obj.script[os][sv].type != null) {
+                                        console.log('found type! :' + obj.script[os][sv].type);
+                                        if (obj.script[os][sv].type == 'THREE.Vector2') {
+                                            objmesh.script[os][sv] = new THREE.Vector2(obj.script[os][sv].x, obj.script[os][sv].y);
+                                        }
+                                        if (obj.script[os][sv].type == 'THREE.Vector3') {
+                                            objmesh.script[os][sv] = new THREE.Vector3(obj.script[os][sv].x, obj.script[os][sv].y, obj.script[os][sv].z);
+                                        }
+                                        if (obj.script[os][sv].type == 'THREE.Vector4') {
+                                            objmesh.script[os][sv] = new THREE.Vector4(obj.script[os][sv].x, obj.script[os][sv].y, obj.script[os][sv].z, obj.script[os][sv].w);
+                                        }
+                                        if (obj.script[os][sv].type == 'THREE.Quaternion') {
+                                            objmesh.script[os][sv] = new THREE.Quaternion(obj.script[os][sv].x, obj.script[os][sv].y, obj.script[os][sv].z, obj.script[os][sv].w);
+                                        }
+                                    }
+                                }
+                            }
+                            else {
+                                objmesh.script[os][sv] = obj.script[os][sv]; //copy variable
+                            }
                         }
                     }
                 }
@@ -595,8 +778,30 @@ var ThreejsAPI;
             if (mesh.geometry.type == "SphereGeometry") {
                 this.updateGroupGeometry(mesh, new THREE.SphereGeometry(mesh.geometry.parameters.radius, mesh.geometry.parameters.widthSegments, mesh.geometry.parameters.heightSegments, mesh.geometry.parameters.phiStart, mesh.geometry.parameters.phiLength, mesh.geometry.parameters.thetaStart, mesh.geometry.parameters.thetaLength));
             }
+            if (mesh.geometry.type == "DodecahedronGeometry") {
+                this.updateGroupGeometry(mesh, new THREE.DodecahedronGeometry(mesh.geometry.parameters.radius, mesh.geometry.parameters.detail));
+            }
+            if (mesh.geometry.type == "IcosahedronGeometry") {
+                this.updateGroupGeometry(mesh, new THREE.IcosahedronGeometry(mesh.geometry.parameters.radius, mesh.geometry.parameters.detail));
+            }
+            if (mesh.geometry.type == "OctahedronGeometry") {
+                this.updateGroupGeometry(mesh, new THREE.OctahedronGeometry(mesh.geometry.parameters.radius, mesh.geometry.parameters.detail));
+            }
+            if (mesh.geometry.type == "RingGeometry") {
+                this.updateGroupGeometry(mesh, new THREE.RingGeometry(mesh.geometry.parameters.innerRadius, mesh.geometry.parameters.outerRadius, mesh.geometry.parameters.thetaSegments, mesh.geometry.parameters.phiSegments, mesh.geometry.parameters.thetaStart, mesh.geometry.parameters.thetaLength));
+            }
+            if (mesh.geometry.type == "TetrahedronGeometry") {
+                this.updateGroupGeometry(mesh, new THREE.TetrahedronGeometry(mesh.geometry.parameters.radius, mesh.geometry.parameters.detail));
+            }
+            if (mesh.geometry.type == "TorusGeometry") {
+                this.updateGroupGeometry(mesh, new THREE.TorusGeometry(mesh.geometry.parameters.radius, mesh.geometry.parameters.tube, mesh.geometry.parameters.radialSegments, mesh.geometry.parameters.tubularSegments, mesh.geometry.parameters.arc));
+            }
+            if (mesh.geometry.type == "TorusKnotGeometry") {
+                this.updateGroupGeometry(mesh, new THREE.TorusKnotGeometry(mesh.geometry.parameters.radius, mesh.geometry.parameters.tube, mesh.geometry.parameters.radialSegments, mesh.geometry.parameters.tubularSegments, mesh.geometry.parameters.p, mesh.geometry.parameters.q, mesh.geometry.parameters.heightScale));
+            }
         };
         Game.prototype.copyobjectprops = function (obj) {
+            console.log('//  = processing ');
             var o3d = new object3d();
             o3d.uuid = obj.uuid;
             o3d.name = obj.name;
@@ -632,7 +837,51 @@ var ThreejsAPI;
                         //console.log(obj.script[os][param]);
                         if ((typeof obj.script[os][param] == 'object')) {
                             if (param != 'entity') {
-                                o3d.script[os][param] = obj.script[os][param];
+                                console.log('checking object type?');
+                                console.log('obj.script.' + os + '.' + '' + param);
+                                if (obj.script[os][param] instanceof THREE.Object3D) {
+                                    if (obj.script[os][param].type == 'Object3D') {
+                                        console.log(obj.script[os][param]);
+                                        console.log('found Object3D!');
+                                        //o3d.script[os][param] = obj.script[os][param]; // error on geometry uuid if not set
+                                        o3d.script[os][param] = { type: 'Object3D', uuid: obj.script[os][param].uuid };
+                                    }
+                                }
+                                if (obj.script[os][param] instanceof THREE.Mesh) {
+                                    console.log(obj.script[os][param]);
+                                    console.log('found Mesh!');
+                                    //o3d.script[os][param] = obj.script[os][param]; // error on geometry uuid if not set
+                                    o3d.script[os][param] = { type: 'Mesh', uuid: obj.script[os][param].uuid };
+                                }
+                                if (Object.prototype.toString.call(obj.script[os][param]) === '[object Array]') {
+                                    console.log(obj.script[os][param]);
+                                    console.log('found object Array!');
+                                    o3d.script[os][param] = obj.script[os][param];
+                                }
+                                if (obj.script[os][param] instanceof THREE.Vector2) {
+                                    console.log(obj.script[os][param]);
+                                    console.log('found THREE.Vector2!');
+                                    o3d.script[os][param] = obj.script[os][param];
+                                    o3d.script[os][param] = { type: 'THREE.Vector2', x: obj.script[os][param].x, y: obj.script[os][param].y };
+                                }
+                                if (obj.script[os][param] instanceof THREE.Vector3) {
+                                    console.log(obj.script[os][param]);
+                                    console.log('found THREE.Vector3!');
+                                    //o3d.script[os][param] = obj.script[os][param];
+                                    o3d.script[os][param] = { type: 'THREE.Vector3', x: obj.script[os][param].x, y: obj.script[os][param].y, z: obj.script[os][param].z };
+                                }
+                                if (obj.script[os][param] instanceof THREE.Vector4) {
+                                    console.log(obj.script[os][param]);
+                                    console.log('found THREE.Vector4!');
+                                    //o3d.script[os][param] = obj.script[os][param];
+                                    o3d.script[os][param] = { type: 'THREE.Vector4', x: obj.script[os][param].x, y: obj.script[os][param].y, z: obj.script[os][param].z, w: obj.script[os][param].w };
+                                }
+                                if (obj.script[os][param] instanceof THREE.Quaternion) {
+                                    console.log(obj.script[os][param]);
+                                    console.log('found THREE.Quaternion!');
+                                    //o3d.script[os][param] = obj.script[os][param];
+                                    o3d.script[os][param] = { type: 'THREE.Quaternion', x: obj.script[os][param].x, y: obj.script[os][param].y, z: obj.script[os][param].z, w: obj.script[os][param].w };
+                                }
                             }
                         }
                         if ((typeof obj.script[os][param] == 'string')) {
@@ -721,6 +970,62 @@ var ThreejsAPI;
                         material = new THREE.MeshBasicMaterial({ color: 0xffff00 });
                         objmesh = new THREE.Mesh(geometry, material);
                         objmesh.name = "SphereGeometry";
+                        console.log(objmesh.geometry.parameters);
+                        tmpobj = objmesh;
+                    }
+                    if (args['shape'] == 'DodecahedronGeometry') {
+                        geometry = new THREE.DodecahedronGeometry(1, 0);
+                        material = new THREE.MeshBasicMaterial({ color: 0xffff00 });
+                        objmesh = new THREE.Mesh(geometry, material);
+                        objmesh.name = "DodecahedronGeometry";
+                        console.log(objmesh.geometry.parameters);
+                        tmpobj = objmesh;
+                    }
+                    if (args['shape'] == 'IcosahedronGeometry') {
+                        geometry = new THREE.IcosahedronGeometry(1, 0);
+                        material = new THREE.MeshBasicMaterial({ color: 0xffff00 });
+                        objmesh = new THREE.Mesh(geometry, material);
+                        objmesh.name = "IcosahedronGeometry";
+                        console.log(objmesh.geometry.parameters);
+                        tmpobj = objmesh;
+                    }
+                    if (args['shape'] == 'OctahedronGeometry') {
+                        geometry = new THREE.OctahedronGeometry(1, 0);
+                        material = new THREE.MeshBasicMaterial({ color: 0xffff00 });
+                        objmesh = new THREE.Mesh(geometry, material);
+                        objmesh.name = "OctahedronGeometry";
+                        console.log(objmesh.geometry.parameters);
+                        tmpobj = objmesh;
+                    }
+                    if (args['shape'] == 'RingGeometry') {
+                        geometry = new THREE.RingGeometry(1, 5, 8, 1, 0, 2 * Math.PI);
+                        material = new THREE.MeshBasicMaterial({ color: 0xffff00 });
+                        objmesh = new THREE.Mesh(geometry, material);
+                        objmesh.name = "RingGeometry";
+                        console.log(objmesh.geometry.parameters);
+                        tmpobj = objmesh;
+                    }
+                    if (args['shape'] == 'TetrahedronGeometry') {
+                        geometry = new THREE.TetrahedronGeometry(1, 0);
+                        material = new THREE.MeshBasicMaterial({ color: 0xffff00 });
+                        objmesh = new THREE.Mesh(geometry, material);
+                        objmesh.name = "TetrahedronGeometry";
+                        console.log(objmesh.geometry.parameters);
+                        tmpobj = objmesh;
+                    }
+                    if (args['shape'] == 'TorusGeometry') {
+                        geometry = new THREE.TorusGeometry(10, 3, 16, 100, 2 * Math.PI);
+                        material = new THREE.MeshBasicMaterial({ color: 0xffff00 });
+                        objmesh = new THREE.Mesh(geometry, material);
+                        objmesh.name = "TorusGeometry";
+                        console.log(objmesh.geometry.parameters);
+                        tmpobj = objmesh;
+                    }
+                    if (args['shape'] == 'TorusKnotGeometry') {
+                        geometry = new THREE.TorusKnotGeometry(10, 3, 100, 16, 2, 3, 1);
+                        material = new THREE.MeshBasicMaterial({ color: 0xffff00 });
+                        objmesh = new THREE.Mesh(geometry, material);
+                        objmesh.name = "TorusKnotGeometry";
                         console.log(objmesh.geometry.parameters);
                         tmpobj = objmesh;
                     }
@@ -827,7 +1132,8 @@ var ThreejsAPI;
                             this.scene.add(tmpobj);
                         }
                         this.scenenodes.push(tmpobj);
-                        //console.log(tmpobj);
+                        console.log('create object?');
+                        console.log(tmpobj);
                         NodeSelectObject({ object: tmpobj });
                         tmpmap = this.copyobjectprops(objmesh);
                         //console.log(tmpmap);
