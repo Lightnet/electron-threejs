@@ -153,15 +153,15 @@ module.exports.socketio_connect = function(io, socket){
 
 			if(data['action'] == 'build'){
 				var file = __dirname + "/public/" + 'post-app.json';
-
-				fs.writeFile(file, data['object'], function (err) {//write file and data
+				var objson = JSON.parse(data['object']);//convert object
+				var objstring = JSON.stringify(objson, null, 4);//convert string with pretty print to make it compact
+				fs.writeFile(file, objstring, function (err) {//write file and data
 		         if( err ){
 		              console.log( err );
 		         }
 				 console.log('file finish write');
 				 file = null;
 		       });
-
 			}
 		}
 	});

@@ -1,3 +1,13 @@
+/*
+	Name:
+	Link:https://github.com/Lightnet/electron-threejs
+	Created By: Lightnet
+	License: Creative Commons Zero [Note there multiple Licenses]
+  	Please read the readme.txt file for more information.
+*/
+
+
+
 var socketio = io();
 var threejsangular = angular.module('threejsangular', []);
 var threejsapi;
@@ -130,7 +140,7 @@ socketio.on('script',(data)=>{
 		if(data['action'] == 'add'){
 			//console.log(data);
 			//console.log(data);
-			scripts.push( {id:data['id'] ,name :data['name'], path:data['path'],script: data['script']});
+			scripts.push( {id:data['id'], name :data['name'], path:data['path'],script: data['script']});
 			//scripts[ data['id']  ].path =  data['path'];
 			//scripts[ data['id']  ].script =  data['script'];
 			//console.log(scripts);
@@ -1280,8 +1290,31 @@ function compileApp(){
 	console.log('compileApp');
 }
 function buildApp(){
+	var postobject = {
+		"name":"threejsapp",
+		"description":"none",
+		"version":"0.0.1",
+		"tags":[],
+		"scripts": [],
+		"assets": [],
+		"entities": []
+	};
+	//postobject.name = "test";
+	//path
+	for(var i = 0; i < scripts.length;i++){
+		postobject.scripts.push(scripts[i].path);
+	}
+
+	for(var i = 0; i < threejsapi.mapscenenodes.length;i++){
+		postobject.entities.push(threejsapi.mapscenenodes[i]);
+	}
+
 	console.log('buildApp');
-	socketio.emit('mapscene',{action:'build',projectid:projectid,object:'{"test":"test"}'});
+	console.log(postobject);
+
+	var objstring = JSON.stringify(postobject);
+	//socketio.emit('mapscene',{action:'build',projectid:projectid,object:'{"test":"test"}'});
+	socketio.emit('mapscene',{action:'build',projectid:projectid,object:objstring});
 }
 function debugApp(){
 	console.log('debugApp');

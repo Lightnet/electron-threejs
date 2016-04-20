@@ -1,3 +1,13 @@
+/*
+	Name:
+	Link:https://github.com/Lightnet/electron-threejs
+	Created By: Lightnet
+	License: Creative Commons Zero [Note there multiple Licenses]
+  	Please read the readme.txt file for more information.
+*/
+
+
+
 //testing
 //three.d.ts
 /// <reference path="../../../DefinitelyTyped/threejs/detector.d.ts" />
@@ -23,7 +33,7 @@ declare var CANNON:any;
 declare var Ammo:any;
 //declare var Math:any;
 
-declare var RefreshContent;
+//declare var RefreshContent;
 declare var NodeSelectObject;
 //declare var window:any;
 //var undefined:string = 'undefined';
@@ -127,6 +137,11 @@ module ThreejsAPI{
 					this.canvasid = args['canvasid'];
 					//console.log('canvasid>>'+args['canvasid']);
 				}
+				if(args['bcanvasRatio'] != null){
+					//this.bcanvas = true;
+					this.bcanvasRatio = args['bcanvasRatio'];
+					//console.log('canvasid>>'+args['canvasid']);
+				}
 
 				if(args['bprototype'] != null){
 					//this.bcanvas = true;
@@ -208,7 +223,7 @@ module ThreejsAPI{
             this.renderer.shadowMap.type = THREE.PCFShadowMap;//THREE.BasicShadowMap;
 
 			if(this.bcanvasRatio == true){
-				var winResize = new THREEx.WindowResize(this.renderer, this.camera)
+				var winResize = new THREEx.WindowResize(this.renderer, this.camera);
 			}
 
 			this.controls = new THREE.OrbitControls( this.camera, this.canvas );
@@ -651,7 +666,7 @@ module ThreejsAPI{
 						//objmesh = null;
 						//edges = null;
 						//material = null;
-						RefreshContent();
+						//RefreshContent();
 					}
 				}
 			}
@@ -684,6 +699,7 @@ module ThreejsAPI{
 			var objmesh;
 			var edges;
 			var material;
+			var obj;
 			//material = new THREE.MeshBasicMaterial( {color: 0x00ff00, wireframe: true} );
 			//material = new THREE.MeshBasicMaterial( {color: 0x156289} );
 			//material = new THREE.MeshBasicMaterial( {color: 0xffffff} );
@@ -705,8 +721,11 @@ module ThreejsAPI{
     			polygonOffsetFactor: 1, // positive value pushes polygon further away
     			polygonOffsetUnits: 1
 			});
-
-			var obj = JSON.parse(strobj);
+			if(typeof strobj == 'string'){
+				obj = JSON.parse(strobj);
+			}else{
+				obj = strobj;
+			}
 			console.log(obj);
 			//this.mapscenenodes.push(obj);
 			if(obj.type == "Scene"){
@@ -880,32 +899,40 @@ module ThreejsAPI{
 					for(var os in obj.script){
 						this.createComponent(objmesh, os);
 						for(var sv in obj.script[os]){
-							//need make object data variable work current doesn't work
-							if(typeof obj.script[os][sv] == 'object'){
-								//console.log('OBJECT    script');
-								//console.log('obj.script'+ os+'.'+sv);
-								if(Array.isArray(obj.script[os][sv])){
-									console.log('found array object');
-									objmesh.script[os][sv] = obj.script[os][sv];
-								}else{
-									if(obj.script[os][sv].type !=null){
-										console.log('found type! :'+obj.script[os][sv].type);
-										if(obj.script[os][sv].type == 'THREE.Vector2'){
-											objmesh.script[os][sv] = new THREE.Vector2(obj.script[os][sv].x,obj.script[os][sv].y);
-										}
-										if(obj.script[os][sv].type == 'THREE.Vector3'){
-											objmesh.script[os][sv] = new THREE.Vector3(obj.script[os][sv].x,obj.script[os][sv].y,obj.script[os][sv].z);
-										}
-										if(obj.script[os][sv].type == 'THREE.Vector4'){
-											objmesh.script[os][sv] = new THREE.Vector4(obj.script[os][sv].x,obj.script[os][sv].y,obj.script[os][sv].z,obj.script[os][sv].w);
-										}
-										if(obj.script[os][sv].type == 'THREE.Quaternion'){
-											objmesh.script[os][sv] = new THREE.Quaternion(obj.script[os][sv].x,obj.script[os][sv].y,obj.script[os][sv].z,obj.script[os][sv].w);
+							if(typeof obj.script[os][sv] != 'function'){
+								//need make object data variable work current doesn't work
+								if(typeof obj.script[os][sv] == 'object'){
+									//console.log('OBJECT    script');
+									//console.log('obj.script'+ os+'.'+sv);
+									if(Array.isArray(obj.script[os][sv])){
+										console.log('found array object');
+										objmesh.script[os][sv] = obj.script[os][sv];
+									}else{
+										if(obj.script[os][sv].type !=null){
+											console.log('found type! :'+obj.script[os][sv].type);
+											if(obj.script[os][sv].type == 'THREE.Vector2'){
+												objmesh.script[os][sv] = new THREE.Vector2(obj.script[os][sv].x,obj.script[os][sv].y);
+											}
+											if(obj.script[os][sv].type == 'THREE.Vector3'){
+												objmesh.script[os][sv] = new THREE.Vector3(obj.script[os][sv].x,obj.script[os][sv].y,obj.script[os][sv].z);
+											}
+											if(obj.script[os][sv].type == 'THREE.Vector4'){
+												objmesh.script[os][sv] = new THREE.Vector4(obj.script[os][sv].x,obj.script[os][sv].y,obj.script[os][sv].z,obj.script[os][sv].w);
+											}
+											if(obj.script[os][sv].type == 'THREE.Quaternion'){
+												objmesh.script[os][sv] = new THREE.Quaternion(obj.script[os][sv].x,obj.script[os][sv].y,obj.script[os][sv].z,obj.script[os][sv].w);
+											}
 										}
 									}
+								}else{
+									//console.log('Script object:'+os);
+									//console.log('VAR OTHER:'+sv);
+									//console.log(typeof obj.script[os][sv]);
+									//console.log(obj.script[os][sv]);
+									//console.log(objmesh.script[os]);
+									//console.log('VAR OTHER:'+sv);
+									objmesh.script[os][sv] = obj.script[os][sv];//copy variable
 								}
-							}else{
-								objmesh.script[os][sv] = obj.script[os][sv];//copy variable
 							}
 						}
 					}
@@ -942,7 +969,7 @@ module ThreejsAPI{
 				objmesh = null;
 				edges = null;
 				material = null;
-				RefreshContent();
+				//RefreshContent();
 			}
 
 		}
@@ -1484,7 +1511,7 @@ module ThreejsAPI{
 						objmesh = null;
 						edges = null;
 						material = null;
-						RefreshContent();
+						//RefreshContent();
 					}
 				}
 			}

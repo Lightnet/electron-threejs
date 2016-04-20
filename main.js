@@ -1,16 +1,17 @@
 /*
 	Name:
-	Link:https://bitbucket.org/Lightnet/
+	Link:https://github.com/Lightnet/electron-threejs
 	Created By: Lightnet
 	License: Creative Commons Zero [Note there multiple Licenses]
   	Please read the readme.txt file for more information.
 */
 
+
 'use strict';
 
 var settings = require('./settings.json');
 console.log(settings['autostartdatabase']);
-
+// run rethinkdb cmd
 function run_cmd(cmd, args, callBack ) {
     var spawn = require('child_process').spawn;
     var child = spawn(cmd, args);
@@ -30,7 +31,7 @@ const electron = require('electron');
 // Module to control application life.
 const app = electron.app;
 const ipcMain = electron.ipcMain;
-const ipcRenderer = require('electron').ipcRenderer;
+//const ipcRenderer = require('electron').ipcRenderer;
 var Menu = require('menu');
 var Tray = require('tray');
 // Module to create native browser window.

@@ -1,3 +1,11 @@
+/*
+	Name:
+	Link:https://github.com/Lightnet/electron-threejs
+	Created By: Lightnet
+	License: Creative Commons Zero [Note there multiple Licenses]
+  	Please read the readme.txt file for more information.
+*/
+
 
 var threejsangular = angular.module('threejsangular', []);
 

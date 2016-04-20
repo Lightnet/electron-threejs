@@ -1,10 +1,11 @@
 /*
 	Name:
-	Link:https://bitbucket.org/Lightnet/
+	Link:https://github.com/Lightnet/electron-threejs
 	Created By: Lightnet
 	License: Creative Commons Zero [Note there multiple Licenses]
   	Please read the readme.txt file for more information.
 */
+
 
 /// <reference path="./DefinitelyTyped/node/node.d.ts" />
 /// <reference path="./app/libs/socketio_handle.ts" />

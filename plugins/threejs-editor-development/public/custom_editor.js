@@ -1,3 +1,14 @@
+/*
+	Name:
+	Link:https://github.com/Lightnet/electron-threejs
+	Created By: Lightnet
+	License: Creative Commons Zero [Note there multiple Licenses]
+  	Please read the readme.txt file for more information.
+*/
+
+
+
+
 //http://w2ui.com/web/demos/#!sidebar/sidebar-2
 
 /*
@@ -494,7 +505,7 @@ function initEditor(){
 
 	w2ui['layout'].on('resize', function(target, data) {
 	    data.onComplete = function () {
-			console.log('resize w2ui?');
+			//console.log('resize w2ui?');
 			//if(editor !=null){
 				//editor.resize();
 				//heightUpdateFunction();
@@ -504,7 +515,7 @@ function initEditor(){
 	});
 
 	$( window ).resize(function() {
-		console.log('resize window?');
+		//console.log('resize window?');
 		canvas_resize();
 	});
 	//console.log(w2ui['layout'].get('main'));
