@@ -338,12 +338,13 @@ function initangularnode(){
 threejsangular.component('nodebooleancomponent', {
 	bindings: {
 		params:'=',
+		textname:'=',
 		confirmed:'='
 	},
   	controller:'nodebooleanCtrl',
   	template: function($element, $attrs){
 		return `<div>`+
-					`<label>{{$ctrl.params}}</label>`+
+					`<label>{{$ctrl.textname}}</label>`+
 					`<input type="checkbox" ng-model="confirmed" ng-change="$ctrl.change()" />` +
 				`</div>`;
 	}
@@ -402,7 +403,7 @@ threejsangular.component('nodedisplaycomponent', {
 		// component initialisation
 		$scope.confirmed = _.get(selectnodeprops, $scope.$ctrl.params);
 		//console.log('$scope.confirmed');
-		console.log($scope.$ctrl.params + " : " + $scope.confirmed);
+		//console.log($scope.$ctrl.params + " : " + $scope.confirmed);
 		//console.log(selectnodeprops);
 		if($scope.confirmed == true){
   		  $('#'+$scope.$ctrl.idel).show();
@@ -572,7 +573,7 @@ function checknodecomponents(){
 			if(selectnodeprops['bdisplay'] == null){
 				selectnodeprops['bdisplay'] = true;
 			}
-			console.log(selectnodeprops['bdisplay']);
+			//console.log(selectnodeprops['bdisplay']);
 			//propE10.append($(`<div id='objectscene'>Object <button>Toggle</button></div>`).append($(`<div id=objectprops></div>`)) );
 			//propE10.append($compile(`<div id='objectscene'>Object <button onclick="$('#objectvar').toggle();">Toggle</button></div>`)(scope));
 			propE10.append($compile(`<div id='objectscene'>Object</div>`)(scope));
@@ -695,7 +696,7 @@ function checknodecomponents(){
 					var svarEl = angular.element(document.getElementById(`script_`+cn));
 					for(var sc in scriptc){
 						if(typeof scriptc[sc] == 'string'){
-							svarEl.append($compile(`<nodeinputcomponent params="'` + _scriptpath + sc + `'" textname="'`+ sc +`'"></nodeinputcomponent>`)(scope));
+							svarEl.append($compile(`<nodeinputcomponent params="'` + _scriptpath + sc + `'" textname="'`+ sc +"" +`'"></nodeinputcomponent>`)(scope));
 						}
 						if(typeof scriptc[sc] == 'number'){
 							svarEl.append($compile(`<nodeinputcomponent params="'` + _scriptpath + sc + `'" textname="'`+ sc +`'"></nodeinputcomponent>`)(scope));
@@ -703,6 +704,7 @@ function checknodecomponents(){
 						if(typeof scriptc[sc] == 'boolean'){
 							svarEl.append($compile(`<nodebooleancomponent params="'` + _scriptpath + sc + `'" textname="'`+ sc +`'"></nodebooleancomponent>`)(scope));
 						}
+						//console.log("TEXT:"+sc);
 					}
 
 					if(selectnodeprops.script[cn]['bdisplay'] == false){
