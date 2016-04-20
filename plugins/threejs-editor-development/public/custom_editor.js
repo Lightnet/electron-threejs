@@ -65,17 +65,23 @@ function initEditor(){
 			{ type: 'left', size: 200, resizable: true, style: pstyle, content: '',
 				toolbar: {
 					items: [
-						{ type: 'button',  id: 'assetsrefresh',  caption: '', icon: 'fa fa-refresh', hint: 'Refresh Nodes' },
-						{ type: 'button',  id: 'assetsadd',  caption: '', icon: 'fa fa-plus-square-o', hint: 'Add Node' },
-						{ type: 'button',  id: 'assetsrename',  caption: '', icon: 'fa fa-pencil', hint: 'Rename Node' },
-						{ type: 'button',  id: 'assetscopy',  caption: '', icon: 'fa fa-files-o', hint: 'Copy Node' },
-						{ type: 'button',  id: 'assetsdelete',  caption: '', icon: 'fa fa-trash-o', hint: 'Delete Node' }
+						{ type: 'button',  id: 'assetrefresh',  caption: '', icon: 'fa fa-refresh', hint: 'Refresh Nodes' },
+						{ type: 'button',  id: 'assetadd',  caption: '', icon: 'fa fa-plus-square-o', hint: 'Add Node' },
+						{ type: 'button',  id: 'assetrename',  caption: '', icon: 'fa fa-pencil', hint: 'Rename Node' },
+						{ type: 'button',  id: 'assetcopy',  caption: '', icon: 'fa fa-files-o', hint: 'Copy Node' },
+						{ type: 'button',  id: 'assetdelete',  caption: '', icon: 'fa fa-trash-o', hint: 'Delete Node' },
+						{ type: 'button',  id: 'assetview',  caption: 'View', icon: 'fa fa-file', hint: 'Open File/View' }
 					],
 					onClick: function (event) {
-						if(event.target == 'assetsrefresh'){
+						if(event.target == 'assetview'){
+							checkfileopen();
+						}
+
+
+						if(event.target == 'assetrefresh'){
 							RefreshAssets();
 						}
-						if(event.target == 'assetsrename'){
+						if(event.target == 'assetrename'){
 							//$('#filename').value = "test";
 							var filename = '';
 							for(var i = 0; i < assets.length;i++ ){
@@ -93,7 +99,7 @@ function initEditor(){
 								}
 							});
 						}
-						if(event.target == 'assetsdelete'){
+						if(event.target == 'assetdelete'){
 							//DeleteAssets();
 							w2confirm('Are you sure to delete file?', function (btn) {
 								console.log(btn);
@@ -337,15 +343,16 @@ function initEditor(){
 				//{ text: 'DodecahedronGeometry', icon: 'fa fa-cube' },
 				//{ text: 'IcosahedronGeometry', icon: 'fa fa-cube' },
 
-				{ text:'',type: 'break', id: 'break2' },
-				{ text: 'model', icon: 'fa fa-cube' },
-				{ text: 'texture', icon: 'fa fa-file-image-o' },
-				{ text: 'material', icon: 'fa fa-file-image-o' },
-				{ text: 'animation', icon: 'fa fa-file-video-o' },
-				{ text: 'collision', icon: 'fa fa-cube' },
-				{ text: 'physics', icon: 'fa fa-street-view' },
-				{ text: 'text', icon: 'fa fa-sticky-note-o' },
-				{ text: 'script', icon: 'fa fa-file-code-o' }
+				//{ text:'',type: 'break', id: 'break2' },
+				//{ text: 'model', icon: 'fa fa-cube' },
+				//{ text: 'texture', icon: 'fa fa-file-image-o' },
+				//{ text: 'material', icon: 'fa fa-file-image-o' },
+				//{ text: 'animation', icon: 'fa fa-file-video-o' },
+				//{ text: 'collision', icon: 'fa fa-cube' },
+
+				//{ text: 'text', icon: 'fa fa-sticky-note-o' },
+				//{ text: 'script', icon: 'fa fa-file-code-o' }
+				{ text: 'physics', icon: 'fa fa-street-view' }
 			]},
 			{ type: 'button',   id: 'EditorPlay', caption: 'Play'},
 			{ type: 'menu',   id: 'EditorPlayOtions', caption: '', items: [
@@ -362,10 +369,12 @@ function initEditor(){
 				{ text: 'API', icon: 'icon-page' },
 				{ text: 'About', icon: 'icon-page' }
 			]},
-			{ type: 'button',   id: 'EditorCode', caption: 'CodeEditor'},
-			{ type: 'button',   id: 'EditorViewObject', caption: 'View Object'},
+
+
 			{ type: 'button',   id: 'EditorCompile', caption: 'Compile'},
 			{ type: 'button',   id: 'EditorBuild', caption: 'Build'},
+			{ type: 'button',   id: 'EditorDebug', caption: 'Debug'},
+			{ type: 'button',   id: 'EditorRun', caption: 'Run'},
 			{ type: 'button',  id: 'projectid', caption: 'ProjectID:',img: 'icon-page' },
 			{ type: 'spacer' },
 			 { type: 'check',  id: 'projectautosave', caption: 'AutoSave', icon: 'w2ui-icon-check', checked: true }
@@ -379,12 +388,6 @@ function initEditor(){
 
 	w2ui.toolbar.on('*', function (id, event) {
 		console.log('id:'+id);
-		if(id == 'EditorCompile'){
-			compileApp();
-		}
-		if(id == 'EditorBuild'){
-			buildApp();
-		}
 
 		if(id == 'EditorFile:New'){
 			NewMap();
@@ -392,7 +395,6 @@ function initEditor(){
 		if(id == 'EditorFile:Save'){
 			SaveMap();
 		}
-
 		if(id == 'EditorFile:Load'){
 			LoadMap();
 		}
@@ -402,181 +404,18 @@ function initEditor(){
 		if(id == 'EditorStop'){
 			stopApp();
 		}
-		if(event.target == 'EditorCode'){
-			//console.log(assets_select);
-			if(assets_select !=null){
-				var bfile = false;
-				var tfilename;
-				for(var i = 0; i < assets.length; i++ ){
-					if(assets[i].id == assets_select){
-						tfilename = assets[i].name;
-						bfile = true;
-						break;
-					}
-				}
-				var checkext = getext(tfilename);
-				var bmatch = false;
-				if(bfile == true){
-					for(var ii in extcodes) {
-						//console.log(exts[i]);
-						if( checkext == extcodes[ii] ){
-							bmatch = true;
-							break;
-						}
-					}
-				}
-				if((bmatch ==  true)&&(bfile ==  true)){
-					window.open("http://127.0.0.1/code-editor.html"+'?file='+tfilename);
-				}else{
-					console.log('It not text file.');
-				}
-
-				bfile = null;
-				bmatch = null;
-				checkext = null;
-				tfilename = null;
-			}
+		if(id == 'EditorCompile'){
+			compileApp();
 		}
-		if(event.target == 'EditorViewObject'){
-			//console.log(assets_select);
-			if(assets_select !=null){
-				var bfileimage = false;
-				var bfilemesh = false;
-				var bfile = false;
-				var tfilename;
-				var filepath;
-				var texture;
-				var mesh;
-				for(var i = 0; i < assets.length; i++ ){
-					if(assets[i].id == assets_select){
-						tfilename = assets[i].name;
-						filepath =  assets[i].path;
-						bfile = true;
-						break;
-					}
-				}
-				var checkext = getext(tfilename);
-				if(bfile == true){
-					for(var ii in extimages) {
-						//console.log(exts[i]);
-						if( checkext == extimages[ii] ){
-							bfileimage = true;
-							break;
-						}
-					}
-					for(var ii in extmesh) {
-						//console.log(exts[i]);
-						if( checkext == extmesh[ii] ){
-							bfilemesh = true;
-							break;
-						}
-					}
-				}
-				if((bfile ==  true)&&(bfileimage ==  true)){
-					console.log('found texture');
-					var bfound = false;
-					for (var t in textures){
-						if(textures[t].name == tfilename){
-							bfound = true;
-							texture = textures[t];
-							break;
-						}
-					}
-
-					if(bfound == false){
-						for( var i = threejsapi_preview.scene.children.length - 1; i >= 1; i--) {
-							console.log('remove item?');
-							threejsapi_preview.scene.remove(threejsapi_preview.scene.children[i]);
-						}
-						console.log('remove item?'+threejsapi_preview.scene.children.length);
-						console.log('texture added...');
-						var map = new THREE.TextureLoader().load( filepath);
-						map.name = tfilename;
-						textures.push(map);
-						console.log(map);
-						var material = new THREE.SpriteMaterial( { map: map, color: 0xffffff, fog: true } );
-						var sprite = new THREE.Sprite( material );
-						threejsapi_preview.scene.add( sprite );
-						console.log(threejsapi_preview.scene);
-					}else{
-						for( var i = threejsapi_preview.scene.children.length - 1; i >= 1; i--) {
-							threejsapi_preview.scene.remove(threejsapi_preview.scene.children[i]);
-						}
-						console.log('remove item?'+threejsapi_preview.scene.children.length);
-						var material = new THREE.SpriteMaterial( { map: texture, color: 0xffffff, fog: true } );
-						var sprite = new THREE.Sprite( material );
-						threejsapi_preview.scene.add( sprite );
-					}
-					//console.log('texture image');
-					$('#tab-example .tab').hide();
-		            $('#tab-example #' + 'tab2').show();
-				}
-
-				if((bfile ==  true)&&(bfilemesh ==  true)){
-					//console.log('found mesh object');
-					var bfound = false;
-					//console.log(objectmeshs);
-					for (var t in objectmeshs){
-						console.log(objectmeshs[t]);
-						if(objectmeshs[t].name == tfilename){
-							bfound = true;
-							mesh = objectmeshs[t];
-							break;
-						}
-					}
-					if(bfound == true){
-						for( var i = threejsapi_preview.scene.children.length - 1; i >= 1; i--) {
-							threejsapi_preview.scene.remove(threejsapi_preview.scene.children[i]);
-						}
-						//add mesh
-						threejsapi_preview.scene.add( mesh );
-
-					}else{
-						for( var i = threejsapi_preview.scene.children.length - 1; i >= 1; i--) {
-							threejsapi_preview.scene.remove(threejsapi_preview.scene.children[i]);
-						}
-						if(getext(tfilename) == '.fbx'){
-							threejsapi_preview.LoadFBX(tfilename,(mesh)=>{
-								objectmeshs.push(mesh);
-								threejsapi_preview.scene.add(mesh);
-							});
-						}
-
-						if(getext(tfilename) == '.dae'){
-							threejsapi_preview.LoadDAE(tfilename,(mesh)=>{
-								objectmeshs.push(mesh);
-								threejsapi_preview.scene.add(mesh);
-							});
-						}
-
-						if(getext(tfilename) == '.obj'){
-							threejsapi_preview.LoadOBJ(tfilename,(mesh)=>{
-								objectmeshs.push(mesh);
-								threejsapi_preview.scene.add(mesh);
-							});
-						}
-					}
-
-					$('#tab-example .tab').hide();
-		            $('#tab-example #' + 'tab2').show();
-				}
-
-				bfound = null;
-				bfilemesh = null;
-				bfile = null;
-				bfileimage = null;
-				bmatch = null;
-				checkext = null;
-				tfilename = null;
-			}
+		if(id == 'EditorBuild'){
+			buildApp();
 		}
-		if(event.target == 'EditorCompile'){
-
+		if(id == 'EditorDebug'){
+			debugApp();
 		}
-		if(event.target == 'EditorBuild'){
-
+		if(id == 'EditorRun'){
+			runApp();
 		}
-
 		//console.log(' TARGET: '+ event.target);
 		threejsapi.toolbar(event.target);
 		//console.log(' TARGET: '+ event.target, event);
@@ -632,25 +471,41 @@ function initEditor(){
 
 	w2ui['layout'].content('bottom', w2ui['toolbar_bottom']);
 
+	function canvas_resize(){
+		var mainpanel = document.getElementById("layout_layout_panel_main");
+		var canvaspanel = document.getElementById("myCanvas");
+		if(canvaspanel !=null){
+			canvaspanel.style.width = mainpanel.style.width;
+			canvaspanel.style.height = mainpanel.style.height;
+		}
+
+		var canvaspanel2 = document.getElementById("objectCanvas");
+		if(canvaspanel2 !=null){
+			canvaspanel2.style.width = mainpanel.style.width;
+			canvaspanel2.style.height = mainpanel.style.height;
+		}
+
+		var canvaspanel3 = document.getElementById("playCanvas");
+		if(canvaspanel3 !=null){
+			canvaspanel3.style.width = mainpanel.style.width;
+			canvaspanel3.style.height = mainpanel.style.height;
+		}
+	}
+
 	w2ui['layout'].on('resize', function(target, data) {
 	    data.onComplete = function () {
-			//console.log('resize?');
+			console.log('resize w2ui?');
 			//if(editor !=null){
 				//editor.resize();
 				//heightUpdateFunction();
 			//}
-			var mainpanel = document.getElementById("layout_layout_panel_main");
-			var canvaspanel = document.getElementById("myCanvas");
-			canvaspanel.style.width = mainpanel.style.width;
-			canvaspanel.style.height = mainpanel.style.height;
+			canvas_resize();
 		}
 	});
 
 	$( window ).resize(function() {
-		var mainpanel = document.getElementById("layout_layout_panel_main");
-		var canvaspanel = document.getElementById("myCanvas");
-		canvaspanel.style.width = mainpanel.style.width;
-		canvaspanel.style.height = mainpanel.style.height;
+		console.log('resize window?');
+		canvas_resize();
 	});
 	//console.log(w2ui['layout'].get('main'));
 //});

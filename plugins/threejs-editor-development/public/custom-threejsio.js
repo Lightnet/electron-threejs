@@ -222,6 +222,154 @@ socketio.on('assets',(data)=>{
 	//console.log('connect.');
 	//initEditor();
 });
+//===============================================
+// open file with the select filters for assets types.
+//===============================================
+function checkfileopen(){
+	if(assets_select !=null){
+		var bfileimage = false;
+		var bfilemesh = false;
+		var bfilescript = false;
+		var bfile = false;
+		var tfilename;
+		var filepath;
+		var texture;
+		var mesh;
+		for(var i = 0; i < assets.length; i++ ){
+			if(assets[i].id == assets_select){
+				tfilename = assets[i].name;
+				filepath =  assets[i].path;
+				bfile = true;
+				break;
+			}
+		}
+		var checkext = getext(tfilename);
+		if(bfile == true){
+			for(var ii in extimages) {
+				//console.log(exts[i]);
+				if( checkext == extimages[ii] ){
+					bfileimage = true;
+					break;
+				}
+			}
+			for(var ii in extmesh) {
+				//console.log(exts[i]);
+				if( checkext == extmesh[ii] ){
+					bfilemesh = true;
+					break;
+				}
+			}
+			for(var ii in extcodes) {
+				//console.log(exts[i]);
+				if( checkext == extcodes[ii] ){
+					bfilescript = true;
+					break;
+				}
+			}
+		}
+
+		if((bfile ==  true)&&(bfilescript ==  true)){
+			window.open("http://127.0.0.1/code-editor.html"+'?file='+tfilename);
+		}
+
+		if((bfile ==  true)&&(bfileimage ==  true)){
+			console.log('found texture');
+			var bfound = false;
+			for (var t in textures){
+				if(textures[t].name == tfilename){
+					bfound = true;
+					texture = textures[t];
+					break;
+				}
+			}
+
+			if(bfound == false){
+				for( var i = threejsapi_preview.scene.children.length - 1; i >= 1; i--) {
+					console.log('remove item?');
+					threejsapi_preview.scene.remove(threejsapi_preview.scene.children[i]);
+				}
+				console.log('remove item?'+threejsapi_preview.scene.children.length);
+				console.log('texture added...');
+				var map = new THREE.TextureLoader().load( filepath);
+				map.name = tfilename;
+				textures.push(map);
+				console.log(map);
+				var material = new THREE.SpriteMaterial( { map: map, color: 0xffffff, fog: true } );
+				var sprite = new THREE.Sprite( material );
+				threejsapi_preview.scene.add( sprite );
+				console.log(threejsapi_preview.scene);
+			}else{
+				for( var i = threejsapi_preview.scene.children.length - 1; i >= 1; i--) {
+					threejsapi_preview.scene.remove(threejsapi_preview.scene.children[i]);
+				}
+				console.log('remove item?'+threejsapi_preview.scene.children.length);
+				var material = new THREE.SpriteMaterial( { map: texture, color: 0xffffff, fog: true } );
+				var sprite = new THREE.Sprite( material );
+				threejsapi_preview.scene.add( sprite );
+			}
+			//console.log('texture image');
+			$('#tab-example .tab').hide();
+			$('#tab-example #' + 'tab2').show();
+		}
+
+		if((bfile ==  true)&&(bfilemesh ==  true)){
+			//console.log('found mesh object');
+			var bfound = false;
+			//console.log(objectmeshs);
+			for (var t in objectmeshs){
+				console.log(objectmeshs[t]);
+				if(objectmeshs[t].name == tfilename){
+					bfound = true;
+					mesh = objectmeshs[t];
+					break;
+				}
+			}
+			if(bfound == true){
+				for( var i = threejsapi_preview.scene.children.length - 1; i >= 1; i--) {
+					threejsapi_preview.scene.remove(threejsapi_preview.scene.children[i]);
+				}
+				//add mesh
+				threejsapi_preview.scene.add( mesh );
+
+			}else{
+				for( var i = threejsapi_preview.scene.children.length - 1; i >= 1; i--) {
+					threejsapi_preview.scene.remove(threejsapi_preview.scene.children[i]);
+				}
+				if(getext(tfilename) == '.fbx'){
+					threejsapi_preview.LoadFBX(tfilename,(mesh)=>{
+						objectmeshs.push(mesh);
+						threejsapi_preview.scene.add(mesh);
+					});
+				}
+
+				if(getext(tfilename) == '.dae'){
+					threejsapi_preview.LoadDAE(tfilename,(mesh)=>{
+						objectmeshs.push(mesh);
+						threejsapi_preview.scene.add(mesh);
+					});
+				}
+
+				if(getext(tfilename) == '.obj'){
+					threejsapi_preview.LoadOBJ(tfilename,(mesh)=>{
+						objectmeshs.push(mesh);
+						threejsapi_preview.scene.add(mesh);
+					});
+				}
+			}
+
+			$('#tab-example .tab').hide();
+			$('#tab-example #' + 'tab2').show();
+		}
+
+		bfound = null;
+		bfilemesh = null;
+		bfile = null;
+		bfileimage = null;
+		bmatch = null;
+		checkext = null;
+		tfilename = null;
+	}
+}
 
 //===============================================
 //
@@ -774,7 +922,7 @@ function ObjectAddScript(){
 }
 
 //===============================================
-// Script components
+// Script add components
 //===============================================
 function addScriptComponent(id){
 	if(selectnodeprops !=null){
@@ -799,65 +947,12 @@ function addScriptComponent(id){
 				console.log('class, variables, & function exist');
 			}
 			console.log(selectnodeprops);
-
-			/*
-			if(selectnodeprops.script[oname] == null){
-				events = {
-					init: [],
-					start: [],
-					stop: [],
-					keydown: [],
-					keyup: [],
-					mousedown: [],
-					mouseup: [],
-					mousemove: [],
-					touchstart: [],
-					touchend: [],
-					touchmove: [],
-					update: []
-				};
-
-				var scriptWrapParams = 'renderer,scene,camera';
-				var scriptWrapResultObj = {};
-
-				for ( var eventKey in events ) {
-					scriptWrapParams += ',' + eventKey;
-					scriptWrapResultObj[ eventKey ] = eventKey;
-				}
-				var scriptWrapResult = JSON.stringify( scriptWrapResultObj ).replace( /\"/g, '' );
-				var functions = ( new Function(scriptWrapParams, scriptobject.script));
-				//console.log(functions);
-
-				selectnodeprops.script[oname] = ( new Function(scriptWrapParams, scriptobject.script + '\nreturn ' + scriptWrapResult + ';'  ).bind( selectnodeprops ) )();
-
-				for ( var name in selectnodeprops.script[oname] ) {
-						//console.log(name);
-					if ( selectnodeprops.script[oname][ name ] === undefined ) continue;
-
-					if ( events[ name ] === undefined ) {
-						console.warn( 'APP.Player: Event type not supported (', name, ')' );
-						continue;
-					}
-					events[ name ].push( selectnodeprops.script[oname][ name ].bind( selectnodeprops ) );
-				}
-
-				//console.log(selectnodeprops.script[oname]);
-				//if(selectnodeprops.script[oname].init !=null){
-					//selectnodeprops.script[oname].init();
-				//}
-				//console.log(selectnodeprops.script[oname]);
-				//console.log(selectnodeprops);
-				checknodecomponents();
-			}else{
-				console.log('class, variables, & function exist');
-				//console.log(selectnodeprops);
-			}
-			*/
-			//console.log(selectnodeprops);
 		}
 	}
 }
-
+//===============================================
+// Script remove components
+//===============================================
 function removeScriptComponent(id){
 	if(selectnodeprops !=null){
 		var scriptobject;
@@ -1095,15 +1190,6 @@ function LoadMap(){
 	LoadMapScene();
 }
 
-function buildApp(){
-	console.log('buildApp');
-	//threejsapi.clearScripts();
-}
-
-function compileApp(){
-	console.log('compileApp');
-}
-
 //===============================================
 // Debug game setup
 //===============================================
@@ -1189,3 +1275,37 @@ function stopApp(){
 	//console.log(threejsapi_play.scene.children.length);
 	//console.log(threejsapi_play.scene.children);
 }
+
+function compileApp(){
+	console.log('compileApp');
+}
+function buildApp(){
+	console.log('buildApp');
+	socketio.emit('mapscene',{action:'build',projectid:projectid,object:'{"test":"test"}'});
+}
+function debugApp(){
+	console.log('debugApp');
+}
+
+//http://stackoverflow.com/questions/12138236/check-if-window-is-already-open-window-open
+function openOnce(url, target){
+    // open a blank "target" window
+    // or get the reference to the existing "target" window
+    var winref = window.open('', target, '', true);
+
+    // if the "target" window was just opened, change its url
+    if(winref.location.href === 'about:blank'){
+        winref.location.href = url;
+    }
+    return winref;
+}
+
+function runApp(){
+	console.log('runApp');
+	//window.open("http://127.0.0.1/threejs-game.html");
+	openOnce('http://127.0.0.1/threejs-game.html', 'game');
+}
+
+
+
+//

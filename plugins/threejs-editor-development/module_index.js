@@ -7,6 +7,7 @@
 */
 
 //Note this base function current set to the plugin module setup
+var fs = require('fs');
 var path = require('path');
 var express = require('express');
 var plugin = require('../../app/libs/plugin.js');
@@ -147,6 +148,19 @@ module.exports.socketio_connect = function(io, socket){
 							socket.emit('mapscene',{action:'message',message:'delete objectid:'+data.uuid});
 		    			});
 				}
+
+			}
+
+			if(data['action'] == 'build'){
+				var file = __dirname + "/public/" + 'post-app.json';
+
+				fs.writeFile(file, data['object'], function (err) {//write file and data
+		         if( err ){
+		              console.log( err );
+		         }
+				 console.log('file finish write');
+				 file = null;
+		       });
 
 			}
 		}
