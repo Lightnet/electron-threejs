@@ -242,7 +242,8 @@ threejsangular.controller('NodeCtrl', function NodeCtrl($scope) {
 //<nodeinputcomponent params="params='name'"></nodeinputcomponent>
 threejsangular.component('nodelabelcomponent', {
 	bindings: {
-		params:'=' //bind from element attribute
+		params:'=', //bind from element attribute
+		textname:'=',
 	},
 	scope: {
 		value:'=' //local var
@@ -250,7 +251,7 @@ threejsangular.component('nodelabelcomponent', {
   	controller:'nodelabelCtrl',
   	template: function($element, $attrs){
 		return `<div>`+
-					`<label>{{$ctrl.params}}</label>:`+
+					`<label>{{$ctrl.textname}}</label>:`+
 					`<label>{{$ctrl.value}}<label>` +
 				`</div>`;
 	}
@@ -270,23 +271,17 @@ threejsangular.component('nodelabelcomponent', {
 //===============================================
 // Node Input
 //===============================================
-
-
-
-
-
-
-
 //<nodeinputcomponent params="params='name'"></nodeinputcomponent>
 threejsangular.component('nodeinputcomponent', {
 	bindings: {
 		params:'=',
+		textname:'=',
 		value:'='
 	},
   	controller:'nodeinputCtrl',
   	template: function($element, $attrs){
 		return `<div>`+
-					`<label>{{$ctrl.params}}</label>`+
+					`<label>{{$ctrl.textname}}</label>`+
 					`<input type="input" ng-model="value" ng-value="value" ng-change="$ctrl.change()" />` +
 				`</div>`;
 	}
@@ -434,7 +429,6 @@ threejsangular.directive("clearobjectnodes", function($compile){
 //===============================================
 //
 //===============================================
-
 threejsangular.component('nodescriptscomponent', {
 	bindings: {
 		//params:'=',
@@ -450,7 +444,7 @@ threejsangular.component('nodescriptscomponent', {
 		return `<div>`+
 					//`<label>{{$ctrl.params}}</label>`+
 					//`<input type="checkbox" ng-model="confirmed" ng-change="$ctrl.change()" />` +
-					`<select ng-change="$ctrl.change();" ng-model="$ctrl.scriptselect">`+
+					`Script:<select ng-change="$ctrl.change();" ng-model="$ctrl.scriptselect">`+
 						`<option ng-repeat="script in scripts" ng-value="script.id">{{script.name}}</option>`+
 					`</select>`+
 					`<button ng-click="$ctrl.add();">add</button>`+
@@ -529,13 +523,13 @@ function checknodecomponents(){
 			var propEl = angular.element(document.getElementById('objectvar'));
 			//propEl.empty();
 			if(selectnodeprops['uuid'] !=null){
-				propEl.append($compile(`<nodelabelcomponent params="params='uuid'"></nodelabelcomponent>`)(scope));
+				propEl.append($compile(`<nodelabelcomponent params="'uuid'" textname="'uuid'"></nodelabelcomponent>`)(scope));
 			}
 			if(selectnodeprops['visible'] !=null){
-				propEl.append($compile(`<nodebooleancomponent params="params='visible'"></nodebooleancomponent>`)(scope));
+				propEl.append($compile(`<nodebooleancomponent params="'visible'" textname="'visible'"></nodebooleancomponent>`)(scope));
 			}
 			if(selectnodeprops['name'] !=null){
-				propEl.append($compile(`<nodeinputcomponent params="params='name'"></nodeinputcomponent>`)(scope));
+				propEl.append($compile(`<nodeinputcomponent params="'name'"  textname="'name'"></nodeinputcomponent>`)(scope));
 			}
 
 			if(selectnodeprops['geometry'] !=null){
@@ -551,9 +545,9 @@ function checknodecomponents(){
 							//console.log(ps);
 							//console.log( selectnodeprops.geometry.parameters[p]);
 							if(typeof selectnodeprops.geometry.parameters[p] == 'boolean'){
-								propEl.append($compile(`<nodebooleancomponent params="params='`+ 'geometry.parameters.' + p + `'"></nodebooleancomponent>`)(scope));
+								propEl.append($compile(`<nodebooleancomponent params="'`+ 'geometry.parameters.' + p + `'" textname="'` + p + `'"></nodebooleancomponent>`)(scope));
 							}else{
-								propEl.append($compile(`<nodeinputcomponent params="params='`+ 'geometry.parameters.' + p + `'"></nodeinputcomponent>`)(scope));
+								propEl.append($compile(`<nodeinputcomponent params="'`+ 'geometry.parameters.' + p + `'" textname="'` + p + `'"></nodeinputcomponent>`)(scope));
 							}
 						}else{
 							console.log("parameters null:"+p);
@@ -564,51 +558,46 @@ function checknodecomponents(){
 			}
 
 			if(selectnodeprops['position'] !=null){
-				propEl.append($compile(`<nodeinputcomponent params="params='position.x'"></nodeinputcomponent>`)(scope));
-				propEl.append($compile(`<nodeinputcomponent params="params='position.y'"></nodeinputcomponent>`)(scope));
-				propEl.append($compile(`<nodeinputcomponent params="params='position.z'"></nodeinputcomponent>`)(scope));
+				propEl.append($compile(`<nodeinputcomponent params="'position.x'" textname="'position.x'"></nodeinputcomponent>`)(scope));
+				propEl.append($compile(`<nodeinputcomponent params="'position.y'" textname="'position.y'"></nodeinputcomponent>`)(scope));
+				propEl.append($compile(`<nodeinputcomponent params="'position.z'" textname="'position.z'"></nodeinputcomponent>`)(scope));
 			}
 			if(selectnodeprops['rotation'] !=null){
-				propEl.append($compile(`<nodeinputcomponent params="params='rotation.x'"></nodeinputcomponent>`)(scope));
-				propEl.append($compile(`<nodeinputcomponent params="params='rotation.y'"></nodeinputcomponent>`)(scope));
-				propEl.append($compile(`<nodeinputcomponent params="params='rotation.z'"></nodeinputcomponent>`)(scope));
+				propEl.append($compile(`<nodeinputcomponent params="'rotation.x'" textname="'rotation.x'"></nodeinputcomponent>`)(scope));
+				propEl.append($compile(`<nodeinputcomponent params="'rotation.y'" textname="'rotation.y'"></nodeinputcomponent>`)(scope));
+				propEl.append($compile(`<nodeinputcomponent params="'rotation.z'" textname="'rotation.z'"></nodeinputcomponent>`)(scope));
 			}
 			if(selectnodeprops['scale'] !=null){
-				propEl.append($compile(`<nodeinputcomponent params="params='scale.x'"></nodeinputcomponent>`)(scope));
-				propEl.append($compile(`<nodeinputcomponent params="params='scale.y'"></nodeinputcomponent>`)(scope));
-				propEl.append($compile(`<nodeinputcomponent params="params='scale.z'"></nodeinputcomponent>`)(scope));
+				propEl.append($compile(`<nodeinputcomponent params="'scale.x'" textname="'scale.x'"></nodeinputcomponent>`)(scope));
+				propEl.append($compile(`<nodeinputcomponent params="'scale.y'" textname="'scale.y'"></nodeinputcomponent>`)(scope));
+				propEl.append($compile(`<nodeinputcomponent params="'scale.z'" textname="'scale.z'"></nodeinputcomponent>`)(scope));
 			}
 			if(selectnodeprops['castShadow'] !=null){
-				propEl.append($compile(`<nodebooleancomponent params="params='castShadow'"></nodebooleancomponent>`)(scope));
+				propEl.append($compile(`<nodebooleancomponent params="'castShadow'" textname="'castShadow'"></nodebooleancomponent>`)(scope));
 			}
 			if(selectnodeprops['receiveShadow'] !=null){
-				propEl.append($compile(`<nodebooleancomponent params="params='receiveShadow'"></nodebooleancomponent>`)(scope));
+				propEl.append($compile(`<nodebooleancomponent params="'receiveShadow'" textname="'receiveShadow'"></nodebooleancomponent>`)(scope));
 			}
-
 			if(selectnodeprops['autoUpdate'] !=null){
-				propEl.append($compile(`<nodebooleancomponent params="params='autoUpdate'"></nodebooleancomponent>`)(scope));
+				propEl.append($compile(`<nodebooleancomponent params="'autoUpdate'" textname="'autoUpdate'"></nodebooleancomponent>`)(scope));
 			}
-
 			if(selectnodeprops['aspect'] !=null){
-				propEl.append($compile(`<nodeinputcomponent params="params='aspect'"></nodeinputcomponent>`)(scope));
+				propEl.append($compile(`<nodeinputcomponent params="'aspect'" textname="'aspect'"></nodeinputcomponent>`)(scope));
 			}
-
 			if(selectnodeprops['far'] !=null){
-				propEl.append($compile(`<nodeinputcomponent params="params='far'"></nodeinputcomponent>`)(scope));
+				propEl.append($compile(`<nodeinputcomponent params="'far'" textname="'far'"></nodeinputcomponent>`)(scope));
 			}
-
 			if(selectnodeprops['focalLength'] !=null){
-				propEl.append($compile(`<nodeinputcomponent params="params='focalLength'"></nodeinputcomponent>`)(scope));
+				propEl.append($compile(`<nodeinputcomponent params="'focalLength'" textname="'focalLength'"></nodeinputcomponent>`)(scope));
 			}
-
 			if(selectnodeprops['fov'] !=null){
-				propEl.append($compile(`<nodeinputcomponent params="params='fov'"></nodeinputcomponent>`)(scope));
+				propEl.append($compile(`<nodeinputcomponent params="'fov'" textname="'fov'"></nodeinputcomponent>`)(scope));
 			}
 			if(selectnodeprops['near'] !=null){
-				propEl.append($compile(`<nodeinputcomponent params="params='near'"></nodeinputcomponent>`)(scope));
+				propEl.append($compile(`<nodeinputcomponent params="'near'" textname="'near'"></nodeinputcomponent>`)(scope));
 			}
 			if(selectnodeprops['zoom'] !=null){
-				propEl.append($compile(`<nodeinputcomponent params="params='zoom'"></nodeinputcomponent>`)(scope));
+				propEl.append($compile(`<nodeinputcomponent params="'zoom'" textname="'zoom'"></nodeinputcomponent>`)(scope));
 			}
 			// Finally, refresh the watch expressions in the new element
 			//console.log('add?');
@@ -620,13 +609,29 @@ function checknodecomponents(){
 				myEl.append($compile(`<nodescriptscomponent />`)(scope));
 				//console.log('script init');
 				for(var cn in selectnodeprops.script){
-					//console.log(cn);
-					//console.log(selectnodeprops.script[cn]);
-					//var scomponent = selectnodeprops.script[cn];
 					//for(var sc in scomponent){
 						//console.log(sc);
 					//}
-					myEl.append($compile(`<div>Script:`+cn +`</div>`)(scope));
+					var scriptc = selectnodeprops.script[cn];
+					myEl.append($compile(`<div>Script:`+cn+`<button onclick="$('#script_`+cn+`').toggle();">Toggle</button></div>`)(scope));
+					myEl.append($compile(`<div id=script_`+cn+`></div>`)(scope));
+
+					var svarEl = angular.element(document.getElementById(`script_`+cn));
+
+					var _scriptpath = 'script.' + cn + '.';
+
+					for(var sc in scriptc){
+						if(typeof scriptc[sc] == 'string'){
+							svarEl.append($compile(`<nodeinputcomponent params="'` + _scriptpath + sc + `'" textname="'`+ sc +`'"></nodeinputcomponent>`)(scope));
+						}
+						if(typeof scriptc[sc] == 'number'){
+							svarEl.append($compile(`<nodeinputcomponent params="'` + _scriptpath + sc + `'" textname="'`+ sc +`'"></nodeinputcomponent>`)(scope));
+						}
+						if(typeof scriptc[sc] == 'boolean'){
+							svarEl.append($compile(`<nodebooleancomponent params="'` + _scriptpath + sc + `'" textname="'`+ sc +`'"></nodebooleancomponent>`)(scope));
+						}
+					}
+
 				}
 			}else{
 				//console.log('script not build');

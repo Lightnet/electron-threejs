@@ -21,6 +21,7 @@ declare var OIMO:any;
 declare var THREEx:any;
 declare var CANNON:any;
 declare var Ammo:any;
+//declare var Math:any;
 
 declare var RefreshContent;
 declare var NodeSelectObject;
@@ -464,7 +465,9 @@ module ThreejsAPI{
 		onProgressModel( xhr ) {
 			if ( xhr.lengthComputable ) {
 				var percentComplete:any = xhr.loaded / xhr.total * 100;
-				console.log( Math.round( percentComplete, 2 ) + '% downloaded' );
+				//var percent = Math.round( percentComplete, 2 );
+				//console.log( Math.round( percentComplete, 2 ) + '% downloaded' );
+				console.log( Math.round( percentComplete) + '% downloaded' );
 			}
 		}
 
@@ -1430,7 +1433,6 @@ module ThreejsAPI{
 						var spotLight = new THREE.SpotLight( 0xffffff );
 						spotLight.position.set( 10, 10, 10 );
 						objmesh.add( spotLight );
-
 						var spotLightHelper = new THREE.SpotLightHelper( spotLight );
 						objmesh.add( spotLightHelper );
 						tmpobj = objmesh;

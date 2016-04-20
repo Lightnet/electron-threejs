@@ -19,3 +19,12 @@ var object3d = {
 	"materials":{},
 	"scripts":{}
 }
+
+
+DodecahedronGeometry
+IcosahedronGeometry
+OctahedronGeometry
+RingGeometry
+TetrahedronGeometry
+TorusGeometry
+TorusKnotGeometry

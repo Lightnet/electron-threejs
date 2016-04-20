@@ -360,7 +360,9 @@ var ThreejsAPI;
         Game.prototype.onProgressModel = function (xhr) {
             if (xhr.lengthComputable) {
                 var percentComplete = xhr.loaded / xhr.total * 100;
-                console.log(Math.round(percentComplete, 2) + '% downloaded');
+                //var percent = Math.round( percentComplete, 2 );
+                //console.log( Math.round( percentComplete, 2 ) + '% downloaded' );
+                console.log(Math.round(percentComplete) + '% downloaded');
             }
         };
         Game.prototype.onErrorModel = function (xhr) {
