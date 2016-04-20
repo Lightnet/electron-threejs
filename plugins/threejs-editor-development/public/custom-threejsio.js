@@ -366,6 +366,59 @@ threejsangular.component('nodebooleancomponent', {
 });
 
 //===============================================
+// Node button display info
+//===============================================
+//`<nodebooleancomponent params="params='visible'"></nodebooleancomponent>`
+threejsangular.component('nodedisplaycomponent', {
+	bindings: {
+		params:'=',
+		textname:'=',
+		idel:'=',
+		confirmed:'='
+	},
+  	controller:'nodedisplayCtrl',
+  	template: function($element, $attrs){
+		return `<div>`+
+					`<label>{{$ctrl.textname}}</label>`+
+					`<input type="checkbox"" ng-model="confirmed" ng-change="$ctrl.change()" />` +
+				`</div>`;
+	}
+}).controller('nodedisplayCtrl', function nodedisplayCtrl($scope) {
+	function change() {
+	  //console.log($scope.$ctrl.params);
+
+	  _.set(selectnodeprops, $scope.$ctrl.params, $scope.confirmed);
+	  //console.log($scope.confirmed);
+	  //console.log($scope.$ctrl.params);
+	  //console.log(selectnodeprops);
+	  if($scope.confirmed == true){
+		  $('#'+$scope.$ctrl.idel).show();
+	  }else{
+		  $('#'+$scope.$ctrl.idel).hide();
+	  }
+	};
+	this.change = change;
+	this.$onInit = function () {
+		// component initialisation
+		$scope.confirmed = _.get(selectnodeprops, $scope.$ctrl.params);
+		//console.log('$scope.confirmed');
+		console.log($scope.$ctrl.params + " : " + $scope.confirmed);
+		//console.log(selectnodeprops);
+		if($scope.confirmed == true){
+  		  $('#'+$scope.$ctrl.idel).show();
+  	  	}else{
+  		  $('#'+$scope.$ctrl.idel).hide();
+  	  	}
+  	};
+  	this.$postLink = function () {
+    	// component post-link
+  	};
+  	this.$onDestroy = function () {
+    	// component $destroy function
+  	};
+});
+
+//===============================================
 // node components
 //===============================================
 //`<nodecomponent ></nodecomponent>`
@@ -515,13 +568,26 @@ function checknodecomponents(){
 		angular.element($target).injector().invoke(function($compile) {
 			var scope = angular.element($target).scope();
 			var propE10 = angular.element($target);
-
+			//selectnodeprops['']
+			if(selectnodeprops['bdisplay'] == null){
+				selectnodeprops['bdisplay'] = true;
+			}
+			console.log(selectnodeprops['bdisplay']);
 			//propE10.append($(`<div id='objectscene'>Object <button>Toggle</button></div>`).append($(`<div id=objectprops></div>`)) );
-			propE10.append($compile(`<div id='objectscene'>Object <button onclick="$('#objectvar').toggle();">Toggle</button>`)(scope));
+			//propE10.append($compile(`<div id='objectscene'>Object <button onclick="$('#objectvar').toggle();">Toggle</button></div>`)(scope));
+			propE10.append($compile(`<div id='objectscene'>Object</div>`)(scope));
+			if(selectnodeprops['bdisplay'] !=null){
+				propE10.append($compile(`<nodedisplaycomponent params="'bdisplay'" textname="'Transform Information:'" idel="'objectvar'"></nodedisplaycomponent>`)(scope));
+			}
 			propE10.append($compile(`<div id=objectvar></div>`)(scope));
-			$('#objectvar').toggle();
+			if(selectnodeprops['bdisplay'] == false){
+				$('#objectvar').hide();
+			}
+			//nodedisplaycomponent
 			var propEl = angular.element(document.getElementById('objectvar'));
 			//propEl.empty();
+
+
 			if(selectnodeprops['uuid'] !=null){
 				propEl.append($compile(`<nodelabelcomponent params="'uuid'" textname="'uuid'"></nodelabelcomponent>`)(scope));
 			}
@@ -613,13 +679,20 @@ function checknodecomponents(){
 						//console.log(sc);
 					//}
 					var scriptc = selectnodeprops.script[cn];
-					myEl.append($compile(`<div>Script:`+cn+`<button onclick="$('#script_`+cn+`').toggle();">Toggle</button></div>`)(scope));
-					myEl.append($compile(`<div id=script_`+cn+`></div>`)(scope));
-
-					var svarEl = angular.element(document.getElementById(`script_`+cn));
-
+					//myEl.append($compile(`<div>Script:`+cn+`<button onclick="$('#script_`+cn+`').toggle();">Toggle</button></div>`)(scope));
+					myEl.append($compile(`<div><a href="/code-editor.html?file=`+cn+`.js" target="_blank">Script: `+cn+`.js</div>`)(scope));
+					if(selectnodeprops.script[cn]['bdisplay'] == null){
+						selectnodeprops.script[cn]['bdisplay'] = true;
+					}
 					var _scriptpath = 'script.' + cn + '.';
 
+
+					//myEl.append($compile(`<nodedisplaycomponent params="'bdisplaytransform'" textname="'Object Information:'" idel="'script_`+cn+`'"></nodedisplaycomponent>`)(scope));
+					myEl.append($compile(`<nodedisplaycomponent params="'` + _scriptpath + 'bdisplay' + `'" textname="'Display Component:'" idel="'script_`+cn+`'"></nodedisplaycomponent>`)(scope));
+
+					myEl.append($compile(`<div id="script_`+cn+`"></div>`)(scope));
+
+					var svarEl = angular.element(document.getElementById(`script_`+cn));
 					for(var sc in scriptc){
 						if(typeof scriptc[sc] == 'string'){
 							svarEl.append($compile(`<nodeinputcomponent params="'` + _scriptpath + sc + `'" textname="'`+ sc +`'"></nodeinputcomponent>`)(scope));
@@ -632,6 +705,9 @@ function checknodecomponents(){
 						}
 					}
 
+					if(selectnodeprops.script[cn]['bdisplay'] == false){
+						$('#'+`script_`+cn).hide();
+					}
 				}
 			}else{
 				//console.log('script not build');
