@@ -6,10 +6,6 @@
   	Please read the readme.txt file for more information.
 */
 
-
-
-//testing
-//three.d.ts
 /// <reference path="../../../DefinitelyTyped/threejs/detector.d.ts" />
 /// <reference path="../../../DefinitelyTyped/threejs/three.d.ts" />
 /// <reference path="../../../DefinitelyTyped/threejs/three-copyshader.d.ts" />
@@ -181,8 +177,6 @@ module ThreejsAPI{
 		        obj.attachEvent("on"+event, fn);          // older versions of IE
 		    }
 		}
-
-
 
 		init(){
 			//console.log("//==========================================");
@@ -610,14 +604,25 @@ module ThreejsAPI{
 					if(args['object'] == 'PerspectiveCamera'){
 						objscene = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 10000 );
 						objscene.name = "PerspectiveCamera";
+						var cameraHelper = new THREE.CameraHelper( objscene );
+						//this.scene.add(cameraHelper);
+						objscene.add(cameraHelper);
 					}
 					if(args['object'] == 'OrthographicCamera'){
 						objscene = new THREE.OrthographicCamera(window.innerWidth / - 2,  window.innerWidth / 2, window.innerHeight / 2 ,window.innerHeight/ - 2, 1, 10000 );
 						objscene.name = "OrthographicCamera";
+						var cameraHelper = new THREE.CameraHelper( objscene );
+						objscene.helper = cameraHelper;
+						this.scene.add(cameraHelper);
+						//objscene.add(cameraHelper);
+						//console.log(objscene);
+
 					}
 					if(args['object'] == 'CubeCamera'){
 						objscene = new THREE.CubeCamera( 1, 100000, 128 );
 						objscene.name = "CubeCamera";
+						//var cameraHelper = new THREE.CameraHelper( objscene );
+						//this.scene.add(cameraHelper);
 					}
 
 					if(args['object'] == 'AmbientLight'){
@@ -628,10 +633,18 @@ module ThreejsAPI{
 						objscene = new THREE.DirectionalLight( 0xffffff, 0.5 );
 						objscene.position.set( 0, 1, 0 );
 						objscene.name = "DirectionalLight";
+						var dlightHelper = new THREE.DirectionalLightHelper(objscene, 5);
+						objscene.helper = dlightHelper;
+						this.scene.add(dlightHelper);
+						//objscene.add(dlightHelper);
 					}
 					if(args['object'] == 'HemisphereLight'){
 						objscene = new THREE.HemisphereLight( 0xffffbb, 0x080820, 1 );
 						objscene.name = "HemisphereLight";
+						var HLightHelper = new THREE.HemisphereLightHelper(objscene, 5);
+						objscene.helper = HLightHelper;
+						this.scene.add(HLightHelper);
+						//objscene.add(HLightHelper);
 					}
 					if(args['object'] == 'Light'){
 						objscene = new THREE.Light( 0xff0000);
@@ -640,10 +653,18 @@ module ThreejsAPI{
 					if(args['object'] == 'PointLight'){
 						objscene = new THREE.PointLight( 0xff0000, 1, 100 );
 						objscene.name = "PointLight";
+						var pointLightHelper = new THREE.PointLightHelper(objscene, 5);
+						objscene.helper = pointLightHelper;
+						this.scene.add(pointLightHelper);
+						//objscene.add(pointLightHelper);
 					}
 					if(args['object'] == 'SpotLight'){
 						objscene = new THREE.SpotLight( 0xffffff );
 						objscene.name = "SpotLight";
+						var spotLightHelper = new THREE.SpotLightHelper(objscene);
+						objscene.helper = spotLightHelper;
+						this.scene.add(spotLightHelper);
+						//objscene.add(spotLightHelper);
 					}
 
 					if(objscene != null){
@@ -742,23 +763,30 @@ module ThreejsAPI{
 				objmesh = new THREE.OrthographicCamera(obj.left, obj.right, obj.top, obj.bottom, obj.near, obj.far);
 				objmesh.uuid = obj.uuid;
 				objmesh.name = obj.name;
+				var cameraHelper = new THREE.CameraHelper( objmesh );
+				objmesh.helper = cameraHelper;
+				this.scene.add(cameraHelper);
 			}
 			if(obj.type == "PerspectiveCamera"){
 				objmesh = new THREE.PerspectiveCamera(obj.fov, obj.aspect, obj.near, obj.far);
 				objmesh.uuid = obj.uuid;
 				objmesh.name = obj.name;
+				var cameraHelper = new THREE.CameraHelper( objmesh );
+				objmesh.helper = cameraHelper;
+				this.scene.add(cameraHelper);
 			}
-
 			if(obj.type == "AmbientLight"){
 				objmesh = new THREE.AmbientLight(obj.color, obj.intensity);
 				objmesh.uuid = obj.uuid;
 				objmesh.name = obj.name;
 			}
-
 			if(obj.type == "DirectionalLight"){
 				objmesh = new THREE.DirectionalLight(obj.color, obj.intensity);
 				objmesh.uuid = obj.uuid;
 				objmesh.name = obj.name;
+				var dlightHelper = new THREE.DirectionalLightHelper(objmesh, 5);
+				objmesh.helper = dlightHelper;
+				this.scene.add(dlightHelper);
 			}
 
 			if(obj.type == "HemisphereLight"){
@@ -766,6 +794,9 @@ module ThreejsAPI{
 				//console.log(obj.skyColor);
 				objmesh.uuid = obj.uuid;
 				objmesh.name = obj.name;
+				var HLightHelper = new THREE.HemisphereLightHelper(objmesh, 5);
+				objmesh.helper = HLightHelper;
+				this.scene.add(HLightHelper);
 			}
 
 			if(obj.type == "Light"){
@@ -778,18 +809,18 @@ module ThreejsAPI{
 				objmesh = new THREE.PointLight(obj.color, obj.intensity, obj.distance, obj.decay );
 				objmesh.uuid = obj.uuid;
 				objmesh.name = obj.name;
-			}
-
-			if(obj.type == "PointLight"){
-				objmesh = new THREE.PointLight(obj.color, obj.intensity, obj.distance, obj.decay );
-				objmesh.uuid = obj.uuid;
-				objmesh.name = obj.name;
+				var pointLightHelper = new THREE.PointLightHelper(objmesh, 5);
+				objmesh.helper = pointLightHelper;
+				this.scene.add(pointLightHelper);
 			}
 
 			if(obj.type == "SpotLight"){
 				objmesh = new THREE.SpotLight(obj.color, obj.intensity, obj.distance, obj.angle, obj.penumbra, obj.decay );
 				objmesh.uuid = obj.uuid;
 				objmesh.name = obj.name;
+				var spotLightHelper = new THREE.SpotLightHelper(objmesh);
+				objmesh.helper = spotLightHelper;
+				this.scene.add(spotLightHelper);
 			}
 
 			if(obj.type == "Scene"){
@@ -1016,6 +1047,13 @@ module ThreejsAPI{
 			}
 
 			if(tmpobj !=null){
+				/*
+				if(this.selectobject != null){
+					this.selectobject.add(tmpobj); //attach to current selected
+				}else{
+					this.scene.add(tmpobj);
+				}
+				*/
 				this.parentObj(tmpobj, obj.parent);
 				//console.log(tmpobj);
 				this.scenenodes.push(tmpobj);
@@ -1058,7 +1096,6 @@ module ThreejsAPI{
 					)
 				);
 			}
-
 			if(mesh.geometry.type == "CircleGeometry"){
 				this.updateGroupGeometry( mesh,
 					new THREE.CircleGeometry(
@@ -1069,7 +1106,6 @@ module ThreejsAPI{
 					)
 				);
 			}
-
 			if(mesh.geometry.type == "CylinderGeometry"){
 				this.updateGroupGeometry( mesh,
 					new THREE.CylinderGeometry(
@@ -1095,7 +1131,6 @@ module ThreejsAPI{
 					)
 				);
 			}
-
 			if(mesh.geometry.type == "SphereGeometry"){
 				this.updateGroupGeometry( mesh,
 					new THREE.SphereGeometry(
@@ -1109,7 +1144,6 @@ module ThreejsAPI{
 					)
 				);
 			}
-
 			if(mesh.geometry.type == "DodecahedronGeometry"){
 				this.updateGroupGeometry( mesh,
 					new THREE.DodecahedronGeometry(
@@ -1118,7 +1152,6 @@ module ThreejsAPI{
 					)
 				);
 			}
-
 			if(mesh.geometry.type == "IcosahedronGeometry"){
 				this.updateGroupGeometry( mesh,
 					new THREE.IcosahedronGeometry(
@@ -1127,7 +1160,6 @@ module ThreejsAPI{
 					)
 				);
 			}
-
 			if(mesh.geometry.type == "OctahedronGeometry"){
 				this.updateGroupGeometry( mesh,
 					new THREE.OctahedronGeometry(
@@ -2380,7 +2412,6 @@ module ThreejsAPI{
 			height = null;
 		}
 	}
-
 
 	export function object3d():void{
 		this.uuid = "";

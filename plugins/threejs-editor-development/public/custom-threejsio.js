@@ -639,7 +639,7 @@ threejsangular.directive("clearobjectnodes", function($compile){
 });
 
 //===============================================
-//
+// Script component
 //===============================================
 threejsangular.component('nodescriptscomponent', {
 	bindings: {
@@ -844,13 +844,9 @@ function checknodecomponents(){
 						selectnodeprops.script[cn]['bdisplay'] = true;
 					}
 					var _scriptpath = 'script.' + cn + '.';
-
-
 					//myEl.append($compile(`<nodedisplaycomponent params="'bdisplaytransform'" textname="'Object Information:'" idel="'script_`+cn+`'"></nodedisplaycomponent>`)(scope));
 					myEl.append($compile(`<nodedisplaycomponent params="'` + _scriptpath + 'bdisplay' + `'" textname="'Display Component:'" idel="'script_`+cn+`'"></nodedisplaycomponent>`)(scope));
-
 					myEl.append($compile(`<div id="script_`+cn+`"></div>`)(scope));
-
 					var svarEl = angular.element(document.getElementById(`script_`+cn));
 					for(var sc in scriptc){
 						if(typeof scriptc[sc] == 'string'){
@@ -864,7 +860,6 @@ function checknodecomponents(){
 						}
 						//console.log("TEXT:"+sc);
 					}
-
 					if(selectnodeprops.script[cn]['bdisplay'] == false){
 						$('#'+`script_`+cn).hide();
 					}
@@ -878,7 +873,7 @@ function checknodecomponents(){
 }
 
 //===============================================
-//
+// Refresh Assets
 //===============================================
 function RefreshAssets(){
 	console.log('refresh assets socket.io');
@@ -888,7 +883,9 @@ function RefreshAssets(){
 		socketio.emit('getassets','threejseditor');
 	//}
 }
-
+//===============================================
+// Rename Asset
+//===============================================
 function RenameAssets(){
 	console.log('RenameAssets');
 	//if(assets != null){
@@ -904,19 +901,21 @@ function RenameAssets(){
 		}
 	//}
 }
-
+//===============================================
+// Delete Asset
+//===============================================
 function DeleteAssets(){
 	console.log('DeleteAssets');
 	socketio.emit('assets',{action:"delete",projectid:projectid,id:assets_select});
 }
 
-function RefreshScene(){
-	console.log('refresh scene');
-	if(socketio !=null){
+//function RefreshScene(){
+	//console.log('refresh scene');
+	//if(socketio !=null){
 		//console.log('scene???');
 		//socketio.emit('getscene','threejseditor');
-	}
-}
+	//}
+//}
 //===============================================
 // init script object3d scene
 //===============================================
@@ -930,7 +929,6 @@ function ObjectAddScript(){
 		console.log(selectnodeprops);
 	}
 }
-
 //===============================================
 // Script add components
 //===============================================
@@ -988,14 +986,16 @@ function removeScriptComponent(id){
 	}
 }
 
-function RefreshScript(){
-	console.log('refresh script');
-	if(socketio !=null){
+//function RefreshScript(){
+	//console.log('refresh script');
+	//if(socketio !=null){
 		//console.log('scene???');
 		//socketio.emit('getscene','threejseditor');
-	}
-}
-
+	//}
+//}
+//===============================================
+// Refresh Node Contents
+//===============================================
 function RefreshContent(){
 	//console.log('refresh Content');
 	removenodelist(w2ui.sidebar_content, w2ui.sidebar_content.nodes[0].nodes);
@@ -1067,6 +1067,9 @@ function NodeSelectObject(args){
 }
 
 function DeleteNodeChildren(node){
+	if(node.helper !=null){
+		threejsapi.scene.remove(node.helper);
+	}
 	for(var i = 0;i < node.children.length;i++){
 		DeleteNodeChildren(node.children[i]);
 	}
@@ -1080,7 +1083,9 @@ function DeleteNodeChildren(node){
 	}
 	threejsapi.scene.remove(node);
 }
-
+//===============================================
+// Delete Node Content
+//===============================================
 function DeleteObjectNode(){
 	console.log('DeleteObjectNode');
 	console.log(content_select);
@@ -1121,7 +1126,6 @@ function removenodelist(obj,nodes){
 //===============================================
 // Object management
 //===============================================
-
 function SaveObjectS(obj){
 	var objstring = JSON.stringify(obj);
 	//console.log(objstring);
@@ -1232,7 +1236,6 @@ function CopyObjectData(object){
 			}
 		}
 	}
-
 	if(object.children.length > 0){
 		for(var i = 0; i < object.children.length;i++){
 			if(object.children[i].children.length > 0){
@@ -1319,6 +1322,7 @@ function buildApp(){
 	//socketio.emit('mapscene',{action:'build',projectid:projectid,object:'{"test":"test"}'});
 	socketio.emit('mapscene',{action:'build',projectid:projectid,object:objstring});
 }
+
 function debugApp(){
 	console.log('debugApp');
 }

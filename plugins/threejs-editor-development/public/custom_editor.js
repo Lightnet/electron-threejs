@@ -6,9 +6,6 @@
   	Please read the readme.txt file for more information.
 */
 
-
-
-
 //http://w2ui.com/web/demos/#!sidebar/sidebar-2
 
 /*
@@ -287,7 +284,7 @@ function initEditor(){
 	$().w2toolbar({
 		name: 'toolbar',
 		items: [
-			{ type: 'menu',   id: 'EditorFile', caption: 'File', items: [
+			{ type: 'menu',   id: 'EditorFile', caption: 'File',img:'fa fa-file', items: [
 				{type:'button', text: 'New', icon: 'icon-page'},
 				{type:'button', text: 'Save', icon: 'icon-page'},
 				//{type:'button', text: 'Save As', icon: 'icon-page'},
@@ -298,20 +295,20 @@ function initEditor(){
 				{type:'button', text: 'Export', icon: 'icon-page'},
 				{type:'button', text: 'Publish', icon: 'icon-page'}
 			]},
-			{ type: 'menu',   id: 'EditorEdit', caption: 'Edit', items: [
+			{ type: 'menu',   id: 'EditorEdit', caption: 'Edit',img:'fa fa-pencil-square-o', items: [
 				{ text: 'Copy', icon: 'icon-page' },
 				{ text: 'Paste', icon: 'icon-page' },
 				{ text: 'Delete', icon: 'icon-page' },
 				{ text: 'Delete', icon: 'icon-page' },
 				{ text: 'Clear History', icon: 'icon-page' },
 			]},
-			{ type: 'menu',   id: 'EditorComponents', caption: 'Components', items: [
+			{ type: 'menu',   id: 'EditorComponents', caption: 'Components',img:'fa fa-cube', items: [
 				{ text: 'Object3D', icon: 'fa fa-cube' },
 				{ text: 'Scene', icon: 'fa fa-cube' },
 				//{ text: 'Camera', icon: 'fa fa-cube' },
 				{ text: 'PerspectiveCamera', icon: 'fa fa-cube' },
 				{ text: 'OrthographicCamera', icon: 'fa fa-cube' },
-				{ text: 'CubeCamera', icon: 'fa fa-cube' },
+				//{ text: 'CubeCamera', icon: 'fa fa-cube' },
 				{ text: 'AmbientLight', icon: 'fa fa-cube' },
 				{ text: 'DirectionalLight', icon: 'fa fa-cube' },
 				{ text: 'HemisphereLight', icon: 'fa fa-cube' },
@@ -365,34 +362,36 @@ function initEditor(){
 				//{ text: 'script', icon: 'fa fa-file-code-o' }
 				{ text: 'physics', icon: 'fa fa-street-view' }
 			]},
-			{ type: 'button',   id: 'EditorPlay', caption: 'Play'},
+			{ type: 'button',   id: 'EditorPlay', caption: 'Play',img:'fa fa-play'},
 			{ type: 'menu',   id: 'EditorPlayOtions', caption: '', items: [
 				{ text: 'Play', icon: 'icon-page' },
 				{ text: 'Debug', icon: 'icon-page' },
 				{ text: 'Local', icon: 'icon-page' },
 				{ text: 'Host & Local', icon: 'icon-page' }
 			]},
-			{ type: 'button',   id: 'EditorStop', caption: 'Stop'},
-			{ type: 'menu',   id: 'EditorExample', caption: 'Example', items: [
-				{ text: 'Item 1', icon: 'icon-page' }
-			]},
-			{ type: 'menu',   id: 'EditorHelp', caption: 'Help',items: [
+			{ type: 'button',   id: 'EditorStop', caption: 'Stop',img:'fa fa-stop'},
+			//{ type: 'menu',   id: 'EditorExample', caption: 'Example', items: [
+				//{ text: 'Item 1', icon: 'icon-page' }
+			//]},
+
+			{ type: 'button',   id: 'EditorCompile', caption: 'Compile',img:'fa fa-cog'},
+			{ type: 'button',   id: 'EditorBuild', caption: 'Build',img:'fa fa-cogs'},
+			{ type: 'button',   id: 'EditorDebug', caption: 'Debug',img:'fa fa-play-circle-o'},
+			{ type: 'button',   id: 'EditorRun', caption: 'Run', img:'fa fa-play-circle'},
+
+			{ type: 'spacer' },
+			{ type: 'button',  id: 'projectid', caption: 'ProjectID:',img: 'icon-page' },
+			{ type: 'menu',   id: 'EditorHelp', caption: 'Help',img:'fa fa-info-circle',items: [
 				{ text: 'API', icon: 'icon-page' },
 				{ text: 'About', icon: 'icon-page' }
 			]},
-			{ type: 'button',   id: 'EditorCompile', caption: 'Compile'},
-			{ type: 'button',   id: 'EditorBuild', caption: 'Build'},
-			{ type: 'button',   id: 'EditorDebug', caption: 'Debug'},
-			{ type: 'button',   id: 'EditorRun', caption: 'Run'},
-			{ type: 'button',  id: 'projectid', caption: 'ProjectID:',img: 'icon-page' },
-			{ type: 'spacer' },
-			 { type: 'check',  id: 'projectautosave', caption: 'AutoSave', icon: 'w2ui-icon-check', checked: true }
+			{ type: 'check',  id: 'projectautosave', caption: 'AutoSave', icon: 'w2ui-icon-check', checked: true }
 		]
 	});
 
 	w2ui['layout'].content('top', w2ui['toolbar']);
 
-	w2ui.toolbar['items'][12].caption = "projectid:"+projectid;
+	w2ui.toolbar['items'][11].caption = "projectid:"+projectid;
 	//console.log(w2ui.toolbar);
 
 	w2ui.toolbar.on('*', function (id, event) {
