@@ -200,8 +200,8 @@ module ThreejsAPI{
 			this.scene = new THREE.Scene();
 			this.scene.name = "scene";
 			this.scene.uuid = 'B1E79603-A80E-4CE5-9C5E-34B223CEECF9';
-			console.log(this.scene);
-			this.scene.userData.test = 'test';
+			//console.log(this.scene);
+			//this.scene.userData.test = 'test';
 			this.scenenodes.push(this.scene);
 			//this.scene.add(this.camera);
 			//console.log(this.scene);
@@ -728,16 +728,78 @@ module ThreejsAPI{
 			}
 			console.log(obj);
 			//this.mapscenenodes.push(obj);
-			if(obj.type == "Scene"){
-				objmesh = new THREE.Scene();
-				objmesh.uuid = obj.uuid;
-				objmesh.name = obj.name;
-			}
 			if(obj.type == "Object3D"){
 				objmesh = new THREE.Object3D();
 				objmesh.uuid = obj.uuid;
 				objmesh.name = obj.name;
 			}
+			if(obj.type == "CubeCamera"){
+				objmesh = new THREE.CubeCamera(obj.near, obj.far, obj.cubeResolution);
+				objmesh.uuid = obj.uuid;
+				objmesh.name = obj.name;
+			}
+			if(obj.type == "OrthographicCamera"){
+				objmesh = new THREE.OrthographicCamera(obj.left, obj.right, obj.top, obj.bottom, obj.near, obj.far);
+				objmesh.uuid = obj.uuid;
+				objmesh.name = obj.name;
+			}
+			if(obj.type == "PerspectiveCamera"){
+				objmesh = new THREE.PerspectiveCamera(obj.fov, obj.aspect, obj.near, obj.far);
+				objmesh.uuid = obj.uuid;
+				objmesh.name = obj.name;
+			}
+
+			if(obj.type == "AmbientLight"){
+				objmesh = new THREE.AmbientLight(obj.color, obj.intensity);
+				objmesh.uuid = obj.uuid;
+				objmesh.name = obj.name;
+			}
+
+			if(obj.type == "DirectionalLight"){
+				objmesh = new THREE.DirectionalLight(obj.color, obj.intensity);
+				objmesh.uuid = obj.uuid;
+				objmesh.name = obj.name;
+			}
+
+			if(obj.type == "HemisphereLight"){
+				objmesh = new THREE.HemisphereLight(obj.skyColor, obj.groundColor, obj.intensity);
+				//console.log(obj.skyColor);
+				objmesh.uuid = obj.uuid;
+				objmesh.name = obj.name;
+			}
+
+			if(obj.type == "Light"){
+				objmesh = new THREE.Light(obj.color, obj.intensity);
+				objmesh.uuid = obj.uuid;
+				objmesh.name = obj.name;
+			}
+
+			if(obj.type == "PointLight"){
+				objmesh = new THREE.PointLight(obj.color, obj.intensity, obj.distance, obj.decay );
+				objmesh.uuid = obj.uuid;
+				objmesh.name = obj.name;
+			}
+
+			if(obj.type == "PointLight"){
+				objmesh = new THREE.PointLight(obj.color, obj.intensity, obj.distance, obj.decay );
+				objmesh.uuid = obj.uuid;
+				objmesh.name = obj.name;
+			}
+
+			if(obj.type == "SpotLight"){
+				objmesh = new THREE.SpotLight(obj.color, obj.intensity, obj.distance, obj.angle, obj.penumbra, obj.decay );
+				objmesh.uuid = obj.uuid;
+				objmesh.name = obj.name;
+			}
+
+			if(obj.type == "Scene"){
+				objmesh = new THREE.Scene();
+				objmesh.uuid = obj.uuid;
+				objmesh.name = obj.name;
+			}
+
+			console.log(objmesh);
+
 			if(obj.type == "Mesh"){
 				if(obj.geometrytype == "BoxGeometry"){
 					geometry = new THREE.BoxGeometry(
@@ -905,11 +967,11 @@ module ThreejsAPI{
 									//console.log('OBJECT    script');
 									//console.log('obj.script'+ os+'.'+sv);
 									if(Array.isArray(obj.script[os][sv])){
-										console.log('found array object');
+										//console.log('found array object');
 										objmesh.script[os][sv] = obj.script[os][sv];
 									}else{
 										if(obj.script[os][sv].type !=null){
-											console.log('found type! :'+obj.script[os][sv].type);
+											//console.log('found type! :'+obj.script[os][sv].type);
 											if(obj.script[os][sv].type == 'THREE.Vector2'){
 												objmesh.script[os][sv] = new THREE.Vector2(obj.script[os][sv].x,obj.script[os][sv].y);
 											}
@@ -1132,6 +1194,65 @@ module ThreejsAPI{
 				o3d.parent = null;
 			}
 
+			if(obj.bdisplay != null){
+				o3d.bdisplay = obj.bdisplay;
+			}
+
+			if(obj.type == "CubeCamera"){
+				o3d.near = obj.near;
+				o3d.far = obj.far;
+				o3d.cubeResolution = obj.cubeResolution ;
+			}
+
+			if(obj.type == "PerspectiveCamera"){
+				o3d.fov = obj.fov;
+				o3d.aspect = obj.aspect;
+				o3d.near = obj.near;
+				o3d.far = obj.far;
+			}
+
+			if(obj.type == "OrthographicCamera"){
+				o3d.left = obj.left;
+				o3d.right = obj.right;
+				o3d.top = obj.top;
+				o3d.bottom = obj.bottom;
+				o3d.near = obj.near;
+				o3d.far = obj.far;
+			}
+
+			if(obj.type == "AmbientLight"){
+				o3d.color = obj.color;
+				o3d.intensity = obj.intensity;
+			}
+			if(obj.type == "DirectionalLight"){
+				o3d.color = obj.color;
+				o3d.intensity = obj.intensity;
+			}
+			if(obj.type == "HemisphereLight"){
+				o3d.skyColor = obj.color;
+				//console.log(obj.color);
+				o3d.groundColor = obj.groundColor;
+				o3d.intensity = obj.intensity;
+			}
+			if(obj.type == "Light"){
+				o3d.skyColor = obj.color;
+				o3d.intensity = obj.intensity;
+			}
+			if(obj.type == "PointLight"){
+				o3d.color = obj.color;
+				o3d.intensity = obj.intensity;
+				o3d.distance  = obj.distance;
+				o3d.decay = obj.decay;
+			}
+			if(obj.type == "SpotLight"){
+				o3d.color = obj.color;
+				o3d.intensity = obj.intensity;
+				o3d.distance = obj.distance;
+				o3d.angle = obj.angle;
+				o3d.penumbra = obj.penumbra;
+				o3d.decay = obj.decay;
+			}
+
 			o3d.children = [];
 			if(obj.geometry !=null){
 				o3d.geometrytype = obj.geometry.type;
@@ -1158,8 +1279,8 @@ module ThreejsAPI{
 						//console.log(obj.script[os][param]);
 						if((typeof obj.script[os][param] == 'object')){
 							if(param != 'entity'){//ignore name entity
-								console.log('checking object type?');
-								console.log('obj.script.'+os+'.'+''+param);
+								//console.log('checking object type?');
+								//console.log('obj.script.'+os+'.'+''+param);
 
 								if(obj.script[os][param] instanceof THREE.Object3D){
 									if(obj.script[os][param].type == 'Object3D'){//make sure it right type
@@ -1179,33 +1300,33 @@ module ThreejsAPI{
 
 								if(Object.prototype.toString.call( obj.script[os][param] ) === '[object Array]'){
 									console.log(obj.script[os][param]);
-									console.log('found object Array!');
+									//console.log('found object Array!');
 									o3d.script[os][param] = obj.script[os][param];
 								}
 
 								if(obj.script[os][param] instanceof THREE.Vector2){
-									console.log(obj.script[os][param]);
-									console.log('found THREE.Vector2!');
+									//console.log(obj.script[os][param]);
+									//console.log('found THREE.Vector2!');
 									o3d.script[os][param] = obj.script[os][param];
 									o3d.script[os][param] = {type:'THREE.Vector2',x:obj.script[os][param].x,y:obj.script[os][param].y};
 								}
 
 								if(obj.script[os][param] instanceof THREE.Vector3){
-									console.log(obj.script[os][param]);
-									console.log('found THREE.Vector3!');
+									//console.log(obj.script[os][param]);
+									//console.log('found THREE.Vector3!');
 									//o3d.script[os][param] = obj.script[os][param];
 									o3d.script[os][param] = {type:'THREE.Vector3',x:obj.script[os][param].x,y:obj.script[os][param].y,z:obj.script[os][param].z};
 								}
 
 								if(obj.script[os][param] instanceof THREE.Vector4){
-									console.log(obj.script[os][param]);
-									console.log('found THREE.Vector4!');
+									//console.log(obj.script[os][param]);
+									//console.log('found THREE.Vector4!');
 									//o3d.script[os][param] = obj.script[os][param];
 									o3d.script[os][param] = {type:'THREE.Vector4',x:obj.script[os][param].x,y:obj.script[os][param].y,z:obj.script[os][param].z,w:obj.script[os][param].w};
 								}
 								if(obj.script[os][param] instanceof THREE.Quaternion){
-									console.log(obj.script[os][param]);
-									console.log('found THREE.Quaternion!');
+									//console.log(obj.script[os][param]);
+									//console.log('found THREE.Quaternion!');
 									//o3d.script[os][param] = obj.script[os][param];
 									o3d.script[os][param] = {type:'THREE.Quaternion',x:obj.script[os][param].x,y:obj.script[os][param].y,z:obj.script[os][param].z,w:obj.script[os][param].w};
 								}

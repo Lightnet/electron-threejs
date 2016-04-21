@@ -380,8 +380,6 @@ function initEditor(){
 				{ text: 'API', icon: 'icon-page' },
 				{ text: 'About', icon: 'icon-page' }
 			]},
-
-
 			{ type: 'button',   id: 'EditorCompile', caption: 'Compile'},
 			{ type: 'button',   id: 'EditorBuild', caption: 'Build'},
 			{ type: 'button',   id: 'EditorDebug', caption: 'Debug'},
@@ -395,7 +393,7 @@ function initEditor(){
 	w2ui['layout'].content('top', w2ui['toolbar']);
 
 	w2ui.toolbar['items'][12].caption = "projectid:"+projectid;
-	console.log(w2ui.toolbar);
+	//console.log(w2ui.toolbar);
 
 	w2ui.toolbar.on('*', function (id, event) {
 		console.log('id:'+id);
@@ -431,6 +429,7 @@ function initEditor(){
 		threejsapi.toolbar(event.target);
 		//console.log(' TARGET: '+ event.target, event);
         //console.log('EVENT: '+ event.type + ' TARGET: '+ event.target, event);
+		RefreshContent();
     });
 
 	//toolbar bottom

@@ -1153,6 +1153,9 @@ socketio.on('mapscene',function(data){
 					threejsapi.parseObject(data.object);
 				}
 			}
+			if(data['action'] == 'finish'){
+				RefreshContent();
+			}
 			if(data['action'] == 'message'){
 				console.log(data['message']);
 			}
@@ -1165,13 +1168,12 @@ socketio.on('mapscene',function(data){
 //===============================================
 function NewMap(){
 	console.log('NewMap');
-	//console.log(threejsapi.scene);
-	//threejsapi.mapscenenodes = [];
-	//threejsapi.scenenodes = [];
-	//for( var i = threejsapi.scene.children.length - 1; i >= 1; i--) {
+	threejsapi.mapscenenodes = [];
+	for( var i = threejsapi.scene.children.length - 1; i >= 1; i--) {
 		//console.log('remove item?');
-		//threejsapi.scene.remove(threejsapi.scene.children[i]);
-	//}
+		threejsapi.scene.remove(threejsapi.scene.children[i]);
+	}
+	RefreshContent();
 }
 
 function SaveMap(){
@@ -1198,6 +1200,7 @@ function LoadMap(){
 	console.log('LoadMap');
 	//console.log(threejsapi.scene);
 	LoadMapScene();
+	RefreshContent();
 }
 
 //===============================================
