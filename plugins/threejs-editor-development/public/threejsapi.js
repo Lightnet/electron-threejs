@@ -82,6 +82,10 @@ var ThreejsAPI;
                     //this.bcanvas = true;
                     this.bprototype = args['bprototype'];
                 }
+                if (args['bablephysics'] != null) {
+                    //this.bcanvas = true;
+                    this.bablephysics = args['bablephysics'];
+                }
                 if (args['bupdateobjects'] != null) {
                     //this.bcanvas = true;
                     this.bupdateobjects = args['bupdateobjects'];
@@ -1338,30 +1342,38 @@ var ThreejsAPI;
             return filename.substr(filename.lastIndexOf('.'));
         };
         Game.prototype.LoadFile = function (filename) {
-            var _this = this;
             console.log('file: ' + filename);
+            var self = this;
             if (this.getext(filename) == '.fbx') {
                 this.LoadFBX(filename, function (object) {
-                    _this.scene.add(object);
+                    self.scene.add(object);
                 });
             }
             if (this.getext(filename) == '.dae') {
                 this.LoadDAE(filename, function (object) {
-                    _this.scene.add(object);
+                    self.scene.add(object);
                 });
             }
             if (this.getext(filename) == '.obj') {
                 this.LoadOBJ(filename, function (object) {
-                    _this.scene.add(object);
+                    self.scene.add(object);
                 });
             }
             if (this.getext(filename) == '.js') {
-                this.LoadJSONObj(filename);
+                this.LoadJSONObj(filename, function (object) {
+                    self.scene.add(object);
+                });
+            }
+            if (this.getext(filename) == '.json') {
+                this.LoadJSONObj(filename, function (object) {
+                    self.scene.add(object);
+                });
             }
         };
-        Game.prototype.LoadJSONObj = function (filename) {
+        Game.prototype.LoadJSONObj = function (filename, callback) {
             var filepath = "/assets/" + filename;
             var loader = new THREE.JSONLoader();
+            var name = filename;
             var self = this;
             var name = filename;
             loader.load(filepath, function (geometry, materials) {
@@ -1371,8 +1383,10 @@ var ThreejsAPI;
                 var faceMaterial = new THREE.MultiMaterial(materials);
                 var mesh = new THREE.Mesh(geometry, faceMaterial);
                 mesh.name = name;
-                self.scene.add(mesh);
+                callback(mesh);
+                //self.scene.add( mesh );
                 name = null;
+                loader = null;
             }, this.onProgressModel, this.onErrorModel);
         };
         Game.prototype.LoadFBX = function (filename, callback) {
@@ -1398,6 +1412,7 @@ var ThreejsAPI;
                 object.name = name;
                 callback(object);
                 name = null;
+                loader = null;
             }, this.onProgressModel, this.onErrorModel);
         };
         Game.prototype.LoadDAE = function (filename, callback) {
@@ -1423,6 +1438,7 @@ var ThreejsAPI;
                 callback(dae);
                 console.log("added");
                 name = null;
+                loader = null;
             }, this.onProgressModel, this.onErrorModel);
         };
         Game.prototype.LoadOBJ = function (filename, callback) {
@@ -1441,6 +1457,7 @@ var ThreejsAPI;
                 object.name = name;
                 callback(object);
                 name = null;
+                loader = null;
             }, this.onProgressModel, this.onErrorModel);
         };
         Game.prototype.initPhysics = function () {
@@ -1926,7 +1943,9 @@ var ThreejsAPI;
                 this.renderer.render(this.sceneHUD, this.cameraHUD);
             }
             */
-            this.updatePhysics();
+            if (this.bablephysics == true) {
+                this.updatePhysics();
+            }
             width = null;
             height = null;
         };

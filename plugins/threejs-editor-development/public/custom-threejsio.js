@@ -16,16 +16,18 @@ var scripts = [];
 var rename = '';
 var assets = [];
 var assets_select;
-var contents = [];
+//var contents = [];
 var deletecontents = [];
 var content_select;
 var selectnodeprops; //object scene selected
-var props = [];
+//var props = [];
 var editor; //script editor
-
 var textures = [];
-var materials = [];
+//var materials = [];
 var objectmeshs = [];
+
+var modelcounts = 0;
+var loadmodels = 0;
 
 var exts = [
 	'.jpg',
@@ -106,7 +108,7 @@ socketio.on('connect',()=>{
 		initEditor();
 		initDropzone();
 		initScriptEditor();
-		threejsapi = new ThreejsAPI.Game({onload:false,bupdateobjects:false});
+		threejsapi = new ThreejsAPI.Game({onload:false,bupdateobjects:false,bablephysics:false});
 		//var player = threejsapi.createplayer();
 		threejsapi_preview = new ThreejsAPI.Game({onload:false, canvasid:'objectCanvas'});
 		threejsapi_play = new ThreejsAPI.Game({onload:false, canvasid:'playCanvas'});
@@ -1165,6 +1167,11 @@ socketio.on('mapscene',function(data){
 	}
 });
 
+function setPhysics(type){
+	console.log('physics:'+type);
+
+}
+
 //===============================================
 // App Save & Load
 //===============================================
@@ -1303,13 +1310,21 @@ function buildApp(){
 		"assets": [],
 		"entities": []
 	};
-	//postobject.name = "test";
-	//path
+	for(var i = 0; i < assets.length;i++){
+		console.log(assets[i]);
+		postobject.assets.push({	path:assets[i].path,
+									uuid:assets[i].id,
+									type:'none'
+								});
+	}
+
 	for(var i = 0; i < scripts.length;i++){
+		console.log(scripts[i]);
 		postobject.scripts.push(scripts[i].path);
 	}
 
 	for(var i = 0; i < threejsapi.mapscenenodes.length;i++){
+		console.log(threejsapi.mapscenenodes[i]);
 		postobject.entities.push(threejsapi.mapscenenodes[i]);
 	}
 

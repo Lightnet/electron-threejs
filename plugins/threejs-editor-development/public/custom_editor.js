@@ -377,6 +377,13 @@ function initEditor(){
 			{ type: 'button',   id: 'EditorDebug', caption: 'Debug',img:'fa fa-play-circle-o'},
 			{ type: 'button',   id: 'EditorRun', caption: 'Run', img:'fa fa-play-circle'},
 
+			{ type: 'menu',   id: 'EditorPhysics', caption: 'Physics', items: [
+				{ text: 'None', icon: 'icon-page' },
+				{ text: 'Ammojs', icon: 'icon-page' },
+				{ text: 'Cannonjs', icon: 'icon-page' },
+				{ text: 'Oimojs', icon: 'icon-page' }
+			]},
+
 			{ type: 'spacer' },
 			{ type: 'button',  id: 'projectid', caption: 'ProjectID:',img: 'icon-page' },
 			{ type: 'menu',   id: 'EditorHelp', caption: 'Help',img:'fa fa-info-circle',items: [
@@ -389,11 +396,25 @@ function initEditor(){
 
 	w2ui['layout'].content('top', w2ui['toolbar']);
 
-	w2ui.toolbar['items'][11].caption = "projectid:"+projectid;
+	w2ui.toolbar['items'][12].caption = "projectid:"+projectid;
 	//console.log(w2ui.toolbar);
 
 	w2ui.toolbar.on('*', function (id, event) {
 		console.log('id:'+id);
+
+		if(id == 'EditorPhysics:None'){
+			setPhysics('none');
+		}
+		if(id == 'EditorPhysics:Ammojs'){
+			setPhysics('ammojs');
+		}
+		if(id == 'EditorPhysics:Cannonjs'){
+			setPhysics('cannonjs');
+		}
+		if(id == 'EditorPhysics:Oimojs'){
+			setPhysics('oimojs');
+		}
+
 		if(id == 'EditorHelp:API'){
 			 window.open('https://github.com/Lightnet/electron-threejs/wiki','','height=960px,width=940px');
 		}

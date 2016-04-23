@@ -144,6 +144,11 @@ module ThreejsAPI{
 					this.bprototype = args['bprototype'];
 					//console.log('canvasid>>'+args['canvasid']);
 				}
+				if(args['bablephysics'] != null){
+					//this.bcanvas = true;
+					this.bablephysics = args['bablephysics'];
+					//console.log('canvasid>>'+args['canvasid']);
+				}
 				if(args['bupdateobjects'] != null){
 					//this.bcanvas = true;
 					this.bupdateobjects = args['bupdateobjects'];
@@ -422,8 +427,6 @@ module ThreejsAPI{
 				//object.script[name].init();
 			//}
 		}
-
-
 
 		initselectObject(){
 			this.canvas.addEventListener( 'mousedown',(event)=>{ this.onDocumentMouseDown(event) }, false );
@@ -1654,31 +1657,42 @@ module ThreejsAPI{
 		getext(filename){
 			return filename.substr(filename.lastIndexOf('.'));
 		}
+
 		LoadFile(filename){
 			console.log('file: '+ filename);
+			var self = this;
 			if(this.getext(filename) == '.fbx'){
 				this.LoadFBX(filename,(object)=>{
-					this.scene.add(object);
+					self.scene.add(object);
 				});
 			}
 			if(this.getext(filename) == '.dae'){
 				this.LoadDAE(filename,(object)=>{
-					this.scene.add(object);
+					self.scene.add(object);
 				});
 			}
 			if(this.getext(filename) == '.obj'){
 				this.LoadOBJ(filename,(object)=>{
-					this.scene.add(object);
+					self.scene.add(object);
 				});
 			}
 			if(this.getext(filename) == '.js'){
-				this.LoadJSONObj(filename);
+				this.LoadJSONObj(filename,(object)=>{
+					self.scene.add( object );
+				});
+			}
+
+			if(this.getext(filename) == '.json'){
+				this.LoadJSONObj(filename,(object)=>{
+					self.scene.add( object );
+				});
 			}
 		}
 
-		LoadJSONObj(filename){
+		LoadJSONObj(filename, callback){
 			var filepath = "/assets/" + filename;
 			var loader:any = new THREE.JSONLoader();
+			var name = filename;
 			var self = this;
 			var name = filename;
 			loader.load(filepath, function ( geometry, materials ) {
@@ -1688,8 +1702,10 @@ module ThreejsAPI{
 				var faceMaterial = new THREE.MultiMaterial( materials );
 				var mesh = new THREE.Mesh( geometry, faceMaterial );
 				mesh.name = name;
-				self.scene.add( mesh );
+				callback(mesh);
+				//self.scene.add( mesh );
 				name = null;
+				loader = null;
 			},this.onProgressModel, this.onErrorModel );
 		}
 
@@ -1717,6 +1733,7 @@ module ThreejsAPI{
 					object.name = name;
 					callback(object);
 					name = null;
+					loader = null;
 			}, this.onProgressModel, this.onErrorModel );
 		}
 		LoadDAE(filename,callback){
@@ -1742,6 +1759,7 @@ module ThreejsAPI{
 				callback(dae);
 				console.log("added");
 				name = null;
+				loader = null;
 			}, this.onProgressModel, this.onErrorModel);
 		}
 		LoadOBJ(filename,callback){
@@ -1761,6 +1779,7 @@ module ThreejsAPI{
 					object.name = name;
 					callback(object);
 					name = null;
+					loader = null;
 			}, this.onProgressModel, this.onErrorModel);
 		}
 		initPhysics(){
@@ -2347,9 +2366,9 @@ module ThreejsAPI{
 				this.renderer.render(this.sceneHUD, this.cameraHUD);
 			}
 			*/
-
-			this.updatePhysics();
-
+			if(this.bablephysics == true){
+				this.updatePhysics();
+			}
 			width = null;
 			height = null;
 		}
