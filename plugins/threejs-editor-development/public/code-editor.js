@@ -6,8 +6,6 @@
   	Please read the readme.txt file for more information.
 */
 
-
-
 var socketio;
 var editor;
 var filename;
@@ -229,7 +227,6 @@ addListener("load", window,()=>{
 			if(data['action'] == 'save'){
 				$("#logstatus").text(data['message']);
 			}
-
 			if(data['action'] == 'message'){
 				$("#logstatus").text(data['message']);
 			}

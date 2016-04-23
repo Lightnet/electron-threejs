@@ -172,9 +172,11 @@ var ThreejsAPI;
             //this.createplayer();
             //this.initselectObject();
             var light1 = new THREE.DirectionalLight('#fff');
+            light1.name = "DirectionalLight";
             light1.position.set(-50, 50, 50);
             this.scene.add(light1);
             var light2 = new THREE.AmbientLight('#fff');
+            light2.name = "AmbientLight";
             light2.color.multiplyScalar(0.2);
             this.scene.add(light2);
             /*
@@ -555,7 +557,7 @@ var ThreejsAPI;
                             this.scene.add(objscene);
                         }
                         this.scenenodes.push(objscene);
-                        console.log('create object?');
+                        //console.log('create object?');
                         console.log(objscene);
                         NodeSelectObject({ object: objscene });
                         var tmpmap = this.copyobjectprops(objscene);
@@ -616,7 +618,7 @@ var ThreejsAPI;
             else {
                 obj = strobj;
             }
-            console.log(obj);
+            //console.log(obj);
             //this.mapscenenodes.push(obj);
             if (obj.type == "Object3D") {
                 objmesh = new THREE.Object3D();
@@ -692,7 +694,7 @@ var ThreejsAPI;
                 objmesh.uuid = obj.uuid;
                 objmesh.name = obj.name;
             }
-            console.log(objmesh);
+            //console.log(objmesh);
             if (obj.type == "Mesh") {
                 if (obj.geometrytype == "BoxGeometry") {
                     geometry = new THREE.BoxGeometry(obj.parameters.width, obj.parameters.height, obj.parameters.depth, obj.parameters.widthSegments, obj.parameters.heightSegments, obj.parameters.depthSegments);
@@ -907,7 +909,7 @@ var ThreejsAPI;
             }
         };
         Game.prototype.copyobjectprops = function (obj) {
-            console.log('//  = processing ');
+            //console.log('//  = processing ');
             var o3d = new object3d();
             o3d.uuid = obj.uuid;
             o3d.name = obj.name;
@@ -1001,8 +1003,8 @@ var ThreejsAPI;
                                 //console.log('obj.script.'+os+'.'+''+param);
                                 if (obj.script[os][param] instanceof THREE.Object3D) {
                                     if (obj.script[os][param].type == 'Object3D') {
-                                        console.log(obj.script[os][param]);
-                                        console.log('found Object3D!');
+                                        //console.log(obj.script[os][param]);
+                                        //console.log('found Object3D!');
                                         //o3d.script[os][param] = obj.script[os][param]; // error on geometry uuid if not set
                                         o3d.script[os][param] = { type: 'Object3D', uuid: obj.script[os][param].uuid };
                                     }

@@ -6,8 +6,6 @@
   	Please read the readme.txt file for more information.
 */
 
-
-
 var socketio = io();
 var threejsangular = angular.module('threejsangular', []);
 var threejsapi;
@@ -1346,6 +1344,24 @@ function runApp(){
 	openOnce('http://127.0.0.1/threejs-game.html', 'game');
 }
 
+//http://stackoverflow.com/questions/19426559/three-js-access-scene-objects-by-name-or-id
 
+function testfun(){
+	console.log('test functions?');
+	ListObjects();
+}
 
+function ListObjects(){
+	console.log('test traverse?');
+	threejsapi.scene.traverse(function(object){
+
+		console.log(object.name);
+		console.log(object);
+	});
+
+	//console.log('test traverseAncestors?');
+	//threejsapi.scene.traverseAncestors(function(object){
+		//console.log(object.name);
+	//});
+}
 //

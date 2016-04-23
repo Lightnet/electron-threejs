@@ -249,9 +249,11 @@ module ThreejsAPI{
 			//this.createplayer();
 			//this.initselectObject();
 			var light1 = new THREE.DirectionalLight('#fff');
+			light1.name = "DirectionalLight"
 			light1.position.set(-50, 50, 50);
 			this.scene.add(light1);
 			var light2 = new THREE.AmbientLight('#fff');
+			light2.name = "AmbientLight";
 			light2.color.multiplyScalar(0.2);
 			this.scene.add(light2);
 			/*
@@ -674,7 +676,7 @@ module ThreejsAPI{
 							this.scene.add(objscene);
 						}
 						this.scenenodes.push(objscene);
-						console.log('create object?');
+						//console.log('create object?');
 						console.log(objscene);
 						NodeSelectObject({object:objscene});
 						var tmpmap = this.copyobjectprops(objscene);
@@ -747,7 +749,7 @@ module ThreejsAPI{
 			}else{
 				obj = strobj;
 			}
-			console.log(obj);
+			//console.log(obj);
 			//this.mapscenenodes.push(obj);
 			if(obj.type == "Object3D"){
 				objmesh = new THREE.Object3D();
@@ -798,13 +800,11 @@ module ThreejsAPI{
 				objmesh.helper = HLightHelper;
 				this.scene.add(HLightHelper);
 			}
-
 			if(obj.type == "Light"){
 				objmesh = new THREE.Light(obj.color, obj.intensity);
 				objmesh.uuid = obj.uuid;
 				objmesh.name = obj.name;
 			}
-
 			if(obj.type == "PointLight"){
 				objmesh = new THREE.PointLight(obj.color, obj.intensity, obj.distance, obj.decay );
 				objmesh.uuid = obj.uuid;
@@ -813,7 +813,6 @@ module ThreejsAPI{
 				objmesh.helper = pointLightHelper;
 				this.scene.add(pointLightHelper);
 			}
-
 			if(obj.type == "SpotLight"){
 				objmesh = new THREE.SpotLight(obj.color, obj.intensity, obj.distance, obj.angle, obj.penumbra, obj.decay );
 				objmesh.uuid = obj.uuid;
@@ -822,15 +821,12 @@ module ThreejsAPI{
 				objmesh.helper = spotLightHelper;
 				this.scene.add(spotLightHelper);
 			}
-
 			if(obj.type == "Scene"){
 				objmesh = new THREE.Scene();
 				objmesh.uuid = obj.uuid;
 				objmesh.name = obj.name;
 			}
-
-			console.log(objmesh);
-
+			//console.log(objmesh);
 			if(obj.type == "Mesh"){
 				if(obj.geometrytype == "BoxGeometry"){
 					geometry = new THREE.BoxGeometry(
@@ -1120,7 +1116,6 @@ module ThreejsAPI{
 					)
 				);
 			}
-
 			if(mesh.geometry.type == "PlaneGeometry"){
 				this.updateGroupGeometry( mesh,
 					new THREE.PlaneGeometry(
@@ -1213,9 +1208,8 @@ module ThreejsAPI{
 				);
 			}
 		}
-
 		copyobjectprops(obj){
-			console.log('//  = processing ');
+			//console.log('//  = processing ');
 			var o3d = new object3d();
 			o3d.uuid = obj.uuid;
 			o3d.name = obj.name;
@@ -1225,24 +1219,20 @@ module ThreejsAPI{
 			}else{
 				o3d.parent = null;
 			}
-
 			if(obj.bdisplay != null){
 				o3d.bdisplay = obj.bdisplay;
 			}
-
 			if(obj.type == "CubeCamera"){
 				o3d.near = obj.near;
 				o3d.far = obj.far;
 				o3d.cubeResolution = obj.cubeResolution ;
 			}
-
 			if(obj.type == "PerspectiveCamera"){
 				o3d.fov = obj.fov;
 				o3d.aspect = obj.aspect;
 				o3d.near = obj.near;
 				o3d.far = obj.far;
 			}
-
 			if(obj.type == "OrthographicCamera"){
 				o3d.left = obj.left;
 				o3d.right = obj.right;
@@ -1251,7 +1241,6 @@ module ThreejsAPI{
 				o3d.near = obj.near;
 				o3d.far = obj.far;
 			}
-
 			if(obj.type == "AmbientLight"){
 				o3d.color = obj.color;
 				o3d.intensity = obj.intensity;
@@ -1284,7 +1273,6 @@ module ThreejsAPI{
 				o3d.penumbra = obj.penumbra;
 				o3d.decay = obj.decay;
 			}
-
 			o3d.children = [];
 			if(obj.geometry !=null){
 				o3d.geometrytype = obj.geometry.type;
@@ -1292,7 +1280,6 @@ module ThreejsAPI{
 					o3d.parameters = obj.geometry.parameters;
 				}
 			}
-
 			if(obj.script !=null){
 				/*
 				var is_array = function (value) {
@@ -1316,8 +1303,8 @@ module ThreejsAPI{
 
 								if(obj.script[os][param] instanceof THREE.Object3D){
 									if(obj.script[os][param].type == 'Object3D'){//make sure it right type
-										console.log(obj.script[os][param]);
-										console.log('found Object3D!');
+										//console.log(obj.script[os][param]);
+										//console.log('found Object3D!');
 										//o3d.script[os][param] = obj.script[os][param]; // error on geometry uuid if not set
 										o3d.script[os][param] = {type:'Object3D',uuid:obj.script[os][param].uuid}
 									}
@@ -1329,27 +1316,23 @@ module ThreejsAPI{
 									//o3d.script[os][param] = obj.script[os][param]; // error on geometry uuid if not set
 									o3d.script[os][param] = {type:'Mesh',uuid:obj.script[os][param].uuid}
 								}
-
 								if(Object.prototype.toString.call( obj.script[os][param] ) === '[object Array]'){
 									console.log(obj.script[os][param]);
 									//console.log('found object Array!');
 									o3d.script[os][param] = obj.script[os][param];
 								}
-
 								if(obj.script[os][param] instanceof THREE.Vector2){
 									//console.log(obj.script[os][param]);
 									//console.log('found THREE.Vector2!');
 									o3d.script[os][param] = obj.script[os][param];
 									o3d.script[os][param] = {type:'THREE.Vector2',x:obj.script[os][param].x,y:obj.script[os][param].y};
 								}
-
 								if(obj.script[os][param] instanceof THREE.Vector3){
 									//console.log(obj.script[os][param]);
 									//console.log('found THREE.Vector3!');
 									//o3d.script[os][param] = obj.script[os][param];
 									o3d.script[os][param] = {type:'THREE.Vector3',x:obj.script[os][param].x,y:obj.script[os][param].y,z:obj.script[os][param].z};
 								}
-
 								if(obj.script[os][param] instanceof THREE.Vector4){
 									//console.log(obj.script[os][param]);
 									//console.log('found THREE.Vector4!');
@@ -1427,7 +1410,6 @@ module ThreejsAPI{
 						objmesh.name = "BoxGeometry";
 						console.log(objmesh);
 						tmpobj = objmesh;
-
 					}
 					if(args['shape'] == 'CircleGeometry'){
 						geometry = new THREE.CircleGeometry( 2, 8, 0, 2*Math.PI );
@@ -1471,7 +1453,6 @@ module ThreejsAPI{
 						console.log(objmesh.geometry.parameters);
 						tmpobj = objmesh;
 					}
-
 					if(args['shape'] == 'IcosahedronGeometry'){
 						geometry = new THREE.IcosahedronGeometry( 1, 0);
 						material = new THREE.MeshBasicMaterial( {color: 0xffff00} );
@@ -1480,7 +1461,6 @@ module ThreejsAPI{
 						console.log(objmesh.geometry.parameters);
 						tmpobj = objmesh;
 					}
-
 					if(args['shape'] == 'OctahedronGeometry'){
 						geometry = new THREE.OctahedronGeometry( 1, 0);
 						material = new THREE.MeshBasicMaterial( {color: 0xffff00} );
@@ -1497,7 +1477,6 @@ module ThreejsAPI{
 						console.log(objmesh.geometry.parameters);
 						tmpobj = objmesh;
 					}
-
 					if(args['shape'] == 'TetrahedronGeometry'){
 						geometry = new THREE.TetrahedronGeometry( 1, 0);
 						material = new THREE.MeshBasicMaterial( {color: 0xffff00} );
@@ -1506,7 +1485,6 @@ module ThreejsAPI{
 						console.log(objmesh.geometry.parameters);
 						tmpobj = objmesh;
 					}
-
 					if(args['shape'] == 'TorusGeometry'){
 						geometry = new THREE.TorusGeometry(10, 3, 16, 100, 2*Math.PI );
 						material = new THREE.MeshBasicMaterial( {color: 0xffff00} );
@@ -1523,8 +1501,6 @@ module ThreejsAPI{
 						console.log(objmesh.geometry.parameters);
 						tmpobj = objmesh;
 					}
-
-
 					if(args['shape'] == 'TextGeometry'){
 						geometry = new THREE.TextGeometry('Text', {});
 						material = new THREE.MeshBasicMaterial( {color: 0xffff00} );
@@ -1532,13 +1508,11 @@ module ThreejsAPI{
 						objmesh.name = "TextGeometry";
 						tmpobj = objmesh;
 					}
-
 					if(args['shape'] == 'ArrowHelper'){
 						var dir = new THREE.Vector3( 1, 0, 0 );
 						var origin = new THREE.Vector3( 0, 0, 0 );
 						var length = 1;
 						var hex = 0xffff00;
-
 						var arrowHelper = new THREE.ArrowHelper( dir, origin, length, hex );
 						tmpobj = arrowHelper;
 					}
@@ -1547,42 +1521,33 @@ module ThreejsAPI{
 						var axisHelper = new THREE.AxisHelper( 5 );
 						tmpobj = axisHelper;
 					}
-
 					if(args['shape'] == 'BoundingBoxHelper'){
 						objmesh = new THREE.Object3D();
 						var hex  = 0xff0000;
-
 						var sphereMaterial = new THREE.MeshLambertMaterial( {color: 0x00ff00} );
 						var sphere = new THREE.Mesh( new THREE.SphereGeometry( 30, 12, 12), sphereMaterial );
 						objmesh.add( sphere );
-
 						var bbox = new THREE.BoundingBoxHelper( sphere, hex );
 						bbox.update();
 						objmesh.add(bbox);
 						tmpobj = objmesh;
 					}
-
 					if(args['shape'] == 'EdgesHelper'){
 						objmesh = new THREE.Object3D();
 						geometry = new THREE.BoxGeometry( 10, 10, 10, 2, 2, 2 );
 						material = new THREE.MeshBasicMaterial( { color: 0xff0000 } );
 						var object = new THREE.Mesh( geometry, material );
-
 						edges = new THREE.EdgesHelper( object, 0x00ff00 );
-
 						objmesh.add( object );
 						objmesh.add( edges );
 						tmpobj = objmesh;
 					}
-
 					if(args['shape'] == 'FaceNormalsHelper'){
 						objmesh = new THREE.Object3D();
 						geometry = new THREE.BoxGeometry( 10, 10, 10, 2, 2, 2 );
 						material = new THREE.MeshBasicMaterial( { color: 0xff0000 } );
 						var object = new THREE.Mesh( geometry, material );
-
 						edges = new THREE.FaceNormalsHelper( object, 2, 0x00ff00, 1 );
-
 						objmesh.add( object );
 						objmesh.add( edges );
 						tmpobj = objmesh;
@@ -1591,7 +1556,6 @@ module ThreejsAPI{
 					if(args['shape'] == 'GridHelper'){
 						var size = 10;
 						var step = 1;
-
 						var gridHelper = new THREE.GridHelper( size, step );
 						tmpobj = gridHelper;
 					}
@@ -1601,7 +1565,6 @@ module ThreejsAPI{
 						var pointLight = new THREE.PointLight( 0xff0000, 1, 100 );
 						pointLight.position.set( 10, 10, 10 );
 						objmesh.add( pointLight );
-
 						var sphereSize = 1;
 						var pointLightHelper = new THREE.PointLightHelper( pointLight, sphereSize );
 						objmesh.add( pointLightHelper );
@@ -1623,9 +1586,7 @@ module ThreejsAPI{
 						geometry = new THREE.BoxGeometry( 10, 10, 10, 2, 2, 2 );
 						material = new THREE.MeshBasicMaterial( { color: 0xff0000 } );
 						var object = new THREE.Mesh( geometry, material );
-
 						edges = new THREE.VertexNormalsHelper( object, 2, 0x00ff00, 1 );
-
 						objmesh.add( object );
 						objmesh.add( edges );
 						tmpobj = objmesh;
@@ -1636,14 +1597,11 @@ module ThreejsAPI{
 						geometry = new THREE.BoxGeometry( 10, 10, 10, 2, 2, 2 );
 						material = new THREE.MeshBasicMaterial( { color: 0xff0000 } );
 						var object = new THREE.Mesh( geometry, material );
-
 						var wireframe = new THREE.WireframeHelper( object, 0x00ff00 );
-
 						objmesh.add( object );
 						objmesh.add( wireframe );
 						tmpobj = objmesh;
 					}
-
 					if(tmpobj != null){
 						if(this.selectobject != null){
 							this.selectobject.add(tmpobj); //attach to current selected
@@ -1680,28 +1638,22 @@ module ThreejsAPI{
 			}
 			player.prototype = Object.create(THREE.Object3D.prototype);
 			//player.prototype.constructor = player;
-
 			player.prototype.init = function(){
-
 			};
 			player.prototype.update = function(delta){
 				//console.log("update?");
 			};
-
 			var tplayer = new player();
 			this.scene.add(tplayer);
 			console.log(tplayer);
 			return tplayer;
 		}
-
 		createcharacter(){
 			console.log('');
 		}
-
 		getext(filename){
 			return filename.substr(filename.lastIndexOf('.'));
 		}
-
 		LoadFile(filename){
 			console.log('file: '+ filename);
 			if(this.getext(filename) == '.fbx'){
@@ -1709,19 +1661,16 @@ module ThreejsAPI{
 					this.scene.add(object);
 				});
 			}
-
 			if(this.getext(filename) == '.dae'){
 				this.LoadDAE(filename,(object)=>{
 					this.scene.add(object);
 				});
 			}
-
 			if(this.getext(filename) == '.obj'){
 				this.LoadOBJ(filename,(object)=>{
 					this.scene.add(object);
 				});
 			}
-
 			if(this.getext(filename) == '.js'){
 				this.LoadJSONObj(filename);
 			}
@@ -1770,7 +1719,6 @@ module ThreejsAPI{
 					name = null;
 			}, this.onProgressModel, this.onErrorModel );
 		}
-
 		LoadDAE(filename,callback){
 			var loader = new THREE.ColladaLoader( this.manager );
 			var name = filename;
@@ -1796,7 +1744,6 @@ module ThreejsAPI{
 				name = null;
 			}, this.onProgressModel, this.onErrorModel);
 		}
-
 		LoadOBJ(filename,callback){
 			var self = this;
 			var name = filename;
@@ -1816,7 +1763,6 @@ module ThreejsAPI{
 					name = null;
 			}, this.onProgressModel, this.onErrorModel);
 		}
-
 		initPhysics(){
 			if(this.setPhysicsType[this.physicsIndex] == 'Oimo.js'){
 				this.initOimoPhysics();
@@ -1828,7 +1774,6 @@ module ThreejsAPI{
 				this.initAmmoPhysics();
 			}
 		}
-
 		basicTexture(n){
 	        var canvas = document.createElement( 'canvas' );
 	        canvas.width = canvas.height = 64;
@@ -1859,7 +1804,6 @@ module ThreejsAPI{
 	        tx.needsUpdate = true;
 	        return tx;
 	    }
-
 		createTexMat(){
 			// background
 	        var buffgeoBack = new THREE.BufferGeometry();
@@ -1869,7 +1813,6 @@ module ThreejsAPI{
 			back.name = "skybox";
 	        this.scene.add( back );
 		}
-
 		gradTexture(color) {
 	        var c = document.createElement("canvas");
 	        var ct = c.getContext("2d");
@@ -1883,7 +1826,6 @@ module ThreejsAPI{
 	        texture.needsUpdate = true;
 	        return texture;
     	}
-
 		addStaticBox(size, position, rotation, spec){
 			//console.log(this.buffgeoBox);
 	        var mesh;

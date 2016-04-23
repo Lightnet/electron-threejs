@@ -84,8 +84,6 @@ function initEditor(){
 						if(event.target == 'assetview'){
 							checkfileopen();
 						}
-
-
 						if(event.target == 'assetrefresh'){
 							RefreshAssets();
 						}
@@ -288,19 +286,19 @@ function initEditor(){
 				{type:'button', text: 'New', icon: 'icon-page'},
 				{type:'button', text: 'Save', icon: 'icon-page'},
 				//{type:'button', text: 'Save As', icon: 'icon-page'},
-				{type:'button', text: 'Load', icon: 'icon-page'},
-				{type:'button', text: 'Open', icon: 'icon-page'},
-				{type:'button', text: 'Close', icon: 'icon-page'},
-				{type:'button', text: 'Import', icon: 'icon-page'},
-				{type:'button', text: 'Export', icon: 'icon-page'},
-				{type:'button', text: 'Publish', icon: 'icon-page'}
+				{type:'button', text: 'Load', icon: 'icon-page'}
+				//{type:'button', text: 'Open', icon: 'icon-page'},
+				//{type:'button', text: 'Close', icon: 'icon-page'},
+				//{type:'button', text: 'Import', icon: 'icon-page'},
+				//{type:'button', text: 'Export', icon: 'icon-page'},
+				//{type:'button', text: 'Publish', icon: 'icon-page'}
 			]},
 			{ type: 'menu',   id: 'EditorEdit', caption: 'Edit',img:'fa fa-pencil-square-o', items: [
-				{ text: 'Copy', icon: 'icon-page' },
-				{ text: 'Paste', icon: 'icon-page' },
-				{ text: 'Delete', icon: 'icon-page' },
-				{ text: 'Delete', icon: 'icon-page' },
-				{ text: 'Clear History', icon: 'icon-page' },
+				//{ text: 'Copy', icon: 'icon-page' },
+				//{ text: 'Paste', icon: 'icon-page' },
+				//{ text: 'Delete', icon: 'icon-page' },
+				//{ text: 'Delete', icon: 'icon-page' },
+				//{ text: 'Clear History', icon: 'icon-page' },
 			]},
 			{ type: 'menu',   id: 'EditorComponents', caption: 'Components',img:'fa fa-cube', items: [
 				{ text: 'Object3D', icon: 'fa fa-cube' },
@@ -364,10 +362,10 @@ function initEditor(){
 			]},
 			{ type: 'button',   id: 'EditorPlay', caption: 'Play',img:'fa fa-play'},
 			{ type: 'menu',   id: 'EditorPlayOtions', caption: '', items: [
-				{ text: 'Play', icon: 'icon-page' },
-				{ text: 'Debug', icon: 'icon-page' },
-				{ text: 'Local', icon: 'icon-page' },
-				{ text: 'Host & Local', icon: 'icon-page' }
+				//{ text: 'Play', icon: 'icon-page' },
+				//{ text: 'Debug', icon: 'icon-page' },
+				//{ text: 'Local', icon: 'icon-page' },
+				//{ text: 'Host & Local', icon: 'icon-page' }
 			]},
 			{ type: 'button',   id: 'EditorStop', caption: 'Stop',img:'fa fa-stop'},
 			//{ type: 'menu',   id: 'EditorExample', caption: 'Example', items: [
@@ -396,7 +394,12 @@ function initEditor(){
 
 	w2ui.toolbar.on('*', function (id, event) {
 		console.log('id:'+id);
-
+		if(id == 'EditorHelp:API'){
+			 window.open('https://github.com/Lightnet/electron-threejs/wiki','','height=960px,width=940px');
+		}
+		if(id == 'EditorHelp:About'){
+			window.open('https://github.com/Lightnet/electron-threejs','','height=960px,width=940px');
+		}
 		if(id == 'EditorFile:New'){
 			NewMap();
 		}
@@ -457,8 +460,12 @@ function initEditor(){
 			{ type: 'spacer' },
 			{ type: 'button',  id: 'test', text: 'test'}
 		],
-		onClick: function(event) {
+		onClick: function(id, event) {
         	console.log('item '+ event.target + ' is clicked.');
+			console.log('item id:'+ id);
+			if(id == 'test'){
+				testfun();
+			}
 			if(event.target == 'toggle_top'){
 				w2ui['layout'].toggle('top');
 			}
