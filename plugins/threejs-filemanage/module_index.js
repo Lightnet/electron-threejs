@@ -63,6 +63,27 @@ var exts = [
 	'.json'
 ];
 
+var extscripts = [
+	'.ts',
+	'.js'
+];
+
+var extmodels = [
+	'.fbx',
+	'.dae',
+	'.obj',
+	'.mtl',
+	'.js',
+	'.json'
+];
+
+var exttextures = [
+	'.jpg',
+	'.png',
+	'.jpeg',
+	'.gif'
+];
+
 var extcodes = [
 	'.fbx',
 	'.dae',
@@ -111,7 +132,8 @@ var projectid = "threejseditor";
 var assetfile = {
 	name:"",
 	projectid: "threejseditor",
-	hrashid:"",
+	//hrashid:"",
+	type:"",
 	path:"",
 	tag:"",
 	folder:"assets"
@@ -172,12 +194,37 @@ module.exports.setroute = function(routes,app){
 							console.log(err);
 						};
 						if(result.length == 0){//if file not found in the list add to table
+							var filetype = "none";
+							for(var i in exttextures) {
+								//console.log(exts[i]);
+								if( path.extname(req.file.originalname) == exttextures[i] ){
+									filetype = "texture";
+									break;
+								}
+							}
+							for(var i in extmodels) {
+								//console.log(exts[i]);
+								if( path.extname(req.file.originalname) == extmodels[i] ){
+									filetype = "model";
+									break;
+								}
+							}
+							for(var i in extscripts) {
+								//console.log(exts[i]);
+								if( path.extname(req.file.originalname) == extscripts[i] ){
+									filetype = "script";
+									console.log("found script?");
+									break;
+								}
+							}
+
 							console.log("Not Found");
 							var assetfiletmp = assetfile;
 							assetfiletmp.name = req.file.originalname;
-							assetfiletmp.hrashid = req.file.filename;
+							//assetfiletmp.hrashid = req.file.filename;
 							assetfiletmp.path = fileproject;
 							assetfiletmp.projectid = req.query.projectid;
+							assetfiletmp.type = filetype;
 							rethinkdb.table('assets').insert(assetfiletmp).run(connection, function(err, result) {
 				    			if (err) throw err;
 								console.log("insert asset");
@@ -250,7 +297,8 @@ module.exports.socketio_connect = function(io, socket){
 								id:result[i].id,
 								name:result[i].name,
 								path:result[i].path,
-								tag:result[i].tag
+								tag:result[i].tag,
+								type:result[i].type
 							});
 						}
 						//display data
