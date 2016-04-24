@@ -42,6 +42,7 @@ var ThreejsAPI;
             // {
             this.antialias = true;
             this.bablenetwork = false;
+            this.bfixedassetpath = true;
             this.materialType = 'MeshBasicMaterial';
             this.bprototype = false;
             this.scenes = [];
@@ -89,6 +90,10 @@ var ThreejsAPI;
                 if (args['bupdateobjects'] != null) {
                     //this.bcanvas = true;
                     this.bupdateobjects = args['bupdateobjects'];
+                }
+                if (args['bfixedassetpath'] != null) {
+                    //this.bcanvas = true;
+                    this.bfixedassetpath = args['bfixedassetpath'];
                 }
                 //this need to be last else it variable are not assign
                 if (args['onload'] == true) {
@@ -375,9 +380,6 @@ var ThreejsAPI;
         Game.prototype.onProgressModel = function (xhr) {
             if (xhr.lengthComputable) {
                 var percentComplete = xhr.loaded / xhr.total * 100;
-                //var percent = Math.round( percentComplete, 2 );
-                //console.log( Math.round( percentComplete, 2 ) + '% downloaded' );
-                console.log(Math.round(percentComplete) + '% downloaded');
             }
         };
         Game.prototype.onErrorModel = function (xhr) {
@@ -1370,8 +1372,55 @@ var ThreejsAPI;
                 });
             }
         };
+        Game.prototype.LoadModelFile = function (args, callback) {
+            console.log('file: ' + args.path);
+            var self = this;
+            if (this.getext(args.path) == '.fbx') {
+                this.LoadFBX(args.path, function (object) {
+                    //self.scene.add(object);
+                    object.uuid = args.uuid;
+                    callback(object);
+                });
+            }
+            if (this.getext(args.path) == '.dae') {
+                this.LoadDAE(args.path, function (object) {
+                    //self.scene.add(object);
+                    object.uuid = args.uuid;
+                    callback(object);
+                });
+            }
+            if (this.getext(args.path) == '.obj') {
+                this.LoadOBJ(args.path, function (object) {
+                    //self.scene.add(object);
+                    //console.log("done object loading????");
+                    object.uuid = args.uuid;
+                    callback(object);
+                });
+            }
+            if (this.getext(args.path) == '.js') {
+                this.LoadJSONObj(args.path, function (object) {
+                    //self.scene.add( object );
+                    object.uuid = args.uuid;
+                    callback(object);
+                });
+            }
+            if (this.getext(args.path) == '.json') {
+                this.LoadJSONObj(args.path, function (object) {
+                    //self.scene.add( object );
+                    object.uuid = args.uuid;
+                    callback(object);
+                });
+            }
+        };
         Game.prototype.LoadJSONObj = function (filename, callback) {
-            var filepath = "/assets/" + filename;
+            var filepath;
+            if (this.bfixedassetpath) {
+                filepath = "/assets/" + filename;
+            }
+            else {
+                filename;
+                filepath = filename;
+            }
             var loader = new THREE.JSONLoader();
             var name = filename;
             var self = this;
@@ -1390,9 +1439,16 @@ var ThreejsAPI;
             }, this.onProgressModel, this.onErrorModel);
         };
         Game.prototype.LoadFBX = function (filename, callback) {
-            var filepath = "/assets/" + filename;
+            var filepath;
+            if (this.bfixedassetpath) {
+                filepath = "/assets/" + filename;
+            }
+            else {
+                filename;
+                filepath = filename;
+            }
             var name = filename;
-            console.log(filepath);
+            //console.log(filepath);
             var loader = new THREE.FBXLoader(this.manager);
             var self = this;
             loader.load(filepath, function (object) {
@@ -1409,18 +1465,26 @@ var ThreejsAPI;
                     }
                 });
                 //self.scene.add( object );
-                object.name = name;
+                object.name = filename;
+                //console.log("///////////////////////////////");
+                //console.log(object.name);
                 callback(object);
                 name = null;
                 loader = null;
             }, this.onProgressModel, this.onErrorModel);
         };
         Game.prototype.LoadDAE = function (filename, callback) {
+            var filepath;
+            if (this.bfixedassetpath) {
+                filepath = "/assets/" + filename;
+            }
+            else {
+                filename;
+                filepath = filename;
+            }
             var loader = new THREE.ColladaLoader(this.manager);
-            var name = filename;
             var self = this;
             loader.options.convertUpAxis = true;
-            var filepath = "/assets/" + filename;
             loader.load(filepath, function (collada) {
                 var dae = collada.scene;
                 dae.traverse(function (child) {
@@ -1434,17 +1498,24 @@ var ThreejsAPI;
                 //init();
                 //animate();
                 //self.scene.add( dae );
-                dae.name = name;
+                dae.name = filepath;
                 callback(dae);
                 console.log("added");
-                name = null;
+                //name = null;
                 loader = null;
             }, this.onProgressModel, this.onErrorModel);
         };
         Game.prototype.LoadOBJ = function (filename, callback) {
             var self = this;
-            var name = filename;
-            var filepath = "/assets/" + filename;
+            //var name = filename;
+            var filepath;
+            if (this.bfixedassetpath) {
+                filepath = "/assets/" + filename;
+            }
+            else {
+                filename;
+                filepath = filename;
+            }
             var loader = new THREE.OBJLoader(this.manager);
             //var loader = new THREE.OBJLoader();
             loader.load(filepath, function (object) {
@@ -1454,9 +1525,9 @@ var ThreejsAPI;
                 });
                 //object.position.y = - 95;
                 //self.scene.add( object );
-                object.name = name;
+                object.name = filename;
                 callback(object);
-                name = null;
+                //name = null;
                 loader = null;
             }, this.onProgressModel, this.onErrorModel);
         };

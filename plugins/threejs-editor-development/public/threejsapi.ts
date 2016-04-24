@@ -51,6 +51,7 @@ module ThreejsAPI{
 		// {
 		antialias:boolean = true;
 		bablenetwork:boolean = false;
+		bfixedassetpath:boolean = true;
 
 		buffgeoSphere:any;
 		buffgeoBox:any;
@@ -152,6 +153,11 @@ module ThreejsAPI{
 				if(args['bupdateobjects'] != null){
 					//this.bcanvas = true;
 					this.bupdateobjects = args['bupdateobjects'];
+					//console.log('canvasid>>'+args['canvasid']);
+				}
+				if(args['bfixedassetpath'] != null){
+					//this.bcanvas = true;
+					this.bfixedassetpath = args['bfixedassetpath'];
 					//console.log('canvasid>>'+args['canvasid']);
 				}
 
@@ -481,7 +487,7 @@ module ThreejsAPI{
 				var percentComplete:any = xhr.loaded / xhr.total * 100;
 				//var percent = Math.round( percentComplete, 2 );
 				//console.log( Math.round( percentComplete, 2 ) + '% downloaded' );
-				console.log( Math.round( percentComplete) + '% downloaded' );
+				//console.log( Math.round( percentComplete) + '% downloaded' );
 			}
 		}
 
@@ -1689,8 +1695,55 @@ module ThreejsAPI{
 			}
 		}
 
+		LoadModelFile(args,callback){
+			console.log('file: '+ args.path);
+			var self = this;
+			if(this.getext(args.path) == '.fbx'){
+				this.LoadFBX(args.path,(object)=>{
+					//self.scene.add(object);
+					object.uuid = args.uuid;
+					callback(object);
+				});
+			}
+			if(this.getext(args.path) == '.dae'){
+				this.LoadDAE(args.path,(object)=>{
+					//self.scene.add(object);
+					object.uuid = args.uuid;
+					callback(object);
+				});
+			}
+			if(this.getext(args.path) == '.obj'){
+				this.LoadOBJ(args.path,(object)=>{
+					//self.scene.add(object);
+					//console.log("done object loading????");
+					object.uuid = args.uuid;
+					callback(object);
+				});
+			}
+			if(this.getext(args.path) == '.js'){
+				this.LoadJSONObj(args.path,(object)=>{
+					//self.scene.add( object );
+					object.uuid = args.uuid;
+					callback(object);
+				});
+			}
+
+			if(this.getext(args.path) == '.json'){
+				this.LoadJSONObj(args.path,(object)=>{
+					//self.scene.add( object );
+					object.uuid = args.uuid;
+					callback(object);
+				});
+			}
+		}
+
 		LoadJSONObj(filename, callback){
-			var filepath = "/assets/" + filename;
+			var filepath;
+			if(this.bfixedassetpath){
+				filepath = "/assets/" + filename;
+			}else{filename
+				filepath = filename;
+			}
 			var loader:any = new THREE.JSONLoader();
 			var name = filename;
 			var self = this;
@@ -1710,9 +1763,14 @@ module ThreejsAPI{
 		}
 
 		LoadFBX(filename,callback){
-			var filepath = "/assets/" + filename;
+			var filepath;
+			if(this.bfixedassetpath){
+				filepath = "/assets/" + filename;
+			}else{filename
+				filepath = filename;
+			}
 			var name = filename;
-			console.log(filepath);
+			//console.log(filepath);
 			var loader = new THREE.FBXLoader( this.manager );
 			var self = this;
 			loader.load( filepath, function( object ) {
@@ -1730,18 +1788,24 @@ module ThreejsAPI{
 						}
 					} );
 					//self.scene.add( object );
-					object.name = name;
+					object.name = filename;
+					//console.log("///////////////////////////////");
+					//console.log(object.name);
 					callback(object);
 					name = null;
 					loader = null;
 			}, this.onProgressModel, this.onErrorModel );
 		}
 		LoadDAE(filename,callback){
+			var filepath;
+			if(this.bfixedassetpath){
+				filepath = "/assets/" + filename;
+			}else{filename
+				filepath = filename;
+			}
 			var loader = new THREE.ColladaLoader( this.manager );
-			var name = filename;
 			var self = this;
 			loader.options.convertUpAxis = true;
-			var filepath = "/assets/" + filename;
 			loader.load( filepath , function ( collada ) {
 				var dae = collada.scene;
 				dae.traverse( function ( child ) {
@@ -1755,17 +1819,22 @@ module ThreejsAPI{
 				//init();
 				//animate();
 				//self.scene.add( dae );
-				dae.name = name;
+				dae.name = filepath;
 				callback(dae);
 				console.log("added");
-				name = null;
+				//name = null;
 				loader = null;
 			}, this.onProgressModel, this.onErrorModel);
 		}
 		LoadOBJ(filename,callback){
 			var self = this;
-			var name = filename;
-			var filepath = "/assets/" + filename;
+			//var name = filename;
+			var filepath;
+			if(this.bfixedassetpath){
+				filepath = "/assets/" + filename;
+			}else{filename
+				filepath = filename;
+			}
 			var loader = new THREE.OBJLoader( this.manager );
 			//var loader = new THREE.OBJLoader();
 			loader.load( filepath, function ( object ) {
@@ -1776,9 +1845,9 @@ module ThreejsAPI{
 					} );
 					//object.position.y = - 95;
 					//self.scene.add( object );
-					object.name = name;
+					object.name = filename;
 					callback(object);
-					name = null;
+					//name = null;
 					loader = null;
 			}, this.onProgressModel, this.onErrorModel);
 		}

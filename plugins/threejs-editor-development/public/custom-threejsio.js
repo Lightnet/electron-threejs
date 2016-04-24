@@ -60,12 +60,9 @@ var extimages = [
 ];
 
 var extcodes = [
-	'.fbx',
-	'.dae',
-	'.obj',
-	'.mtl',
 	'.md',
 	'.html',
+	'.xml',
 	'.txt',
 	'.ts',
 	'.js',
@@ -1314,7 +1311,7 @@ function buildApp(){
 		console.log(assets[i]);
 		postobject.assets.push({	path:assets[i].path,
 									uuid:assets[i].id,
-									type:'none'
+									type:assets[i].type
 								});
 	}
 
