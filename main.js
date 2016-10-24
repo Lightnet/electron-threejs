@@ -6,7 +6,6 @@
   	Please read the readme.txt file for more information.
 */
 
-
 'use strict';
 
 var settings = require('./settings.json');
@@ -41,12 +40,15 @@ const BrowserWindow = electron.BrowserWindow;
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow;
 
+
+
 var windows = [];
 windows['database']={object:null,url:'http://localhost:8080/',options:{width: 800, height: 600, webPreferences:{nodeIntegration:false}} };
-windows['server']={object:null,url:'file://' + __dirname + '/playcanvas-server.html',options:{width: 800, height: 600} };
-windows['client']={object:null,url:'http://localhost/'+'client.html',options:{width: 800, height: 600, webPreferences:{nodeIntegration:false}} };
-windows['game']={object:null,url:'http://localhost/',options:{width: 800, height: 600, webPreferences:{nodeIntegration:false}} };
-windows['settings']={object:null,url:'file://' + __dirname + '/settings.html',options:{width: 800, height: 600, webPreferences:{nodeIntegration:false}} };
+windows['server']={object:null,url:'file://' + __dirname + '/threejs-server.html',options:{width: 800, height: 600} };
+windows['client']={object:null,url:'http://localhost/'+'threejs-client.html',options:{width: 800, height: 600, webPreferences:{nodeIntegration:false}} };
+windows['editor']={object:null,url:'http://localhost/threejs-editor.html',options:{width: 800, height: 600, webPreferences:{nodeIntegration:false}} };
+windows['game']={object:null,url:'http://localhost/threejs-game.html',options:{width: 800, height: 600, webPreferences:{nodeIntegration:false}} };
+windows['settings']={object:null,url:'file://' + __dirname + '/settings.html',options:{width: 800, height: 600, webPreferences:{nodeIntegration:true}} };
 windows['status']={object:null,url:'http://localhost/',options:{width: 800, height: 600, webPreferences:{nodeIntegration:false}} };
 
 var appIcon = null;
@@ -79,6 +81,9 @@ function windowcheck(id){
 }
 
 function displaywindowid(windowid){
+	if(windowid == 'editor'){
+		windowcheck(windowid);
+	}
 	if(windowid == 'game'){
 		windowcheck(windowid);
 	}

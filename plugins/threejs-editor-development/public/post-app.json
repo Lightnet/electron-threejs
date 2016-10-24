@@ -7,12 +7,133 @@
         "/assets/test1.js",
         "/assets/test2.js"
     ],
-    "assets": [],
+    "assets": [
+        {
+            "path": "/assets/test1.js",
+            "uuid": "546d4919-0a5e-4d83-b40d-560933805c09",
+            "type": "script"
+        },
+        {
+            "path": "/assets/block_character.obj",
+            "uuid": "7c4e7bf1-02cd-4fa8-9910-b4b022c5ba6b",
+            "type": "model"
+        },
+        {
+            "path": "/assets/button88x32.png",
+            "uuid": "ccb7e718-a424-41b4-a52e-093b3a846f62",
+            "type": "texture"
+        },
+        {
+            "path": "/assets/block_character.dae",
+            "uuid": "30c8a13b-1621-4880-ad30-4905f7d6fb08",
+            "type": "model"
+        },
+        {
+            "path": "/assets/button32x32.png",
+            "uuid": "c35fc6a8-e615-4262-9165-8b3af6bae675",
+            "type": "texture"
+        },
+        {
+            "path": "/assets/test2.js",
+            "uuid": "8948c12c-cae0-4eef-9760-a037aea4b0e0",
+            "type": "script"
+        },
+        {
+            "path": "/assets/block_character.fbx",
+            "uuid": "f3a4b64c-35c7-4c5e-a10e-b090218bf763",
+            "type": "model"
+        }
+    ],
     "entities": [
         {
             "uuid": "B1E79603-A80E-4CE5-9C5E-34B223CEECF9",
             "name": "scene",
             "type": "Scene",
+            "parent": null,
+            "children": [],
+            "position": {
+                "x": 0,
+                "y": 0,
+                "z": 0
+            },
+            "rotation": {
+                "_x": 0,
+                "_y": 0,
+                "_z": 0,
+                "_order": "XYZ"
+            },
+            "scale": {
+                "x": 1,
+                "y": 1,
+                "z": 1
+            }
+        },
+        {
+            "uuid": "346BD80F-C91C-4591-ACAD-616862D8009A",
+            "name": "Object32",
+            "type": "Object3D",
+            "parent": "B1E79603-A80E-4CE5-9C5E-34B223CEECF9",
+            "children": [],
+            "script": {
+                "test1": {
+                    "texts": "test",
+                    "text": "test",
+                    "count": 0,
+                    "benable": false,
+                    "list": [],
+                    "counts": 1,
+                    "vec2": {
+                        "type": "THREE.Vector2",
+                        "x": 0,
+                        "y": 0
+                    },
+                    "vec3": {
+                        "type": "THREE.Vector3",
+                        "x": 0,
+                        "y": 0,
+                        "z": 0
+                    },
+                    "vec4": {
+                        "type": "THREE.Vector4",
+                        "x": 0,
+                        "y": 0,
+                        "z": 0,
+                        "w": 1
+                    },
+                    "quat": {
+                        "type": "THREE.Quaternion",
+                        "x": 0,
+                        "y": 0,
+                        "z": 0,
+                        "w": 1
+                    },
+                    "bdisplay": true
+                },
+                "test2": {
+                    "bdisplay": true
+                }
+            },
+            "position": {
+                "x": 0,
+                "y": 0,
+                "z": 0
+            },
+            "rotation": {
+                "_x": 0,
+                "_y": 0,
+                "_z": 0,
+                "_order": "XYZ"
+            },
+            "scale": {
+                "x": 1,
+                "y": 1,
+                "z": 1
+            }
+        },
+        {
+            "uuid": "7D520BE2-E2F3-4343-A5A6-6C861B6D5E3B",
+            "name": "Object3D",
+            "type": "Object3D",
             "parent": null,
             "children": [],
             "position": {
@@ -49,10 +170,7 @@
             },
             "script": {
                 "test1": {
-                    "mesht": {
-                        "type": "Mesh",
-                        "uuid": "4B2C356D-8039-474C-B442-AEE6BA16DC1A"
-                    },
+                    "texts": "test",
                     "text": "test2",
                     "count": "2",
                     "benable": false,
@@ -83,10 +201,6 @@
                         "z": 0,
                         "w": 1
                     },
-                    "obj": {
-                        "type": "Object3D",
-                        "uuid": "D147BBBF-6585-41E1-8402-1733FAA8E43C"
-                    },
                     "bdisplay": false
                 }
             },
@@ -108,57 +222,11 @@
             }
         },
         {
-            "uuid": "346BD80F-C91C-4591-ACAD-616862D8009A",
-            "name": "Object32",
+            "uuid": "930F76BB-B919-4AAE-BA67-00E24D77F80A",
+            "name": "Object3D",
             "type": "Object3D",
-            "parent": "B1E79603-A80E-4CE5-9C5E-34B223CEECF9",
+            "parent": "7D54DFA6-5CEA-4031-8DEF-3EC2E4237F9D",
             "children": [],
-            "script": {
-                "test1": {
-                    "mesht": {
-                        "type": "Mesh",
-                        "uuid": "5855A7D2-48A0-4F56-BEDE-9B028C54F7CB"
-                    },
-                    "text": "test",
-                    "count": 0,
-                    "benable": false,
-                    "list": [],
-                    "counts": 1,
-                    "vec2": {
-                        "type": "THREE.Vector2",
-                        "x": 0,
-                        "y": 0
-                    },
-                    "vec3": {
-                        "type": "THREE.Vector3",
-                        "x": 0,
-                        "y": 0,
-                        "z": 0
-                    },
-                    "vec4": {
-                        "type": "THREE.Vector4",
-                        "x": 0,
-                        "y": 0,
-                        "z": 0,
-                        "w": 1
-                    },
-                    "quat": {
-                        "type": "THREE.Quaternion",
-                        "x": 0,
-                        "y": 0,
-                        "z": 0,
-                        "w": 1
-                    },
-                    "obj": {
-                        "type": "Object3D",
-                        "uuid": "6B718587-AF16-4F73-AAB8-4613C6899CD0"
-                    },
-                    "bdisplay": true
-                },
-                "test2": {
-                    "bdisplay": true
-                }
-            },
             "position": {
                 "x": 0,
                 "y": 0,
